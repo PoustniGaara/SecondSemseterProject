@@ -74,10 +74,10 @@ public class HeaderPanel extends JPanel {
 		gbc.gridx = 2;
 		add(menuButton, gbc);
 		
-		
 		optionButton = new FButtonOneC (PColors.get(PColors.RED),new Color(7, 100, 90),
 				PColors.get(PColors.GREEN));
 		optionButton.setState(true);
+		optionButton.addActionListener(e -> openOptionFrame());
 		FontIcon endIcon = FontIcon.of(CoreUiFree.COG);
 		endIcon.setIconSize(32);
 		optionButton.setIcon(endIcon);
@@ -89,6 +89,10 @@ public class HeaderPanel extends JPanel {
 		gbc.weightx = 1;
 		add(optionButton,gbc);
 		
+	}//end of constructor
+	
+	private void openOptionFrame() {
+		OptionFrame.getInstance();
 	}
 	
 	private void showOverview() {
