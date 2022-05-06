@@ -6,6 +6,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
+
 import model.Customer;
 
 public class CustomerConcreteDAO implements CustomerDAO {
@@ -16,105 +17,101 @@ public class CustomerConcreteDAO implements CustomerDAO {
 	}
 
 	public static CustomerConcreteDAO getInstance() {
+		if (instance == null) {
+			instance = new CustomerConcreteDAO();
+		}
 		return instance;
 	}
 
 	@Override
 	public ArrayList<Customer> read() {
 		ArrayList<Customer> customers = new ArrayList<Customer>();
-
 		Connection con = DBConnection.getInstance().getDBcon();
-
-		try{
+		try {
 			Statement statement = con.createStatement();
-			ResultSet rs = statement.executeQuery("SELECT * FROM dbo.customer");
+			ResultSet rs = statement.executeQuery("SELECT * FROM dbo.Customers");
 			while (rs.next()) {
+				String phone = rs.getString("phone");
 				String name = rs.getString("name");
 				String surname = rs.getString("surname");
-				String address = rs.getString("address");
+				String email = rs.getString("email");
+				String town = rs.getString("town");
 				String zipcode = rs.getString("zipcode");
-				String city = rs.getString("city");
-				String phone = rs.getString("phone");
-				boolean business = rs.getBoolean("business");
-				Customer customer = new Customer(name, surname, address, zipcode, city, phone, business);
-				customer.setId(rs.getInt("id"));
+				String street = rs.getString("street");
+				String streetNumber = rs.getString("streetNumber");
+				Customer customer = new Customer(name, surname, phone, email, town, zipcode, street, streetNumber);
 				customers.add(customer);
 			}
-
 		} catch (SQLException e) {
 			e.printStackTrace();
+		} finally {
+			DBConnection.closeConnection();
 		}
 		return customers;
 	}
 
 	@Override
-	public Customer read(int id) {
-		try (Connection con = Database.getConnection()) {
-			PreparedStatement statement = con.prepareStatement("SELECT * FROM dbo.customer WHERE id=?");
-			statement.setInt(1, id);
+	public Customer read(String phone) {
+		Connection con = DBConnection.getInstance().getDBcon();
+		try {
+			PreparedStatement statement = con.prepareStatement("SELECT * FROM dbo.Customers WHERE phone=?");
+			statement.setString(1, phone);
 			ResultSet rs = statement.executeQuery();
 			while (rs.next()) {
 				String name = rs.getString("name");
-				String address = rs.getString("address");
-				int zipcode = rs.getInt("zipcode");
-				String city = rs.getString("city");
-				int phone = rs.getInt("phone");
-				boolean business = rs.getBoolean("business");
-				Customer customer = new Customer(name, address, zipcode, city, phone, business);
-				customer.setId(id);
+				String surname = rs.getString("surname");
+				String email = rs.getString("email");
+				String town = rs.getString("town");
+				String zipcode = rs.getString("zipcode");
+				String street = rs.getString("street");
+				String streetNumber = rs.getString("streetNumber");
+				Customer customer = new Customer(name, surname, phone, email, town, zipcode, street, streetNumber);
 				return customer;
 			}
 		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			DBConnection.closeConnection();
 		}
+
 		return null;
 	}
 
 	@Override
 	public void create(Customer customer) {
-		try (Connection con = Database.getConnection()) {
-			PreparedStatement ps = con
-					.prepareStatement("INSERT INTO dbo.customer (name, address, zipcode, city, phone, business)"
-							+ "VALUES (?,?,?,?,?,?)");
-			ps.setString(1, customer.getName());
-			ps.setString(2, customer.getAddress());
-			ps.setInt(3, customer.getZipCode());
-			ps.setString(4, customer.getCity());
-			ps.setInt(5, customer.getPhoneNumber());
-			ps.setBoolean(6, customer.isBusiness());
+		Connection con = DBConnection.getInstance().getDBcon();
+		try {
+			PreparedStatement ps = con.prepareStatement(
+					"INSERT INTO dbo.Customers (phone, name, surname, email, town, zipcode, street, streetNumber)"
+							+ "VALUES (?,?,?,?,?,?,?,?)");
+			ps.setString(1, customer.getPhone());
+			ps.setString(2, customer.getName());
+			ps.setString(3, customer.getSurname());
+			ps.setString(4, customer.getEmail());
+			ps.setString(5, customer.getTown());
+			ps.setString(6, customer.getZipCode());
+			ps.setString(7, customer.getStreet());
+			ps.setString(8, customer.getStreetNumber());
 			ps.execute();
 		} catch (SQLException e) {
 			e.printStackTrace();
-		}
-	}
-
-	@Override
-	public void update(Customer customer) {
-		try (Connection con = Database.getConnection()) {
-			PreparedStatement ps = con.prepareStatement("USE CSD-CSC-S212_10407570 "
-					+ "update dbo.customer SET name=?, SET address=?, SET zipcode=?, SET city=?, SET phone=?, SET business=?"
-					+ "WHERE id=?");
-			ps.setString(1, customer.getName());
-			ps.setString(2, customer.getAddress());
-			ps.setInt(3, customer.getZipCode());
-			ps.setString(4, customer.getCity());
-			ps.setInt(5, customer.getPhoneNumber());
-			ps.setBoolean(6, customer.isBusiness());
-			ps.setInt(7, customer.getId());
-			ps.execute();
-		} catch (SQLException e) {
-			e.printStackTrace();
+		} finally {
+			DBConnection.closeConnection();
 		}
 	}
 
 	@Override
 	public void delete(Customer customer) {
-		try (Connection con = Database.getConnection()) {
-			PreparedStatement ps = con
-					.prepareStatement("USE CSD-CSC-S212_10407570 DELETE FROM dbo.customer WHERE id=?");
-			ps.setInt(1, customer.getId());
+		Connection con = DBConnection.getInstance().getDBcon();
+		try {
+			PreparedStatement ps = con.prepareStatement("DELETE FROM dbo.Customers WHERE phone=?");
+			ps.setString(1, customer.getPhone());
 			ps.execute();
 		} catch (SQLException e) {
 			e.printStackTrace();
+		} finally {
+			DBConnection.closeConnection();
 		}
 	}
+
 }

@@ -12,7 +12,7 @@ public interface ReservationDAO {
 
 	void create(Reservation reservation);
 
-	void update(Reservation reservation);
+	//void update(Reservation reservation);
 
 	void delete(Reservation reservation);
 

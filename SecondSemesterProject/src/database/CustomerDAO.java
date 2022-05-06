@@ -8,11 +8,11 @@ public interface CustomerDAO {
 
 	ArrayList<Customer> read();
 
-	Customer read(int id);
+	Customer read(String phone);
 
 	void create(Customer customer);
 
-	void update(Customer customer);
+	//void update(Customer customer);
 
 	void delete(Customer customer);
 

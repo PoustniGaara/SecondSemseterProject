@@ -4,18 +4,22 @@ public class Customer {
 
 	private String name;
 	private String surname;
-	private String address;
 	private String email;
 	private String phone;
+	private String town;
 	private String zipCode;
+	private String street;
+	private String streetNumber;
 
-	public Customer(String name, String surname, String address, String email, String phone, String zipCode) {
+	public Customer(String name, String surname, String phone, String email, String town, String zipCode, String street, String streetNumber) {
 		this.name = name;
 		this.surname = surname;
-		this.address = address;
+		this.town = town;
+		this.zipCode = zipCode;
+		this.street = street;
+		this.streetNumber = streetNumber;
 		this.email = email;
 		this.phone = phone;
-		this.zipCode = zipCode;
 	}
 
 	public String getName() {
@@ -26,10 +30,6 @@ public class Customer {
 		return surname;
 	}
 
-	public String getAddress() {
-		return address;
-	}
-
 	public String getEmail() {
 		return email;
 	}
@@ -38,8 +38,20 @@ public class Customer {
 		return phone;
 	}
 
+	public String getTown() {
+		return town;
+	}
+
 	public String getZipCode() {
 		return zipCode;
+	}
+
+	public String getStreet() {
+		return street;
+	}
+
+	public String getStreetNumber() {
+		return streetNumber;
 	}
 
 	public void setName(String name) {
@@ -50,10 +62,6 @@ public class Customer {
 		this.surname = surname;
 	}
 
-	public void setAddress(String address) {
-		this.address = address;
-	}
-
 	public void setEmail(String email) {
 		this.email = email;
 	}
@@ -62,7 +70,20 @@ public class Customer {
 		this.phone = phone;
 	}
 
+	public void setTown(String town) {
+		this.town = town;
+	}
+
 	public void setZipCode(String zipCode) {
 		this.zipCode = zipCode;
 	}
+
+	public void setStreet(String street) {
+		this.street = street;
+	}
+
+	public void setStreetNumber(String streetNumber) {
+		this.streetNumber = streetNumber;
+	}
+
 }
