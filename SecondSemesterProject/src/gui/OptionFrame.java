@@ -32,6 +32,7 @@ public class OptionFrame extends JFrame {
 		setBounds(MainFrame.width/4*3, (int) ((int)MainFrame.height*0.08), width, height);
 		setTitle("Options");
 		setVisible(true);
+		setResizable(false);
 		
 		//panel settings
 		JPanel mainPanel = new JPanel();
