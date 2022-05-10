@@ -10,5 +10,7 @@
 	<classpathentry kind="lib" path="libs/ikonli-swing-12.3.0.jar"/>
 	<classpathentry kind="lib" path="libs/ikonli-core-12.3.0.jar"/>
 	<classpathentry kind="lib" path="libs/jcommon-1.0.23.jar"/>
+	<classpathentry kind="lib" path="libs/mssql-jdbc-9.4.0.jre16.jar"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/5"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
