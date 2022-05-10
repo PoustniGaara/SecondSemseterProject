@@ -82,7 +82,7 @@ import model.Table;
 	@Override
 	public RestaurantLayout getRestaurantLayout(String name) {
 		try(Connection con = DBConnection.getInstance().getDBcon();
-				PreparedStatement ps = con.prepareStatement(" select * from dbo.RestaurantLayouts where name = ?");
+			PreparedStatement ps = con.prepareStatement(" select * from dbo.RestaurantLayouts where name = ?");
 			){
 			ps.setString(1, name);
 			ResultSet rs = ps.executeQuery();
@@ -91,8 +91,8 @@ import model.Table;
 				int sizeX = rs.getInt("sizeX");
 				int sizeY = rs.getInt("sizeY");
 				HashMap<Point, LayoutItem> itemMap;
-				return new RestaurantLayout(rs.getTimestamp("date"), date, price, deliveryDate, deliveryStatus,
-						delivery,customerId);
+//				return new RestaurantLayout(rs.getTimestamp("date"), date, price, deliveryDate, deliveryStatus,
+//						delivery,customerId);
 			}
 		}
 		catch(Exception e) {
@@ -104,6 +104,19 @@ import model.Table;
 	@Override
 	public HashMap<Point, LayoutItem> getItemMap(String name) {
 		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public List<Table> getRestaurantLayoutItemsList(int restaurantLayoutID) {
+		try(Connection con = DBConnection.getInstance().getDBcon();
+			PreparedStatement ps = con.prepareStatement("select * from dbo.Tables where layoutItemID = ?");
+				){
+			
+		}
+		catch(Exception e) {
+			e.printStackTrace();
+		}
 		return null;
 	}
 

@@ -4,6 +4,7 @@ import java.awt.Point;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import model.LayoutItem;
 import model.RestaurantLayout;
@@ -11,11 +12,13 @@ import model.Table;
 
 public interface RestaurantLayoutDAO {
 	
-	ArrayList<RestaurantLayout> read();
+	List<RestaurantLayout> read();
 
 	RestaurantLayout getRestaurantLayout(String name);
 	
-	HashMap<Point,LayoutItem> getItemMap(String name);
+	Map<Point,LayoutItem> getItemMap(String restaurantLayoutName);
+	
+	List<Table> getRestaurantLayoutItemsList(int restaurantLayoutID);
 	
 	void saveRestaurantLayout(RestaurantLayout restaurantLayout);
 

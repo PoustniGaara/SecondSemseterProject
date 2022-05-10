@@ -4,10 +4,12 @@ public class LayoutItem {
 
 	private String name;
 	private String type;
+	private int id;
 
-	public LayoutItem(String name, String type) {
-		this.name = name;
-		this.type = type;
+	public LayoutItem(String name, String type, int id) {
+		setName(name);
+		setType(type);
+		setId(id);
 	}
 
 	public String getName() {
@@ -24,6 +26,14 @@ public class LayoutItem {
 
 	public void setType(String type) {
 		this.type = type;
+	}
+	
+	public int getId() {
+		return id;
+	}
+	
+	public void setId(int id) {
+		this.id = id;
 	}
 
 }

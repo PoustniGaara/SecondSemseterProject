@@ -2,18 +2,30 @@ package model;
 
 import java.awt.Point;
 import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class RestaurantLayout {
 	
 	private String name;
 	private int sizeX, sizeY;
-	private HashMap<Point, LayoutItem> itemMap;
-	public String getName() {
-		return name;
-	}
+	private Map<Point, LayoutItem> itemMap;
+	private List<Table> tableList;
 	
 	public RestaurantLayout() {
 		
+	}
+	
+	public void setTableList(List<Table> tableList) {
+		this.tableList = tableList;
+	}
+	
+	public List<Table> getTableList() {
+		return tableList;
+	}
+	
+	public String getName() {
+		return name;
 	}
 	
 	public void setName(String name) {
@@ -31,7 +43,7 @@ public class RestaurantLayout {
 	public void setSizeY(int sizeY) {
 		this.sizeY = sizeY;
 	}
-	public HashMap<Point, LayoutItem> getItemMap() {
+	public Map<Point, LayoutItem> getItemMap() {
 		return itemMap;
 	}
 	public void setItemMap(HashMap<Point, LayoutItem> itemMap) {
