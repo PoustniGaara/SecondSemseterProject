@@ -2,7 +2,6 @@ package model;
 
 import java.awt.Point;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 public class RestaurantLayout {
@@ -10,18 +9,9 @@ public class RestaurantLayout {
 	private String name;
 	private int sizeX, sizeY;
 	private Map<Point, LayoutItem> itemMap;
-	private List<Table> tableList;
 	
 	public RestaurantLayout() {
 		
-	}
-	
-	public void setTableList(List<Table> tableList) {
-		this.tableList = tableList;
-	}
-	
-	public List<Table> getTableList() {
-		return tableList;
 	}
 	
 	public String getName() {

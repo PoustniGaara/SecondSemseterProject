@@ -4,6 +4,7 @@ import java.awt.Point;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -46,7 +47,6 @@ import model.Table;
 
 	@Override
 	public void update(RestaurantLayout restaurantLayout) {
-		// TODO Auto-generated method stub
 		
 	}
 
@@ -57,20 +57,55 @@ import model.Table;
 	}
 
 	@Override
-	public void saveRestaurantLayout(RestaurantLayout restaurantLayout) {
+	public void saveRestaurantLayout(RestaurantLayout restaurantLayout) throws SQLException {
+		Connection con = DBConnection.getInstance().getDBcon();
+		try{
+			con.setAutoCommit(false);
+			createRestaurantLayout(restaurantLayout);
+			createLayoutItems(restaurantLayout);
+			createTables(restaurantLayout);
+			con.commit();
+		}
+		catch(SQLException e){
+		   // If there is any error.
+			e.printStackTrace();
+			con.rollback();
+		}
+		finally{
+			con.close();
+		}
+		
+	}
+
+	@Override
+	public void createLayoutItems(RestaurantLayout restaurantLayout) {
 		// TODO Auto-generated method stub
 		
 	}
 
 	@Override
-	public void createLayoutItems(List<LayoutItem> layoutItems) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void createTables(List<Table> layoutItems) {
-		// TODO Auto-generated method stub
+	public void createTables(RestaurantLayout restaurantLayout) {
+//		  String SQL = "INSERT INTO dbo.Tables(first_name,last_name) "
+//	                + "VALUES(?,?)";
+//	        try (
+//	        		Connection con = DBConnection.getInstance().getDBcon();
+//	    			PreparedStatement ps = con.prepareStatement(" select * from dbo.RestaurantLayouts where name = ?");) {
+//	            int count = 0;
+//
+//	            for (Table table : list) {
+//	            	ps.setString(1, actor.getFirstName());
+//	            	ps.setString(2, actor.getLastName());
+//
+//	                statement.addBatch();
+//	                count++;
+//	                // execute every 100 rows or less
+//	                if (count % 100 == 0 || count == list.size()) {
+//	                    statement.executeBatch();
+//	                }
+//	            }
+//	        } catch (SQLException ex) {
+//	            System.out.println(ex.getMessage());
+//	        }
 		
 	}
 	
@@ -108,10 +143,12 @@ import model.Table;
 	}
 
 	@Override
-	public List<Table> getRestaurantLayoutItemsList(int restaurantLayoutID) {
+	public List<Table> getRestaurantLayoutTableList(int restaurantLayoutID) {
+		List<Table> tableList = new ArrayList<>();
 		try(Connection con = DBConnection.getInstance().getDBcon();
-			PreparedStatement ps = con.prepareStatement("select * from dbo.Tables where layoutItemID = ?");
-				){
+			PreparedStatement ps = con.prepareStatement("select * from dbo.Tables where LayoutItemID = ?");
+		){
+			
 			
 		}
 		catch(Exception e) {

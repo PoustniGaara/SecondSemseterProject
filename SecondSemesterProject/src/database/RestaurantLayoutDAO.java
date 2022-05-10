@@ -1,6 +1,7 @@
 package database;
 
 import java.awt.Point;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -18,15 +19,15 @@ public interface RestaurantLayoutDAO {
 	
 	Map<Point,LayoutItem> getItemMap(String restaurantLayoutName);
 	
-	List<Table> getRestaurantLayoutItemsList(int restaurantLayoutID);
+	List<Table> getRestaurantLayoutTableList(int restaurantLayoutID);
 	
-	void saveRestaurantLayout(RestaurantLayout restaurantLayout);
+	void saveRestaurantLayout(RestaurantLayout restaurantLayout) throws SQLException;
 
 	void createRestaurantLayout(RestaurantLayout restaurantLayout);
 	
-	void createLayoutItems(List<LayoutItem> layoutItems);
+	void createLayoutItems(RestaurantLayout restaurantLayout);
 	
-	void createTables(List<Table> layoutItems);
+	void createTables(RestaurantLayout restaurantLayout);
 
 	void update(RestaurantLayout restaurantLayout);
 

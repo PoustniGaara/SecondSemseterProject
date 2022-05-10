@@ -2,11 +2,17 @@ package gui;
 
 import java.awt.BorderLayout;
 import java.awt.EventQueue;
+import java.awt.Point;
 import java.awt.Toolkit;
+import java.util.HashMap;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
+
+import model.LayoutItem;
+import model.RestaurantLayout;
+import model.Table;
 
 public class MainFrame extends JFrame {
 
@@ -26,8 +32,26 @@ public class MainFrame extends JFrame {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
-					MainFrame frame = MainFrame.getInstance();
-					frame.setVisible(true);
+					RestaurantLayout layout = new RestaurantLayout();
+					HashMap<Point,LayoutItem> itemMap = new HashMap<>();
+					
+					LayoutItem table = new Table("table1", "type", 5);
+					LayoutItem bar = new LayoutItem("bar", "bar");
+					LayoutItem entrance = new LayoutItem("entrance", "entrance");
+					
+					itemMap.put(new Point(0,1), table);
+					itemMap.put(new Point(0,2), bar);
+					itemMap.put(new Point(0,3), entrance);
+					
+					layout.setItemMap(itemMap);
+					
+					Table table2 = (Table)itemMap.get(new Point(0,1));
+					
+					System.out.println(table2.getCapacity());
+
+					
+//					MainFrame frame = MainFrame.getInstance();
+//					frame.setVisible(true);
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
