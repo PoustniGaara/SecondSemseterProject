@@ -1,6 +1,7 @@
 package database;
 
 import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -62,15 +63,74 @@ public class ReservationConcreteDAO implements ReservationDAO {
 	}
 
 	@Override
-	public void create(Reservation reservation) {
-		// TODO Auto-generated method stub
-
+	public void create(Reservation reservation) throws SQLException {
+		Connection con = DBConnection.getInstance().getDBcon();
+		try{
+			con.setAutoCommit(false);
+			// do 
+			
+			PreparedStatement ps = con
+					.prepareStatement("INSERT INTO dbo.Reservations (timestamp, duration, noOfGuests, note, phone)"
+							+ "VALUES (?,?,?,?,?)");
+			ps.setTimestamp(1, reservation.getTimestamp());
+			ps.setInt(2, reservation.getDuration());
+			ps.setInt(3, reservation.getGuests());
+			ps.setString(4, reservation.getNote());
+			ps.setString(5, reservation.getCustomer().getPhone());
+			ps.execute();
+			
+			con.commit();
+		}
+		catch(SQLException e){
+			e.printStackTrace();
+			con.rollback();
+		}
+		finally{
+			con.close();
+		}
 	}
 
 	@Override
 	public void delete(Reservation reservation) {
-		// TODO Auto-generated method stub
+		Connection con = DBConnection.getInstance().getDBcon();
+		try { 
+			PreparedStatement ps = con
+					.prepareStatement("DELETE FROM dbo.Reservations WHERE id=?");
+			ps.setInt(1, reservation.getId());
+			ps.execute();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
 
+	}
+
+	@Override
+	public void update(Reservation reservation) {
+		Connection con = DBConnection.getInstance().getDBcon();
+		try{
+			con.setAutoCommit(false);
+			// do 
+			
+			PreparedStatement ps = con
+					.prepareStatement("UPDATE dbo.Reservations SET timestamp=?, SET duration=?, SET noOfGuests=?, SET note=?, SET phone=?"
+							+ "WHERE id=?");
+			ps.setTimestamp(1, reservation.getTimestamp());
+			ps.setInt(2, reservation.getDuration());
+			ps.setInt(3, reservation.getGuests());
+			ps.setString(4, reservation.getNote());
+			ps.setString(5, reservation.getCustomer().getPhone());
+			ps.setInt(6, reservation.getId());
+			ps.execute();
+			
+			con.commit();
+		}
+		catch(SQLException e){
+			e.printStackTrace();
+			con.rollback();
+		}
+		finally{
+			con.close();
+		}	
 	}
 
 }
