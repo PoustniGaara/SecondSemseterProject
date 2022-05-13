@@ -29,11 +29,14 @@ public class ReservationConcreteDAO implements ReservationDAO {
 
 	@Override
 	public ArrayList<Reservation> read() {
-		ArrayList<Reservation> reservations = new ArrayList<Reservation>();
 		Connection con = DBConnection.getInstance().getDBcon();
+		ArrayList<Reservation> reservations = new ArrayList<Reservation>();
+
 		try {
+			// Reservation
 			Statement statement = con.createStatement();
-			ResultSet rs = statement.executeQuery("SELECT * FROM dbo.Reservations");
+			ResultSet rs = statement.executeQuery(
+					"SELECT * FROM Reservations");
 			while (rs.next()) {
 				int id = rs.getInt("reservationID");
 				Timestamp timestamp = rs.getTimestamp("timestamp");
@@ -43,17 +46,61 @@ public class ReservationConcreteDAO implements ReservationDAO {
 				String phone = rs.getString("phone");
 				Calendar cal = new GregorianCalendar();
 				cal.setTimeInMillis(timestamp.getTime());
+
+				// Tables
+				Statement tablesStatement = con.createStatement();
+				ResultSet tablesResultSet = tablesStatement
+						.executeQuery("SELECT * FROM [Tables], ReservedTables, Reservations "
+								+ "WHERE [Tables].layoutItemID = ReservedTables.layoutItemId AND ReservedTables.reservationID = " + id);
+				ArrayList<Table> tables = new ArrayList<>();
+				while (tablesResultSet.next()) {
+					String name = tablesResultSet.getString("name");
+					String type = tablesResultSet.getString("type");
+					int capacity = tablesResultSet.getInt("capacity");
+
+					Table table = new Table(name, type, capacity);
+					tables.add(table);
+				}
+
+				Reservation reservation = new Reservation(cal, tables);
+				reservation.setDuration(duration);
+				reservation.setGuests(guests);
+				reservation.setId(id);
+				reservation.setNote(note);
+
+				// Customer
+				Statement customerStatement = con.createStatement();
+				ResultSet customerResultSet = customerStatement
+						.executeQuery("SELECT * FROM Customers WHERE Customers.phone = " + phone);
+
+				while (customerResultSet.next()) {
+					String name = tablesResultSet.getString("name");
+					String surname = tablesResultSet.getString("surname");
+					String email = tablesResultSet.getString("email");
+					String town = tablesResultSet.getString("town");
+					String zipcode = tablesResultSet.getString("zipcode");
+					String street = tablesResultSet.getString("street");
+					String streetNumber = tablesResultSet.getString("streetNumber");
+					reservation.setCustomer(
+							new Customer(name, surname, phone, email, town, zipcode, street, streetNumber));
+				}
+				// Customer
+				Statement menusStatement = con.createStatement();
+				ResultSet menusResultSet = menusStatement
+						.executeQuery("SELECT Menus.* FROM Menus, ReservedMenus WHERE ReservedMenus.reservationID = " + id + " AND ReservedMenus.menuID = Menus.menuID");
+				ArrayList<Menu> menus = new ArrayList<>();
+				while (menusResultSet.next()) {
+					Menu menu = new Menu(phone, null)
+				}
 				
-				Reservation reservation = new Reservation(cal, null)
-				Customer customer = new Customer(name, surname, phone, email, town, zipcode, street, streetNumber);
-				customers.add(customer);
+				
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
 		} finally {
 			DBConnection.closeConnection();
 		}
-		return customers;
+		return reservations;
 	}
 
 	@Override
@@ -65,10 +112,10 @@ public class ReservationConcreteDAO implements ReservationDAO {
 	@Override
 	public void create(Reservation reservation) throws SQLException {
 		Connection con = DBConnection.getInstance().getDBcon();
-		try{
+		try {
 			con.setAutoCommit(false);
-			// do 
-			
+			// do
+
 			PreparedStatement ps = con
 					.prepareStatement("INSERT INTO dbo.Reservations (timestamp, duration, noOfGuests, note, phone)"
 							+ "VALUES (?,?,?,?,?)");
@@ -78,14 +125,12 @@ public class ReservationConcreteDAO implements ReservationDAO {
 			ps.setString(4, reservation.getNote());
 			ps.setString(5, reservation.getCustomer().getPhone());
 			ps.execute();
-			
+
 			con.commit();
-		}
-		catch(SQLException e){
+		} catch (SQLException e) {
 			e.printStackTrace();
 			con.rollback();
-		}
-		finally{
+		} finally {
 			con.close();
 		}
 	}
@@ -93,9 +138,8 @@ public class ReservationConcreteDAO implements ReservationDAO {
 	@Override
 	public void delete(Reservation reservation) {
 		Connection con = DBConnection.getInstance().getDBcon();
-		try { 
-			PreparedStatement ps = con
-					.prepareStatement("DELETE FROM dbo.Reservations WHERE id=?");
+		try {
+			PreparedStatement ps = con.prepareStatement("DELETE FROM dbo.Reservations WHERE id=?");
 			ps.setInt(1, reservation.getId());
 			ps.execute();
 		} catch (SQLException e) {
@@ -107,12 +151,12 @@ public class ReservationConcreteDAO implements ReservationDAO {
 	@Override
 	public void update(Reservation reservation) {
 		Connection con = DBConnection.getInstance().getDBcon();
-		try{
+		try {
 			con.setAutoCommit(false);
-			// do 
-			
-			PreparedStatement ps = con
-					.prepareStatement("UPDATE dbo.Reservations SET timestamp=?, SET duration=?, SET noOfGuests=?, SET note=?, SET phone=?"
+			// do
+
+			PreparedStatement ps = con.prepareStatement(
+					"UPDATE dbo.Reservations SET timestamp=?, SET duration=?, SET noOfGuests=?, SET note=?, SET phone=?"
 							+ "WHERE id=?");
 			ps.setTimestamp(1, reservation.getTimestamp());
 			ps.setInt(2, reservation.getDuration());
@@ -121,16 +165,14 @@ public class ReservationConcreteDAO implements ReservationDAO {
 			ps.setString(5, reservation.getCustomer().getPhone());
 			ps.setInt(6, reservation.getId());
 			ps.execute();
-			
+
 			con.commit();
-		}
-		catch(SQLException e){
+		} catch (SQLException e) {
 			e.printStackTrace();
 			con.rollback();
-		}
-		finally{
+		} finally {
 			con.close();
-		}	
+		}
 	}
 
 }
