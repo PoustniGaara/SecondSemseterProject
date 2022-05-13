@@ -11,10 +11,6 @@ public class LayoutItem {
 		setType(type);
 	}
 
-	public String getName() {
-		return name;
-	}
-
 	public String getType() {
 		return type;
 	}
@@ -25,6 +21,18 @@ public class LayoutItem {
 
 	public void setType(String type) {
 		this.type = type;
+	}
+
+	public String getName() {
+		return name;
+	}
+	
+	public void setId(int id) {
+		this.id = id;
+	}
+	
+	public int getId() {
+		return id;
 	}
 
 }

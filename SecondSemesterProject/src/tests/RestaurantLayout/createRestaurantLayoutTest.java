@@ -38,7 +38,7 @@ class createRestaurantLayoutTest {
 	/** Fixture for pay station testing. */
 	@After
 	public void cleanUp() {
-		ps.setReady();
+//		ps.setReady();
 	}
 
 }

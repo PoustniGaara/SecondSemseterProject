@@ -1,7 +1,9 @@
 package model;
 
 import java.awt.Point;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class RestaurantLayout {
@@ -11,7 +13,14 @@ public class RestaurantLayout {
 	private Map<Point, LayoutItem> itemMap;
 	
 	public RestaurantLayout() {
-		
+	}
+	
+	public List<Table> getTables(){
+		List<Table> listOfTables = new ArrayList<>();
+		for(LayoutItem l : itemMap.values()) {
+			
+		}
+		return listOfTables;
 	}
 	
 	public String getName() {

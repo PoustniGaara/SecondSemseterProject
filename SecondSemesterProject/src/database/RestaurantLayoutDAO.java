@@ -15,11 +15,13 @@ public interface RestaurantLayoutDAO {
 	
 	List<RestaurantLayout> read();
 
-	RestaurantLayout getRestaurantLayout(String name);
+	RestaurantLayout findRestaurantLayoutByName(String restaurantLayoutName);
 	
 	Map<Point,LayoutItem> getItemMap(String restaurantLayoutName);
 	
 	List<Table> getRestaurantLayoutTableList(int restaurantLayoutID);
+	
+	Integer getRestaurantLayoutID(String restaurantLayoutName);
 	
 	void saveRestaurantLayout(RestaurantLayout restaurantLayout) throws SQLException;
 
@@ -32,5 +34,9 @@ public interface RestaurantLayoutDAO {
 	void update(RestaurantLayout restaurantLayout);
 
 	void delete(RestaurantLayout restaurantLayout);
+	
+	Map<Point, LayoutItem> getUpdatedItemMapByTableID(RestaurantLayout restaurantLayout);
+	
+	
 
 }

@@ -8,6 +8,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import model.LayoutItem;
 import model.RestaurantLayout;
@@ -27,13 +28,11 @@ import model.Table;
 		return null;
 	}
 
-
 	@Override
 	public void createRestaurantLayout(RestaurantLayout restaurantLayout) {
 		try(Connection con = DBConnection.getInstance().getDBcon();
 			PreparedStatement ps = con.prepareStatement("insert into dbo.RestaurantLayouts("
-						+ "name,sizeX,sizeY) values(?,?,?)");
-		){
+						+ "name,sizeX,sizeY) values(?,?,?)");){
 			ps.setString(1, restaurantLayout.getName());
 			ps.setInt(2, restaurantLayout.getSizeX());
 			ps.setInt(3, restaurantLayout.getSizeY());
@@ -79,34 +78,84 @@ import model.Table;
 
 	@Override
 	public void createLayoutItems(RestaurantLayout restaurantLayout) {
-		// TODO Auto-generated method stub
+		HashMap<Point,LayoutItem> itemMap = (HashMap<Point, LayoutItem>) restaurantLayout.getItemMap();
+		int rsID = getRestaurantLayoutID(restaurantLayout.getName());
+        try (
+        		Connection con = DBConnection.getInstance().getDBcon();
+        		PreparedStatement ps = con.prepareStatement("insert into dbo.LayoutItems(name,type,"
+        				+ "locationX,locationY,restaurantLayoutID) values(?,?,?,?,?)");) {
+        	int count = 0;
+
+        	for (Map.Entry<Point,LayoutItem> entry : itemMap.entrySet()) {
+        		ps.setString(1, entry.getValue().getName());
+        		ps.setString(2, entry.getValue().getType());
+        		ps.setInt(3, (int) entry.getKey().getX());
+        		ps.setInt(4, (int) entry.getKey().getY());
+        		ps.setInt(5, rsID);
+
+        		ps.addBatch();
+        		count++;
+      	 		// execute every 100 rows or less
+        		if (count % 100 == 0 || count == itemMap.size()) {
+        			ps.executeBatch();
+        		}
+        	}
+        	} catch (SQLException ex) {
+        	System.out.println(ex.getMessage());
+        	}
 		
 	}
 
 	@Override
 	public void createTables(RestaurantLayout restaurantLayout) {
-//		  String SQL = "INSERT INTO dbo.Tables(first_name,last_name) "
-//	                + "VALUES(?,?)";
-//	        try (
-//	        		Connection con = DBConnection.getInstance().getDBcon();
-//	    			PreparedStatement ps = con.prepareStatement(" select * from dbo.RestaurantLayouts where name = ?");) {
-//	            int count = 0;
-//
-//	            for (Table table : list) {
-//	            	ps.setString(1, actor.getFirstName());
-//	            	ps.setString(2, actor.getLastName());
-//
-//	                statement.addBatch();
-//	                count++;
-//	                // execute every 100 rows or less
-//	                if (count % 100 == 0 || count == list.size()) {
-//	                    statement.executeBatch();
-//	                }
-//	            }
-//	        } catch (SQLException ex) {
-//	            System.out.println(ex.getMessage());
-//	        }
-		
+		HashMap<Point,LayoutItem> itemMap = 
+				(HashMap<Point, LayoutItem>) getUpdatedItemMapByTableID(restaurantLayout);
+	    try (
+	        Connection con = DBConnection.getInstance().getDBcon();
+	    	PreparedStatement ps = con.prepareStatement(
+	    			"insert into dbo.Tables(layoutItemID,capacity) values(?,?)");) {
+	    	int count = 0;
+	        for (Map.Entry<Point,LayoutItem> entry : itemMap.entrySet()) {
+	        	
+	        	boolean isTable = entry.getValue() instanceof LayoutItem; 
+	        	
+				if(isTable) {
+					Table table = (Table) entry.getValue();
+					ps.setInt(4, entry.getValue().getId());
+					ps.setInt(5, table.getCapacity());
+				}
+	            ps.addBatch();
+	            count++;
+	            // execute every 100 rows or less
+	            if (count % 100 == 0 || count == itemMap.size()) {
+	                ps.executeBatch();
+	            }
+	         }
+	    } catch (SQLException ex) {
+	            System.out.println(ex.getMessage());
+	        }	
+	}
+	
+	@Override
+	public Map<Point, LayoutItem> getUpdatedItemMapByTableID(RestaurantLayout restaurantLayout) {
+		Map<Point, LayoutItem> itemMap = new HashMap<>(restaurantLayout.getItemMap());
+		try(Connection con = DBConnection.getInstance().getDBcon();
+				PreparedStatement ps = con.prepareStatement("select layoutItemID"
+						+ " from dbo.LayoutItems where restaurantLayoutID = ? and type = ?");
+			){
+			ps.setInt(1, getRestaurantLayoutID(restaurantLayout.getName()));
+			ps.setString(2, "table");
+			ResultSet rs = ps.executeQuery();
+			while(rs.next()) {
+				itemMap.get(new Point(rs.getInt("locationX"),
+						rs.getInt("locationY"))).setId(rs.getInt("layoutItemID"));
+			}
+			return itemMap;
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return null;
 	}
 	
 	public static RestaurantLayoutConcreteDAO getInstance() {
@@ -115,7 +164,7 @@ import model.Table;
 	}
 
 	@Override
-	public RestaurantLayout getRestaurantLayout(String name) {
+	public RestaurantLayout findRestaurantLayoutByName(String name) {
 		try(Connection con = DBConnection.getInstance().getDBcon();
 			PreparedStatement ps = con.prepareStatement(" select * from dbo.RestaurantLayouts where name = ?");
 			){
@@ -156,5 +205,24 @@ import model.Table;
 		}
 		return null;
 	}
+
+	@Override
+	public Integer getRestaurantLayoutID(String restaurantLayoutName) {
+		Integer id = null;
+		try(Connection con = DBConnection.getInstance().getDBcon();
+			PreparedStatement ps = con.prepareStatement("select restaurantLayoutID"
+					+ " from dbo.RestaurantLayouts where name = ?");
+		){
+			ResultSet rs = ps.executeQuery();
+			while(rs.next()) {
+				id = rs.getInt("restaurantLayoutID"); 
+			}	
+		}
+		catch(Exception e) {
+			e.printStackTrace();
+		}
+		return id;
+	}
+
 
 }
