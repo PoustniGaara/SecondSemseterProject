@@ -1,8 +1,10 @@
 package controller;
 
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Calendar;
 
+import database.ReservationConcreteDAO;
 import model.Customer;
 import model.Menu;
 import model.Reservation;
@@ -12,17 +14,24 @@ public class ReservationController {
 
 	private ReservationConcreteDAO reservationDAO;
 	private Reservation reservation;
+	private CustomerController control = new CustomerController();
 
 	public void createReservation(Calendar timestamp, ArrayList<Table> tables) {
 		reservation = new Reservation(timestamp, tables);
 	}
 
-	public void confirmReservation(String name, String surname, String phone, int guests, ArrayList<Menu> menus,
-			String note) {
-		reservation.setCustomer(null);
+	public void confirmReservation(String name, String surname, String phone, int guests, ArrayList<Menu> menus, String note) throws SQLException {
+		
 		reservation.setGuests(guests);
 		reservation.setMenus(menus);
 		reservation.setNote(note);
+		
+		if(setPhone(phone) != null) {
+			reservation.setCustomer(setPhone(phone));
+		} else {
+			control.createCustomer(new Customer (name, surname, null, phone, null, null, null, null));
+		}
+		
 		createReservation(reservation);
 	}
 
@@ -38,7 +47,7 @@ public class ReservationController {
 		return reservationDAO.read();
 	}
 
-	public void createReservation(Reservation reservation) {
+	public void createReservation(Reservation reservation) throws SQLException {
 		reservationDAO.create(reservation);
 	}
 
@@ -48,6 +57,13 @@ public class ReservationController {
 
 	public void deleteReservation(Reservation reservation) {
 		reservationDAO.delete(reservation);
+	}
+	
+	public Customer setPhone(String phone) {
+		if (control.findByPhone(phone) != null) {
+			return control.findByPhone(phone);
+		}
+		return null;
 	}
 
 }
