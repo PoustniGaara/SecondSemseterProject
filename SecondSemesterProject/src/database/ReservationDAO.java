@@ -11,10 +11,10 @@ public interface ReservationDAO {
 
 	Reservation read(int id);
 
-	void create(Reservation reservation) throws SQLException;
+	void create(Reservation reservation);
 
-	void update(Reservation reservation) throws SQLException;
+	void update(Reservation reservation);
 
-	void delete(Reservation reservation) throws SQLException;
+	void delete(Reservation reservation);
 
 }

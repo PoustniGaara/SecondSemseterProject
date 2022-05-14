@@ -172,7 +172,7 @@ public class ReservationConcreteDAO implements ReservationDAO {
 	}
 
 	@Override
-	public void create(Reservation reservation) throws SQLException {
+	public void create(Reservation reservation) {
 		Connection con = DBConnection.getInstance().getDBcon();
 		try {
 			PreparedStatement ps = con
@@ -188,12 +188,12 @@ public class ReservationConcreteDAO implements ReservationDAO {
 		} catch (SQLException e) {
 			e.printStackTrace();
 		} finally {
-			con.close();
+			DBConnection.closeConnection();
 		}
 	}
 
 	@Override
-	public void delete(Reservation reservation) throws SQLException {
+	public void delete(Reservation reservation) {
 		Connection con = DBConnection.getInstance().getDBcon();
 		try {
 			PreparedStatement ps = con.prepareStatement("DELETE FROM dbo.Reservations WHERE id=?");
@@ -202,12 +202,12 @@ public class ReservationConcreteDAO implements ReservationDAO {
 		} catch (SQLException e) {
 			e.printStackTrace();
 		} finally {
-			con.close();
+			DBConnection.closeConnection();
 		}
 	}
 
 	@Override
-	public void update(Reservation reservation) throws SQLException {
+	public void update(Reservation reservation) {
 		Connection con = DBConnection.getInstance().getDBcon();
 		try {
 			PreparedStatement ps = con.prepareStatement(
@@ -226,7 +226,7 @@ public class ReservationConcreteDAO implements ReservationDAO {
 		} catch (SQLException e) {
 			e.printStackTrace();
 		} finally {
-			con.close();
+			DBConnection.closeConnection();
 		}
 	}
 
