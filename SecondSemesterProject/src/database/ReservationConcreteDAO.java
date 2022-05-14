@@ -11,7 +11,10 @@ import java.util.Calendar;
 import java.util.GregorianCalendar;
 
 import model.Customer;
+import model.Meal;
+import model.Menu;
 import model.Reservation;
+import model.Table;
 
 public class ReservationConcreteDAO implements ReservationDAO {
 
@@ -35,8 +38,7 @@ public class ReservationConcreteDAO implements ReservationDAO {
 		try {
 			// Reservation
 			Statement statement = con.createStatement();
-			ResultSet rs = statement.executeQuery(
-					"SELECT * FROM Reservations");
+			ResultSet rs = statement.executeQuery("SELECT * FROM Reservations");
 			while (rs.next()) {
 				int id = rs.getInt("reservationID");
 				Timestamp timestamp = rs.getTimestamp("timestamp");
@@ -47,53 +49,15 @@ public class ReservationConcreteDAO implements ReservationDAO {
 				Calendar cal = new GregorianCalendar();
 				cal.setTimeInMillis(timestamp.getTime());
 
-				// Tables
-				Statement tablesStatement = con.createStatement();
-				ResultSet tablesResultSet = tablesStatement
-						.executeQuery("SELECT * FROM [Tables], ReservedTables, Reservations "
-								+ "WHERE [Tables].layoutItemID = ReservedTables.layoutItemId AND ReservedTables.reservationID = " + id);
-				ArrayList<Table> tables = new ArrayList<>();
-				while (tablesResultSet.next()) {
-					String name = tablesResultSet.getString("name");
-					String type = tablesResultSet.getString("type");
-					int capacity = tablesResultSet.getInt("capacity");
-
-					Table table = new Table(name, type, capacity);
-					tables.add(table);
-				}
-
-				Reservation reservation = new Reservation(cal, tables);
+				Reservation reservation = new Reservation(cal, getTables(id));
 				reservation.setDuration(duration);
 				reservation.setGuests(guests);
 				reservation.setId(id);
 				reservation.setNote(note);
-
-				// Customer
-				Statement customerStatement = con.createStatement();
-				ResultSet customerResultSet = customerStatement
-						.executeQuery("SELECT * FROM Customers WHERE Customers.phone = " + phone);
-
-				while (customerResultSet.next()) {
-					String name = tablesResultSet.getString("name");
-					String surname = tablesResultSet.getString("surname");
-					String email = tablesResultSet.getString("email");
-					String town = tablesResultSet.getString("town");
-					String zipcode = tablesResultSet.getString("zipcode");
-					String street = tablesResultSet.getString("street");
-					String streetNumber = tablesResultSet.getString("streetNumber");
-					reservation.setCustomer(
-							new Customer(name, surname, phone, email, town, zipcode, street, streetNumber));
-				}
-				// Customer
-				Statement menusStatement = con.createStatement();
-				ResultSet menusResultSet = menusStatement
-						.executeQuery("SELECT Menus.* FROM Menus, ReservedMenus WHERE ReservedMenus.reservationID = " + id + " AND ReservedMenus.menuID = Menus.menuID");
-				ArrayList<Menu> menus = new ArrayList<>();
-				while (menusResultSet.next()) {
-					Menu menu = new Menu(phone, null)
-				}
+				reservation.setCustomer(CustomerConcreteDAO.getInstance().read(phone));
+				reservation.setMenus(getMenus(id));
 				
-				
+				reservations.add(reservation);
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -101,6 +65,61 @@ public class ReservationConcreteDAO implements ReservationDAO {
 			DBConnection.closeConnection();
 		}
 		return reservations;
+	}
+
+	private ArrayList<Table> getTables(int id) {
+		Connection con = DBConnection.getInstance().getDBcon();
+		ArrayList<Table> tables = new ArrayList<Table>();
+
+		try {
+			Statement tablesStatement = con.createStatement();
+			ResultSet tablesResultSet = tablesStatement
+					.executeQuery("SELECT * FROM [Tables], ReservedTables, Reservations "
+							+ "WHERE [Tables].layoutItemID = ReservedTables.layoutItemId AND ReservedTables.reservationID = "
+							+ id);
+			while (tablesResultSet.next()) {
+				String name = tablesResultSet.getString("name");
+				String type = tablesResultSet.getString("type");
+				int capacity = tablesResultSet.getInt("capacity");
+
+				Table table = new Table(name, type, capacity);
+				tables.add(table);
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			DBConnection.closeConnection();
+		}
+		return tables;
+	}
+	
+	private ArrayList<Menu> getMenus(int id) {
+		Connection con = DBConnection.getInstance().getDBcon();
+		ArrayList<Menu> menus = new ArrayList<Menu>();
+
+		
+		try {
+			Statement menusStatement = con.createStatement();
+			ResultSet menusResultSet = menusStatement
+					.executeQuery("SELECT Menus.* FROM Menus, ReservedMenus WHERE ReservedMenus.reservationID = "
+							+ id + " AND ReservedMenus.menuID = Menus.menuID");
+			while (menusResultSet.next()) {
+				String name = menusResultSet.getString("name");
+				Menu menu = new Menu(name, getMeals(name));
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			DBConnection.closeConnection();
+		}
+		
+		
+		return menus;
+	}
+
+	private ArrayList<Meal> getMeals(String name) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 	@Override
