@@ -36,7 +36,6 @@ public class ReservationConcreteDAO implements ReservationDAO {
 		ArrayList<Reservation> reservations = new ArrayList<Reservation>();
 
 		try {
-			// Reservation
 			Statement statement = con.createStatement();
 			ResultSet rs = statement.executeQuery("SELECT * FROM Reservations");
 			while (rs.next()) {
@@ -56,7 +55,7 @@ public class ReservationConcreteDAO implements ReservationDAO {
 				reservation.setNote(note);
 				reservation.setCustomer(CustomerConcreteDAO.getInstance().read(phone));
 				reservation.setMenus(getMenus(id));
-				
+
 				reservations.add(reservation);
 			}
 		} catch (SQLException e) {
@@ -92,34 +91,50 @@ public class ReservationConcreteDAO implements ReservationDAO {
 		}
 		return tables;
 	}
-	
+
 	private ArrayList<Menu> getMenus(int id) {
 		Connection con = DBConnection.getInstance().getDBcon();
 		ArrayList<Menu> menus = new ArrayList<Menu>();
-
 		
 		try {
 			Statement menusStatement = con.createStatement();
 			ResultSet menusResultSet = menusStatement
-					.executeQuery("SELECT Menus.* FROM Menus, ReservedMenus WHERE ReservedMenus.reservationID = "
-							+ id + " AND ReservedMenus.menuID = Menus.menuID");
+					.executeQuery("SELECT Menus.* FROM Menus, ReservedMenus WHERE ReservedMenus.reservationID = " + id
+							+ " AND ReservedMenus.menuID = Menus.menuID");
 			while (menusResultSet.next()) {
 				String name = menusResultSet.getString("name");
-				Menu menu = new Menu(name, getMeals(name));
+				int menuid = menusResultSet.getInt("menuID");
+				Menu menu = new Menu(name, getMeals(menuid));
+				menus.add(menu);
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
 		} finally {
 			DBConnection.closeConnection();
 		}
-		
-		
 		return menus;
 	}
 
-	private ArrayList<Meal> getMeals(String name) {
-		// TODO Auto-generated method stub
-		return null;
+	private ArrayList<Meal> getMeals(int id) {
+		Connection con = DBConnection.getInstance().getDBcon();
+		ArrayList<Meal> meals = new ArrayList<Meal>();
+		
+		try {
+			Statement menusStatement = con.createStatement();
+			ResultSet menusResultSet = menusStatement.executeQuery("SELECT * FROM Meals WHERE menuID = " + id);
+			while (menusResultSet.next()) {
+				String name = menusResultSet.getString("name");
+				String description = menusResultSet.getString("description");
+				float price = menusResultSet.getFloat("price");
+				Meal meal = new Meal(name, description, price);
+				meals.add(meal);
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			DBConnection.closeConnection();
+		}
+		return meals;
 	}
 
 	@Override
