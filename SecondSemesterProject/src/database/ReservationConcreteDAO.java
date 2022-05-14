@@ -139,7 +139,35 @@ public class ReservationConcreteDAO implements ReservationDAO {
 
 	@Override
 	public Reservation read(int id) {
-		// TODO Auto-generated method stub
+		Connection con = DBConnection.getInstance().getDBcon();
+
+		try {
+			Statement statement = con.createStatement();
+			ResultSet rs = statement.executeQuery("SELECT * FROM Reservations WHERE reservationID = " + id);
+			while (rs.next()) {
+				Timestamp timestamp = rs.getTimestamp("timestamp");
+				int duration = rs.getInt("duration");
+				int guests = rs.getInt("noOfGuests");
+				String note = rs.getString("note");
+				String phone = rs.getString("phone");
+				Calendar cal = new GregorianCalendar();
+				cal.setTimeInMillis(timestamp.getTime());
+
+				Reservation reservation = new Reservation(cal, getTables(id));
+				reservation.setDuration(duration);
+				reservation.setGuests(guests);
+				reservation.setId(id);
+				reservation.setNote(note);
+				reservation.setCustomer(CustomerConcreteDAO.getInstance().read(phone));
+				reservation.setMenus(getMenus(id));
+
+				return reservation;
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			DBConnection.closeConnection();
+		}
 		return null;
 	}
 
