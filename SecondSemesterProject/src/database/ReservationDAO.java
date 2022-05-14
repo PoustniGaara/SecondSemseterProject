@@ -13,8 +13,8 @@ public interface ReservationDAO {
 
 	void create(Reservation reservation) throws SQLException;
 
-	void update(Reservation reservation);
+	void update(Reservation reservation) throws SQLException;
 
-	void delete(Reservation reservation);
+	void delete(Reservation reservation) throws SQLException;
 
 }

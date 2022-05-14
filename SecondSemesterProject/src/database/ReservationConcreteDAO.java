@@ -95,7 +95,7 @@ public class ReservationConcreteDAO implements ReservationDAO {
 	private ArrayList<Menu> getMenus(int id) {
 		Connection con = DBConnection.getInstance().getDBcon();
 		ArrayList<Menu> menus = new ArrayList<Menu>();
-		
+
 		try {
 			Statement menusStatement = con.createStatement();
 			ResultSet menusResultSet = menusStatement
@@ -118,7 +118,7 @@ public class ReservationConcreteDAO implements ReservationDAO {
 	private ArrayList<Meal> getMeals(int id) {
 		Connection con = DBConnection.getInstance().getDBcon();
 		ArrayList<Meal> meals = new ArrayList<Meal>();
-		
+
 		try {
 			Statement menusStatement = con.createStatement();
 			ResultSet menusResultSet = menusStatement.executeQuery("SELECT * FROM Meals WHERE menuID = " + id);
@@ -175,30 +175,25 @@ public class ReservationConcreteDAO implements ReservationDAO {
 	public void create(Reservation reservation) throws SQLException {
 		Connection con = DBConnection.getInstance().getDBcon();
 		try {
-			con.setAutoCommit(false);
-			// do
-
 			PreparedStatement ps = con
 					.prepareStatement("INSERT INTO dbo.Reservations (timestamp, duration, noOfGuests, note, phone)"
 							+ "VALUES (?,?,?,?,?)");
-			ps.setTimestamp(1, reservation.getTimestamp());
+			Timestamp timestamp = new Timestamp(reservation.getTimestamp().getTimeInMillis());
+			ps.setTimestamp(1, timestamp);
 			ps.setInt(2, reservation.getDuration());
 			ps.setInt(3, reservation.getGuests());
 			ps.setString(4, reservation.getNote());
 			ps.setString(5, reservation.getCustomer().getPhone());
 			ps.execute();
-
-			con.commit();
 		} catch (SQLException e) {
 			e.printStackTrace();
-			con.rollback();
 		} finally {
 			con.close();
 		}
 	}
 
 	@Override
-	public void delete(Reservation reservation) {
+	public void delete(Reservation reservation) throws SQLException {
 		Connection con = DBConnection.getInstance().getDBcon();
 		try {
 			PreparedStatement ps = con.prepareStatement("DELETE FROM dbo.Reservations WHERE id=?");
@@ -206,21 +201,20 @@ public class ReservationConcreteDAO implements ReservationDAO {
 			ps.execute();
 		} catch (SQLException e) {
 			e.printStackTrace();
+		} finally {
+			con.close();
 		}
-
 	}
 
 	@Override
-	public void update(Reservation reservation) {
+	public void update(Reservation reservation) throws SQLException {
 		Connection con = DBConnection.getInstance().getDBcon();
 		try {
-			con.setAutoCommit(false);
-			// do
-
 			PreparedStatement ps = con.prepareStatement(
 					"UPDATE dbo.Reservations SET timestamp=?, SET duration=?, SET noOfGuests=?, SET note=?, SET phone=?"
 							+ "WHERE id=?");
-			ps.setTimestamp(1, reservation.getTimestamp());
+			Timestamp timestamp = new Timestamp(reservation.getTimestamp().getTimeInMillis());
+			ps.setTimestamp(1, timestamp);
 			ps.setInt(2, reservation.getDuration());
 			ps.setInt(3, reservation.getGuests());
 			ps.setString(4, reservation.getNote());
@@ -231,7 +225,6 @@ public class ReservationConcreteDAO implements ReservationDAO {
 			con.commit();
 		} catch (SQLException e) {
 			e.printStackTrace();
-			con.rollback();
 		} finally {
 			con.close();
 		}
