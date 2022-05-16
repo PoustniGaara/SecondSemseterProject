@@ -21,7 +21,6 @@ public class ReservationController {
 	}
 
 	public void confirmReservation(String name, String surname, String phone, int guests, ArrayList<Menu> menus, String note) throws SQLException {
-		
 		reservation.setGuests(guests);
 		reservation.setMenus(menus);
 		reservation.setNote(note);
@@ -47,7 +46,7 @@ public class ReservationController {
 		return reservationDAO.read();
 	}
 
-	public void createReservation(Reservation reservation) throws SQLException {
+	private void createReservation(Reservation reservation) throws SQLException {
 		reservationDAO.create(reservation);
 	}
 
@@ -59,7 +58,7 @@ public class ReservationController {
 		reservationDAO.delete(reservation);
 	}
 	
-	public Customer setPhone(String phone) {
+	private Customer setPhone(String phone) {
 		if (control.findByPhone(phone) != null) {
 			return control.findByPhone(phone);
 		}

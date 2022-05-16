@@ -1,0 +1,184 @@
+CREATE TABLE [dbo].[Customers](
+	[phone] [varchar](15) NOT NULL,
+	[name] [varchar](20) NOT NULL,
+	[surname] [varchar](20) NOT NULL,
+	[email] [varchar](30) NULL,
+	[town] [varchar](20) NULL,
+	[zipcode] [int] NULL,
+	[street] [varchar](20) NULL,
+	[streetNumber] [varchar](15) NULL,
+ CONSTRAINT [PK_Customers] PRIMARY KEY CLUSTERED ([phone] ASC) WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY]
+
+GO
+
+CREATE TABLE [dbo].[LayoutItems](
+	[LayoutItem] [int] IDENTITY(1,1) NOT NULL,
+	[name] [varchar](20) NOT NULL,
+	[type] [varchar](20) NOT NULL,
+	[locationX] [int] NOT NULL,
+	[locationY] [int] NOT NULL,
+	[restaurantLayoutID] [int] NOT NULL,
+ CONSTRAINT [PK_LayoutItems] PRIMARY KEY CLUSTERED ([LayoutItem] ASC) WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY]
+
+GO
+
+SET ANSI_NULLS ON
+GO
+
+SET QUOTED_IDENTIFIER ON
+GO
+
+CREATE TABLE [dbo].[Meals](
+	[mealID] [int] IDENTITY(1,1) NOT NULL,
+	[name] [varchar](20) NOT NULL,
+	[price] [float] NOT NULL,
+	[description] [varchar](max) NULL,
+ CONSTRAINT [PK_Meals] PRIMARY KEY CLUSTERED ([mealID] ASC) WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
+GO
+
+SET ANSI_NULLS ON
+GO
+
+SET QUOTED_IDENTIFIER ON
+GO
+
+CREATE TABLE [dbo].[Menus](
+	[menuID] [int] IDENTITY(1,1) NOT NULL,
+	[name] [varchar](20) NOT NULL,
+	[mealID] [int] NOT NULL,
+ CONSTRAINT [PK_Table_1] PRIMARY KEY CLUSTERED ([menuID] ASC) WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+
+SET ANSI_NULLS ON
+GO
+
+SET QUOTED_IDENTIFIER ON
+GO
+
+CREATE TABLE [dbo].[Reservations](
+	[reservationID] [int] IDENTITY(1,1) NOT NULL,
+	[timestamp] [timestamp] NOT NULL,
+	[duration] [int] NOT NULL,
+	[noOfGuests] [int] NOT NULL,
+	[note] [varchar](max) NOT NULL,
+	[customerPhone] [varchar](15) NOT NULL,
+ CONSTRAINT [PK_Reservations] PRIMARY KEY CLUSTERED 
+(
+	[reservationID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
+GO
+
+SET ANSI_NULLS ON
+GO
+
+SET QUOTED_IDENTIFIER ON
+GO
+
+CREATE TABLE [dbo].[ReservedMenus](
+	[reservationID] [int] NOT NULL,
+	[menuID] [int] NOT NULL,
+ CONSTRAINT [PK_ReservedMenus] PRIMARY KEY CLUSTERED ([reservationID] ASC, [menuID] ASC)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+
+SET ANSI_NULLS ON
+GO
+
+SET QUOTED_IDENTIFIER ON
+GO
+
+CREATE TABLE [dbo].[ReservedTables](
+	[layoutItemId] [int] NOT NULL,
+	[reservationID] [int] NOT NULL,
+ CONSTRAINT [PK_ReservedTables] PRIMARY KEY CLUSTERED ([layoutItemId] ASC, [reservationID] ASC)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+
+SET ANSI_NULLS ON
+GO
+
+SET QUOTED_IDENTIFIER ON
+GO
+
+CREATE TABLE [dbo].[RestaurantLayouts](
+	[restaurantLayoutID] [int] IDENTITY(1,1) NOT NULL,
+	[name] [varchar](20) NOT NULL,
+	[sizeX] [int] NOT NULL,
+	[sizeY] [int] NOT NULL,
+ CONSTRAINT [PK_RestaurantLayouts] PRIMARY KEY CLUSTERED ([restaurantLayoutID] ASC) WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+
+SET ANSI_NULLS ON
+GO
+
+SET QUOTED_IDENTIFIER ON
+GO
+
+CREATE TABLE [dbo].[Tables](
+	[layoutItemID] [int] NOT NULL,
+	[capacity] [int] NOT NULL,
+ CONSTRAINT [PK_Tables] PRIMARY KEY CLUSTERED ([layoutItemID] ASC) WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+
+ALTER TABLE [dbo].[ReservedTables]  WITH CHECK ADD  CONSTRAINT [FK_ReservedTables_Reservations] FOREIGN KEY([reservationID])
+REFERENCES [dbo].[Reservations] ([reservationID])
+GO
+
+ALTER TABLE [dbo].[ReservedTables] CHECK CONSTRAINT [FK_ReservedTables_Reservations]
+GO
+
+ALTER TABLE [dbo].[ReservedTables]  WITH CHECK ADD  CONSTRAINT [FK_ReservedTables_Tables] FOREIGN KEY([layoutItemId])
+REFERENCES [dbo].[Tables] ([layoutItemID])
+GO
+
+ALTER TABLE [dbo].[ReservedTables] CHECK CONSTRAINT [FK_ReservedTables_Tables]
+GO
+
+ALTER TABLE [dbo].[Menus]  WITH CHECK ADD  CONSTRAINT [FK_Menus_Meals] FOREIGN KEY([mealID])
+REFERENCES [dbo].[Meals] ([mealID])
+GO
+
+ALTER TABLE [dbo].[Menus] CHECK CONSTRAINT [FK_Menus_Meals]
+GO
+
+ALTER TABLE [dbo].[LayoutItems]  WITH CHECK ADD CONSTRAINT [FK_LayoutItems_RestaurantLayouts] FOREIGN KEY([restaurantLayoutID])
+REFERENCES [dbo].[RestaurantLayouts] ([restaurantLayoutID])
+GO
+
+ALTER TABLE [dbo].[LayoutItems] CHECK CONSTRAINT [FK_LayoutItems_RestaurantLayouts]
+GO
+
+ALTER TABLE [dbo].[LayoutItems]  WITH CHECK ADD  CONSTRAINT [FK_LayoutItems_Tables] FOREIGN KEY([LayoutItem])
+REFERENCES [dbo].[Tables] ([layoutItemID])
+GO
+
+ALTER TABLE [dbo].[LayoutItems] CHECK CONSTRAINT [FK_LayoutItems_Tables]
+GO
+
+
+ALTER TABLE [dbo].[ReservedMenus]  WITH CHECK ADD  CONSTRAINT [FK_ReservedMenus_Menus] FOREIGN KEY([menuID])
+REFERENCES [dbo].[Menus] ([menuID])
+GO
+
+ALTER TABLE [dbo].[ReservedMenus] CHECK CONSTRAINT [FK_ReservedMenus_Menus]
+GO
+
+ALTER TABLE [dbo].[ReservedMenus]  WITH CHECK ADD  CONSTRAINT [FK_ReservedMenus_Reservations] FOREIGN KEY([reservationID])
+REFERENCES [dbo].[Reservations] ([reservationID])
+GO
+
+ALTER TABLE [dbo].[ReservedMenus] CHECK CONSTRAINT [FK_ReservedMenus_Reservations]
+GO
+
+ALTER TABLE [dbo].[Reservations]  WITH CHECK ADD  CONSTRAINT [FK_Reservations_Customers] FOREIGN KEY([customerPhone])
+REFERENCES [dbo].[Customers] ([phone])
+GO
+
+ALTER TABLE [dbo].[Reservations] CHECK CONSTRAINT [FK_Reservations_Customers]

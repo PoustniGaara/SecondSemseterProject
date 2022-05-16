@@ -73,7 +73,6 @@ public class CustomerConcreteDAO implements CustomerDAO {
 		} finally {
 			DBConnection.closeConnection();
 		}
-
 		return null;
 	}
 

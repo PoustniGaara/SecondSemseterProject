@@ -12,8 +12,6 @@ public interface CustomerDAO {
 
 	void create(Customer customer);
 
-	//void update(Customer customer);
-
 	void delete(Customer customer);
 
 }

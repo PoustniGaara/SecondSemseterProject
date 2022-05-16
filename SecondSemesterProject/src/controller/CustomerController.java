@@ -14,16 +14,7 @@ public class CustomerController {
 	}
 
 	public Customer findByPhone(String phone) {
-		for (Customer customer : customerDAO.read()) {
-			if (customer.getPhone().equalsIgnoreCase(phone)) {
-				return customer;
-			}
-		}
-		return null;
-	}
-
-	public Customer getCustomerById(int id) {
-		return customerDAO.read(id);
+		return customerDAO.read(phone);
 	}
 
 	public ArrayList<Customer> getAllCustomers() {
@@ -32,10 +23,6 @@ public class CustomerController {
 
 	public void createCustomer(Customer customer) {
 		customerDAO.create(customer);
-	}
-
-	public void updateCustomer(Customer customer) {
-		customerDAO.update(customer);
 	}
 
 	public void deleteCustomer(Customer customer) {
