@@ -41,21 +41,10 @@ public class ReservationConcreteDAO implements ReservationDAO {
 			while (rs.next()) {
 				int id = rs.getInt("reservationID");
 				Timestamp timestamp = rs.getTimestamp("timestamp");
-				int duration = rs.getInt("duration");
-				int guests = rs.getInt("noOfGuests");
-				String note = rs.getString("note");
-				String phone = rs.getString("phone");
 				Calendar cal = new GregorianCalendar();
 				cal.setTimeInMillis(timestamp.getTime());
 
-				Reservation reservation = new Reservation(cal, getTables(id));
-				reservation.setDuration(duration);
-				reservation.setGuests(guests);
-				reservation.setId(id);
-				reservation.setNote(note);
-				reservation.setCustomer(CustomerConcreteDAO.getInstance().read(phone));
-				reservation.setMenus(getMenus(id));
-
+				Reservation reservation = new Reservation(cal, TableConcreteDAO.getInstance().getReservationTables(id));
 				reservations.add(reservation);
 			}
 		} catch (SQLException e) {
@@ -64,77 +53,6 @@ public class ReservationConcreteDAO implements ReservationDAO {
 			DBConnection.closeConnection();
 		}
 		return reservations;
-	}
-
-	private ArrayList<Table> getTables(int id) {
-		Connection con = DBConnection.getInstance().getDBcon();
-		ArrayList<Table> tables = new ArrayList<Table>();
-
-		try {
-			Statement tablesStatement = con.createStatement();
-			ResultSet tablesResultSet = tablesStatement
-					.executeQuery("SELECT * FROM [Tables], ReservedTables, Reservations "
-							+ "WHERE [Tables].layoutItemID = ReservedTables.layoutItemId AND ReservedTables.reservationID = "
-							+ id);
-			while (tablesResultSet.next()) {
-				String name = tablesResultSet.getString("name");
-				String type = tablesResultSet.getString("type");
-				int capacity = tablesResultSet.getInt("capacity");
-
-				Table table = new Table(name, type, capacity);
-				tables.add(table);
-			}
-		} catch (SQLException e) {
-			e.printStackTrace();
-		} finally {
-			DBConnection.closeConnection();
-		}
-		return tables;
-	}
-
-	private ArrayList<Menu> getMenus(int id) {
-		Connection con = DBConnection.getInstance().getDBcon();
-		ArrayList<Menu> menus = new ArrayList<Menu>();
-
-		try {
-			Statement menusStatement = con.createStatement();
-			ResultSet menusResultSet = menusStatement
-					.executeQuery("SELECT Menus.* FROM Menus, ReservedMenus WHERE ReservedMenus.reservationID = " + id
-							+ " AND ReservedMenus.menuID = Menus.menuID");
-			while (menusResultSet.next()) {
-				String name = menusResultSet.getString("name");
-				int menuid = menusResultSet.getInt("menuID");
-				Menu menu = new Menu(name, getMeals(menuid));
-				menus.add(menu);
-			}
-		} catch (SQLException e) {
-			e.printStackTrace();
-		} finally {
-			DBConnection.closeConnection();
-		}
-		return menus;
-	}
-
-	private ArrayList<Meal> getMeals(int id) {
-		Connection con = DBConnection.getInstance().getDBcon();
-		ArrayList<Meal> meals = new ArrayList<Meal>();
-
-		try {
-			Statement menusStatement = con.createStatement();
-			ResultSet menusResultSet = menusStatement.executeQuery("SELECT * FROM Meals WHERE menuID = " + id);
-			while (menusResultSet.next()) {
-				String name = menusResultSet.getString("name");
-				String description = menusResultSet.getString("description");
-				float price = menusResultSet.getFloat("price");
-				Meal meal = new Meal(name, description, price);
-				meals.add(meal);
-			}
-		} catch (SQLException e) {
-			e.printStackTrace();
-		} finally {
-			DBConnection.closeConnection();
-		}
-		return meals;
 	}
 
 	@Override
@@ -146,21 +64,10 @@ public class ReservationConcreteDAO implements ReservationDAO {
 			ResultSet rs = statement.executeQuery("SELECT * FROM Reservations WHERE reservationID = " + id);
 			while (rs.next()) {
 				Timestamp timestamp = rs.getTimestamp("timestamp");
-				int duration = rs.getInt("duration");
-				int guests = rs.getInt("noOfGuests");
-				String note = rs.getString("note");
-				String phone = rs.getString("phone");
 				Calendar cal = new GregorianCalendar();
 				cal.setTimeInMillis(timestamp.getTime());
 
-				Reservation reservation = new Reservation(cal, getTables(id));
-				reservation.setDuration(duration);
-				reservation.setGuests(guests);
-				reservation.setId(id);
-				reservation.setNote(note);
-				reservation.setCustomer(CustomerConcreteDAO.getInstance().read(phone));
-				reservation.setMenus(getMenus(id));
-
+				Reservation reservation = new Reservation(cal, TableConcreteDAO.getInstance().getReservationTables(id));
 				return reservation;
 			}
 		} catch (SQLException e) {
