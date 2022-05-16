@@ -79,7 +79,28 @@ public class ReservationConcreteDAO implements ReservationDAO {
 	}
 
 	@Override
-	public void create(Reservation reservation) {
+	public void create(Reservation reservation) throws SQLException {
+		Connection con = DBConnection.getInstance().getDBcon();	
+		try{
+			con.setAutoCommit(false);
+			
+			createReservation(reservation);
+			ReservedMenusConcreteDAO.getInstance().create(reservation);
+			ReservedTablesConcreteDAO.getInstance().create(reservation);
+			
+			con.commit();
+		}
+		catch(SQLException e){
+		   // If there is any error.
+			e.printStackTrace();
+			con.rollback();
+		}
+		finally{
+			con.close();
+		}
+	}
+	
+	private void createReservation(Reservation reservation) {
 		Connection con = DBConnection.getInstance().getDBcon();
 		try {
 			PreparedStatement ps = con
@@ -96,7 +117,7 @@ public class ReservationConcreteDAO implements ReservationDAO {
 			e.printStackTrace();
 		} finally {
 			DBConnection.closeConnection();
-		}
+		}	
 	}
 
 	@Override

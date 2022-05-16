@@ -1,5 +1,6 @@
 package database;
 
+import java.sql.SQLException;
 import java.util.ArrayList;
 
 import model.Reservation;
@@ -10,7 +11,7 @@ public interface ReservationDAO {
 
 	Reservation read(int id);
 
-	void create(Reservation reservation);
+	void create(Reservation reservation) throws SQLException;
 
 	void update(Reservation reservation);
 
