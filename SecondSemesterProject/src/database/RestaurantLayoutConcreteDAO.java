@@ -29,22 +29,6 @@ import model.Table;
 	}
 
 	@Override
-	public void createRestaurantLayout(RestaurantLayout restaurantLayout) {
-		try(Connection con = DBConnection.getInstance().getDBcon();
-			PreparedStatement ps = con.prepareStatement("insert into dbo.RestaurantLayouts("
-						+ "name,sizeX,sizeY) values(?,?,?)");){
-			ps.setString(1, restaurantLayout.getName());
-			ps.setInt(2, restaurantLayout.getSizeX());
-			ps.setInt(3, restaurantLayout.getSizeY());
-			ps.executeUpdate();
-		}
-		catch(Exception e) {
-			e.printStackTrace();
-		}
-		
-	}
-
-	@Override
 	public void update(RestaurantLayout restaurantLayout) {
 		
 	}
@@ -72,6 +56,21 @@ import model.Table;
 		}
 		finally{
 			con.close();
+		}
+	}
+	
+	@Override
+	public void createRestaurantLayout(RestaurantLayout restaurantLayout) {
+		try(Connection con = DBConnection.getInstance().getDBcon();
+			PreparedStatement ps = con.prepareStatement("insert into dbo.RestaurantLayouts("
+						+ "name,sizeX,sizeY) values(?,?,?)");){
+			ps.setString(1, restaurantLayout.getName());
+			ps.setInt(2, restaurantLayout.getSizeX());
+			ps.setInt(3, restaurantLayout.getSizeY());
+			ps.executeUpdate();
+		}
+		catch(Exception e) {
+			e.printStackTrace();
 		}
 		
 	}
@@ -147,8 +146,10 @@ import model.Table;
 			ps.setString(2, "table");
 			ResultSet rs = ps.executeQuery();
 			while(rs.next()) {
-				itemMap.get(new Point(rs.getInt("locationX"),
-						rs.getInt("locationY"))).setId(rs.getInt("layoutItemID"));
+					Table table = (Table) itemMap.get(new Point(rs.getInt("locationX"),
+							rs.getInt("locationY")));
+					table.setId(rs.getInt("layoutItemID"));
+					itemMap.replace(new Point(rs.getInt("locationX"),rs.getInt("locationY")), table);
 			}
 			return itemMap;
 		} catch (SQLException e) {
@@ -164,7 +165,7 @@ import model.Table;
 	}
 
 	@Override
-	public RestaurantLayout findRestaurantLayoutByName(String name) {
+	public RestaurantLayout getRestaurantLayoutByName(String name) {
 		try(Connection con = DBConnection.getInstance().getDBcon();
 			PreparedStatement ps = con.prepareStatement(" select * from dbo.RestaurantLayouts where name = ?");
 			){
@@ -186,8 +187,43 @@ import model.Table;
 	}
 
 	@Override
-	public HashMap<Point, LayoutItem> getItemMap(String name) {
-		// TODO Auto-generated method stub
+	public HashMap<Point, LayoutItem> getLayoutItems(int restaurantLayoutID) {
+		HashMap<Point, LayoutItem> itemMap = new HashMap<>();
+		HashMap<Integer, Integer> tableCapacityMap = getTablesCapacity(restaurantLayoutID);
+		try(Connection con = DBConnection.getInstance().getDBcon();
+				PreparedStatement ps = con.prepareStatement(" select * from dbo.LayoutItems where restaurantLayoutID = ?");
+				){
+			ps.setInt(1, restaurantLayoutID);
+			ResultSet rs = ps.executeQuery();
+			while(rs.next()) {
+				if(rs.getString("type").equals("table")) {
+					Table table = new Table(rs.getNString("name"),rs.getNString("type"),
+							tableCapacityMap.get(rs.getInt("layoutItemID")));
+					itemMap.put(new Point(rs.getInt("locationX"),rs.getInt("locationY")), table);
+				}
+				else {
+					itemMap.put(new Point(rs.getInt("locationX"),rs.getInt("locationY")),
+							new LayoutItem(rs.getNString("name"), rs.getNString("type")));
+				}
+			}
+			return itemMap;
+		}
+		catch(SQLException e) {
+			
+		}
+		return null;
+	}
+	
+	@Override
+	public HashMap<Integer, Integer> getTablesCapacity(int restaurantLayoutID) {
+		try(Connection con = DBConnection.getInstance().getDBcon();
+				PreparedStatement ps = con.prepareStatement(" select * from dbo.LayoutItems where restaurantLayoutID = ?");
+				){
+			
+		}
+		catch(SQLException e) {
+			
+		}
 		return null;
 	}
 
@@ -223,6 +259,8 @@ import model.Table;
 		}
 		return id;
 	}
+
+
 
 
 }
