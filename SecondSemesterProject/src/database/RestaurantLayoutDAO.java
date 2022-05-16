@@ -15,9 +15,11 @@ public interface RestaurantLayoutDAO {
 	
 	List<RestaurantLayout> read();
 
-	RestaurantLayout findRestaurantLayoutByName(String restaurantLayoutName);
+	RestaurantLayout getRestaurantLayoutByName(String restaurantLayoutName);
 	
-	Map<Point,LayoutItem> getItemMap(String restaurantLayoutName);
+	Map<Point,LayoutItem> getLayoutItems(int restaurantLayoutID);
+	
+	Map<Integer, Integer> getTablesCapacity(int restaurantLayoutID);
 	
 	List<Table> getRestaurantLayoutTableList(int restaurantLayoutID);
 	
