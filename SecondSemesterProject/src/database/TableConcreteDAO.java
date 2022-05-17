@@ -1,14 +1,21 @@
 package database;
 
+import java.awt.Point;
 import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Map.Entry;
 
+import model.LayoutItem;
+import model.RestaurantLayout;
 import model.Table;
 
-public class TableConcreteDAO {
+public class TableConcreteDAO implements TableDAO {
 
 	private static TableConcreteDAO instance = new TableConcreteDAO();
 
@@ -20,6 +27,24 @@ public class TableConcreteDAO {
 			instance = new TableConcreteDAO();
 		}
 		return instance;
+	}
+	
+	@Override
+	public void createTables(RestaurantLayout restaurantLayout, HashMap<Point,Integer> idMap) {
+		HashMap<Point,LayoutItem> itemMap = (HashMap<Point, LayoutItem>) restaurantLayout.getItemMap();
+	    try (Connection con = DBConnection.getInstance().getDBcon();
+	    	 PreparedStatement ps = con.prepareStatement(
+	    			"insert into dbo.Tables(layoutItemID,capacity) values(?,?)");) {
+	    	for(Point point: idMap.keySet()) {
+	    		Table table = (Table) itemMap.get(point);
+	    		ps.setInt(4, idMap.get(point));
+				ps.setInt(5, table.getCapacity());
+	    		ps.addBatch();
+	    	}
+	    	ps.executeBatch();
+	    } catch (SQLException ex) {
+	            System.out.println(ex.getMessage());
+	        }	
 	}
 
 	public ArrayList<Table> getReservationTables(int reservationid) {
@@ -89,6 +114,60 @@ public class TableConcreteDAO {
 			e.printStackTrace();
 		} finally {
 			DBConnection.closeConnection();
+		}
+		return null;
+	}
+
+	@Override
+	public void create(Table table) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void update(Table table) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void delete(ArrayList<Table> tableList) {
+	    try (Connection con = DBConnection.getInstance().getDBcon();
+	    	 PreparedStatement ps = con.prepareStatement(
+	    			"delete from dbo.Tables where layoutItemID = ?");) {
+	    	for(Table table: tableList) {
+				ps.setLong(1, table.getId());
+	    		ps.addBatch();
+	    	}
+	    	ps.executeBatch();
+	    } catch (SQLException ex) {
+	            System.out.println(ex.getMessage());
+	        }	
+	}
+
+	@Override
+	public HashMap<Point, LayoutItem> getTableMap(long restaurantLayoutID) {
+		HashMap<Point, LayoutItem> tableMap = new HashMap<>();
+		try(Connection con = DBConnection.getInstance().getDBcon();
+				PreparedStatement ps = con.prepareStatement(" select * \r\n"
+						+ "from dbo.LayoutItems \r\n"
+						+ "FULL OUTER JOIN dbo.Tables\r\n"
+						+ "	ON dbo.LayoutItems.layoutItemID = dbo.Tables.layoutItemID\r\n"
+						+ "where restaurantLayoutID = ?");
+		){
+			ps.setLong(1, restaurantLayoutID);
+			ResultSet rs = ps.executeQuery();
+			while(rs.next()) {
+				if(rs.getString("type").equals("table")) {
+					Table table = new Table(rs.getNString("name"), rs.getNString("type"), rs.getInt("capacity"));
+					table.setId(rs.getLong("layoutItemID"));
+					tableMap.put(new Point(rs.getInt("locationX"),rs.getInt("locationY")),table);
+				}
+			}
+		return tableMap;
+		}
+		catch(SQLException e) {
+			e.printStackTrace();
 		}
 		return null;
 	}

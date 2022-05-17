@@ -3,7 +3,7 @@ package model;
 public class Table extends LayoutItem {
 
 	private int capacity;
-	private int id;
+	private long id;
 
 	public Table(String name, String type, int capacity) {
 		super(name, type);
@@ -18,11 +18,11 @@ public class Table extends LayoutItem {
 		this.capacity = capacity;
 	}
 	
-	public void setId(int id) {
+	public void setId(long id) {
 		this.id = id;
 	}
 	
-	public int getId() {
+	public long getId() {
 		return id;
 	}
 

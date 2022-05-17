@@ -6,7 +6,7 @@ import java.sql.DriverManager;
 
 public class DBConnection {
 
-	private static final String driver = "jdbc:sqlserver:hildur.ucn.dk";
+	private static final String driver = "jdbc:sqlserver:hildur.ucn.dk"; 
 	private static final String databaseName = ";databaseName=CSC-CSD-S212_10407574";
 
 	private static String userName = ";user=CSC-CSD-S212_10407574";

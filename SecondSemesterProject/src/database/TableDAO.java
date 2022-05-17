@@ -1,7 +1,11 @@
 package database;
 
+import java.awt.Point;
 import java.util.ArrayList;
+import java.util.HashMap;
 
+import model.LayoutItem;
+import model.RestaurantLayout;
 import model.Table;
 
 public interface TableDAO {
@@ -16,7 +20,11 @@ public interface TableDAO {
 
 	void update(Table table);
 
-	void delete(Table table);
+	void delete(ArrayList<Table> tableList);
+	
+	void createTables(RestaurantLayout restaurantLayout,HashMap<Point,Integer> idMap);
+	
+	HashMap<Point, LayoutItem> getTableMap(long restaurantLayoutID);
 	
 
 }

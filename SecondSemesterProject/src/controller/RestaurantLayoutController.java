@@ -1,29 +1,35 @@
 package controller;
 
 import java.awt.Point;
+import java.sql.SQLException;
 import java.util.HashMap;
 
 import database.RestaurantLayoutConcreteDAO;
+import database.RestaurantLayoutDAO;
 import model.LayoutItem;
 import model.RestaurantLayout;
 
 public class RestaurantLayoutController {
-	RestaurantLayoutConcreteDAO restaurantLayoutDB;
+	RestaurantLayoutDAO restaurantLayoutDAO;
 	
 	public RestaurantLayoutController() {
-		restaurantLayoutDB = RestaurantLayoutConcreteDAO.getInstance();
+		restaurantLayoutDAO = RestaurantLayoutConcreteDAO.getInstance();
 	}
 	
 	public void createRestaurantLayout(RestaurantLayout restaurantLayout) {
-		restaurantLayoutDB.createRestaurantLayout(restaurantLayout);
+		restaurantLayoutDAO.createRestaurantLayout(restaurantLayout);
 	}
 	
-	public void createLayoutObj(String name, int sizeX, int sizeY, HashMap<Point,LayoutItem> itemMap) {
-		RestaurantLayout resLay = new RestaurantLayout();
-		resLay.setName(name);
-		resLay.setSizeX(sizeX);
-		resLay.setSizeY(sizeY);
-		resLay.setItemMap(itemMap);
+	public void saveRestaurantLayout(String name, int sizeX, int sizeY, HashMap<Point,LayoutItem> itemMap) throws SQLException {
+		restaurantLayoutDAO.saveRestaurantLayout(name, sizeX, sizeY, itemMap);
+	}
+	
+	public RestaurantLayout getRestaurantLayoutByName(String name) {
+		return restaurantLayoutDAO.getRestaurantLayoutByName(name);
+	}
+	
+	public void deleteRestaurantLayout(String restaurantLayoutName) throws SQLException {
+		restaurantLayoutDAO.delete(restaurantLayoutName);
 	}
 
 }

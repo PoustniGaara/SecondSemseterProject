@@ -4,7 +4,7 @@ public class LayoutItem {
 
 	private String name;
 	private String type;
-	private int id;
+	private long id;
 
 	public LayoutItem(String name, String type) {
 		setName(name);
@@ -27,11 +27,11 @@ public class LayoutItem {
 		return name;
 	}
 	
-	public void setId(int id) {
+	public void setId(long id) {
 		this.id = id;
 	}
 	
-	public int getId() {
+	public long getId() {
 		return id;
 	}
 

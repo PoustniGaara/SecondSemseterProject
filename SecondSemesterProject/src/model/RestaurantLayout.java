@@ -12,13 +12,27 @@ public class RestaurantLayout {
 	private int sizeX, sizeY;
 	private Map<Point, LayoutItem> itemMap;
 	
-	public RestaurantLayout() {
+	public RestaurantLayout(String name, int sizeX, int sizeY, HashMap<Point,LayoutItem> itemMap) {
+		setName(name);
+		setSizeX(sizeX);
+		setSizeY(sizeY);
+		setItemMap(itemMap);
 	}
 	
-	public List<Table> getTables(){
-		List<Table> listOfTables = new ArrayList<>();
+	public ArrayList<LayoutItem> getLayoutItems(){
+		ArrayList<LayoutItem> listOfLayoutItems = new ArrayList<>();
 		for(LayoutItem l : itemMap.values()) {
-			
+			listOfLayoutItems.add(l);
+		}
+		return listOfLayoutItems;
+	}
+	
+	public ArrayList<Table> getTableList(){
+		ArrayList<Table> listOfTables = new ArrayList<>();
+		for(LayoutItem l : itemMap.values()) {
+			if(l instanceof Table) {
+				listOfTables.add((Table) l);
+			}
 		}
 		return listOfTables;
 	}

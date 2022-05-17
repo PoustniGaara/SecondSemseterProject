@@ -2,12 +2,18 @@ package tests.RestaurantLayout;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+import java.awt.Point;
+import java.sql.SQLException;
+import java.util.HashMap;
+
 import org.junit.After;
 import org.junit.Before;
 import org.junit.jupiter.api.Test;
 
 import controller.RestaurantLayoutController;
+import model.LayoutItem;
 import model.RestaurantLayout;
+import model.Table;
 
 class createRestaurantLayoutTest {
 	
@@ -21,24 +27,40 @@ class createRestaurantLayoutTest {
 	}
 
 	@Test
-	void test() {
+	public void test() {
 		//Arrange
-		RestaurantLayout restaurantLayout = new RestaurantLayout();
-		restaurantLayout.setName("TestEclipse");
-		restaurantLayout.setSizeX(0);
-		restaurantLayout.setSizeY(0);
+		rlc = new RestaurantLayoutController();
+		System.out.println(rlc);
+		HashMap<Point, LayoutItem> itemMap = new HashMap<>();
+		itemMap.put(new Point(0,1), new Table("test","table",5));
+		itemMap.put(new Point(0,2), new Table("test1","table",6));
+		itemMap.put(new Point(0,3), new Table("test2","table",7));
+		itemMap.put(new Point(0,4), new Table("test3","table",8));
+		itemMap.put(new Point(0,5), new LayoutItem("test4","bar"));
+		itemMap.put(new Point(0,5), new LayoutItem("test5","entrance"));
+		RestaurantLayout restaurantLayout = new RestaurantLayout("TestEclipse",0,0,itemMap);
 		
 		//Act
-		rlc.createRestaurantLayout(restaurantLayout);
+		try {
+			rlc.saveRestaurantLayout("TestEclipse", 0, 0, itemMap);
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		
 		//Assert
-		fail("Not yet implemented");
+		assertEquals(restaurantLayout,rlc.getRestaurantLayoutByName(restaurantLayout.getName()),"are equal");
 	}
 	
-	/** Fixture for pay station testing. */
+	
 	@After
 	public void cleanUp() {
-//		ps.setReady();
+		try {
+			rlc.deleteRestaurantLayout("TestEclipse");
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 
 }
