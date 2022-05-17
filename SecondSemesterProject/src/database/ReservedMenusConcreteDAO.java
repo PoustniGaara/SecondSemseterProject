@@ -19,14 +19,14 @@ public class ReservedMenusConcreteDAO implements ReservedMenusDAO{
 	}
 
 	@Override
-	public void create(Reservation reservation) {
+	public void create(Reservation reservation, long id) {
 		Connection con = DBConnection.getInstance().getDBcon();
 		try {
 			PreparedStatement ps = con
 					.prepareStatement("INSERT INTO dbo.ReservedMenus (reservationID, menuID, amount)"
-							+ "VALUES (?,?)", Statement.RETURN_GENERATED_KEYS);
+							+ "VALUES (?,?)");
 			ps.setInt(1, reservation.getId());
-			ps.setInt(2, ps.getGeneratedKeys().getInt(1));
+			ps.setLong(2, id);
 			ps.setInt(3, reservation.getGuests());
 			ps.execute();
 		} catch (SQLException e) {
