@@ -4,6 +4,6 @@ import model.Reservation;
 
 public interface ReservedMenusDAO {
 	
-	void create(Reservation reservation, long id);
+	void create(Reservation reservation);
 
 }

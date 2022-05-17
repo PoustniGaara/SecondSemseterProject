@@ -2,6 +2,7 @@ package database;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 
@@ -19,14 +20,15 @@ public class ReservedMenusConcreteDAO implements ReservedMenusDAO{
 	}
 
 	@Override
-	public void create(Reservation reservation, long id) {
+	public void create(Reservation reservation) {
 		Connection con = DBConnection.getInstance().getDBcon();
 		try {
 			PreparedStatement ps = con
 					.prepareStatement("INSERT INTO dbo.ReservedMenus (reservationID, menuID, amount)"
-							+ "VALUES (?,?)");
+							+ "VALUES (?,?,?)");
+			
 			ps.setInt(1, reservation.getId());
-			ps.setLong(2, id);
+			ps.setInt(2, 1);
 			ps.setInt(3, reservation.getGuests());
 			ps.execute();
 		} catch (SQLException e) {

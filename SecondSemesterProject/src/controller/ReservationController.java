@@ -58,7 +58,7 @@ public class ReservationController {
 		reservationDAO.delete(reservation);
 	}
 	
-	private Customer setPhone(String phone) {
+	public Customer setPhone(String phone) {
 		if (control.findByPhone(phone) != null) {
 			return control.findByPhone(phone);
 		}

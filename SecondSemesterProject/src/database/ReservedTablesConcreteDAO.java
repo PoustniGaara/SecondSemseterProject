@@ -26,15 +26,19 @@ public class ReservedTablesConcreteDAO implements ReservedTablesDAO{
 		try {
 				PreparedStatement ps = con
 				.prepareStatement("INSERT INTO dbo.ReservedTables (layoutItemID, reservationID)"
-						+ "VALUES (?,?)", Statement.RETURN_GENERATED_KEYS);
-        	for (Table a : reservation.getTables()) {
+						+ "VALUES (?,?)");
+
+        		ps.setLong(1, reservation.getTables().get(0).getId());
+        		ps.setInt(2, reservation.getId());
+        		
+        	/*for (Table a : reservation.getTables()) {
         		ps.setLong(1, a.getId());
         		ps.setInt(2, reservation.getId());
 
         		ps.addBatch();
         		
         		ps.executeBatch();
-        	}	
+        	}*/
 		} catch (SQLException e) {
 			e.printStackTrace();
 		} finally {

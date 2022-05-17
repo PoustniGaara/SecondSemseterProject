@@ -84,9 +84,9 @@ public class ReservationConcreteDAO implements ReservationDAO {
 		try{
 			con.setAutoCommit(false);
 			
-			Long reservationID = createReservation(reservation);
-
-			ReservedMenusConcreteDAO.getInstance().create(reservation, reservationID);
+			createReservation(reservation);
+			reservation.setId(1);
+			ReservedMenusConcreteDAO.getInstance().create(reservation);
 			ReservedTablesConcreteDAO.getInstance().create(reservation);
 			
 			con.commit();
@@ -101,32 +101,24 @@ public class ReservationConcreteDAO implements ReservationDAO {
 		}
 	}
 	
-	private long createReservation(Reservation reservation) {
-		long id = 0;
+	private void createReservation(Reservation reservation) {
 		Connection con = DBConnection.getInstance().getDBcon();
 		try {
 			PreparedStatement ps = con
-					.prepareStatement("INSERT INTO dbo.Reservations (timestamp, duration, noOfGuests, note, phone)"
-							+ "VALUES (?,?,?,?,?)", Statement.RETURN_GENERATED_KEYS);
-			Timestamp timestamp = new Timestamp(reservation.getTimestamp().getTimeInMillis());
-			ps.setTimestamp(1, timestamp);
-			ps.setInt(2, reservation.getDuration());
-			ps.setInt(3, reservation.getGuests());
-			ps.setString(4, reservation.getNote());
-			ps.setString(5, reservation.getCustomer().getPhone());
-			ps.execute();
+					.prepareStatement("INSERT INTO dbo.Reservations (timestamp, duration, noOfGuests, note, customerPhone)"
+							+ "VALUES (DEFAULT,?,?,?,?)");		
 			
-			ResultSet rs = ps.getGeneratedKeys();
-        	while (rs.next()) {
-        		id = rs.getInt(1);
-        	}
+			ps.setInt(1, reservation.getDuration());
+			ps.setInt(2, reservation.getGuests());
+			ps.setString(3, reservation.getNote());
+			ps.setString(4, reservation.getCustomer().getPhone());
+			ps.execute();
 
 		} catch (SQLException e) {
 			e.printStackTrace();
 		} finally {
 			DBConnection.closeConnection();
 		}
-		return id;
 	}
 
 	@Override
