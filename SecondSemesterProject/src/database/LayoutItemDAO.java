@@ -16,7 +16,7 @@ public interface LayoutItemDAO {
 
 	void delete(ArrayList<LayoutItem> layoutItemList);
 	
-	HashMap<Point,Integer> createLayoutItems(RestaurantLayout restaurantLayout, Long restaurantLayoutID);
+	ArrayList<Long> createLayoutItems(RestaurantLayout restaurantLayout, Long restaurantLayoutID);
 	
 
 }

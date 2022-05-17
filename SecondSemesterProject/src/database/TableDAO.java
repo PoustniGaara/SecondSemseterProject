@@ -15,6 +15,8 @@ public interface TableDAO {
 	ArrayList<Table> getReservationTables(int reservationId);
 
 	Table read(int id);
+	
+	ArrayList<Long> getTableListById(ArrayList<Long> idList);
 
 	void create(Table table);
 
@@ -22,7 +24,7 @@ public interface TableDAO {
 
 	void delete(ArrayList<Table> tableList);
 	
-	void createTables(RestaurantLayout restaurantLayout,HashMap<Point,Integer> idMap);
+	void createTables(RestaurantLayout restaurantLayout,ArrayList<Long> idList);
 	
 	HashMap<Point, LayoutItem> getTableMap(long restaurantLayoutID);
 	

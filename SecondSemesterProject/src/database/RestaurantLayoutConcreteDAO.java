@@ -52,7 +52,8 @@ import model.Table;
 			con.rollback();
 		}
 		finally{
-			DBConnection.closeConnection();
+//			DBConnection.closeConnection();
+			con.setAutoCommit(true);
 		}
 		
 	}
@@ -65,9 +66,10 @@ import model.Table;
 			con.setAutoCommit(false);
 			Long restaurantLayoutID = 
 					createRestaurantLayout(restaurantLayout);
-			HashMap<Point, Integer> idMap = 
+			ArrayList<Long> idList = 
 					LayoutItemConcreteDAO.getInstance().createLayoutItems(restaurantLayout,restaurantLayoutID);
-			TableConcreteDAO.getInstance().createTables(restaurantLayout,idMap);
+			TableConcreteDAO.getInstance().createTables(restaurantLayout,idList);
+			System.out.println("commit is = " + con.getAutoCommit());
 			con.commit();
 		}
 		catch(SQLException e){
@@ -76,13 +78,15 @@ import model.Table;
 			con.rollback();
 		}
 		finally{
-			DBConnection.closeConnection();
+//			DBConnection.closeConnection();
+			con.setAutoCommit(true);
 		}
 	}
 	
 	@Override
 	public Long createRestaurantLayout(RestaurantLayout restaurantLayout) {
-		try(Connection con = DBConnection.getInstance().getDBcon();
+		Connection con = DBConnection.getInstance().getDBcon();
+		try(
 			PreparedStatement ps = con.prepareStatement("insert into dbo.RestaurantLayouts("
 						+ "name,sizeX,sizeY) values(?,?,?)",Statement.RETURN_GENERATED_KEYS);
 			) {

@@ -48,11 +48,11 @@ public class LayoutItemConcreteDAO implements LayoutItemDAO {
 	}
 	
 	@Override
-	public HashMap<Point,Integer> createLayoutItems(RestaurantLayout restaurantLayout, Long restaurantLayoutID) {
+	public ArrayList<Long> createLayoutItems(RestaurantLayout restaurantLayout, Long restaurantLayoutID) {
+		ArrayList<Long> idList = new ArrayList<>();
 		HashMap<Point,LayoutItem> itemMap = (HashMap<Point, LayoutItem>) restaurantLayout.getItemMap();
-		HashMap<Point,Integer> idMap = new HashMap<>();
+		Connection con = DBConnection.getInstance().getDBcon();
         try (
-        		Connection con = DBConnection.getInstance().getDBcon();
         		PreparedStatement ps = con.prepareStatement("insert into dbo.LayoutItems(name,type,"
         				+ "locationX,locationY,restaurantLayoutID) values(?,?,?,?,?)",
         				Statement.RETURN_GENERATED_KEYS);) {
@@ -74,11 +74,9 @@ public class LayoutItemConcreteDAO implements LayoutItemDAO {
         	}
         	ResultSet rs = ps.getGeneratedKeys();
         	while (rs.next()) {
-        	Point point = new Point(rs.getInt("sizeX"), rs.getInt("sizeY"));
-        	int id = rs.getInt(1);
-        	idMap.put(point, id);
+        		idList.add(rs.getLong(1));
         	}
-        	return idMap;
+        	return idList;
         		
         } catch (SQLException ex) {
         	System.out.println(ex.getMessage());
@@ -94,7 +92,8 @@ public class LayoutItemConcreteDAO implements LayoutItemDAO {
 
 	@Override
 	public void delete(ArrayList<LayoutItem> layoutItemList) {
-	    try (Connection con = DBConnection.getInstance().getDBcon();
+		Connection con = DBConnection.getInstance().getDBcon();
+	    try (
 		    	 PreparedStatement ps = con.prepareStatement(
 		    			"delete from dbo.LayoutItems where layoutItemID = ?");) {
 		    	for(LayoutItem layoutItem : layoutItemList) {

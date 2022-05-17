@@ -30,9 +30,10 @@ public class TableConcreteDAO implements TableDAO {
 	}
 	
 	@Override
-	public void createTables(RestaurantLayout restaurantLayout, HashMap<Point,Integer> idMap) {
+	public void createTables(RestaurantLayout restaurantLayout, ArrayList<Long> idList) {
 		HashMap<Point,LayoutItem> itemMap = (HashMap<Point, LayoutItem>) restaurantLayout.getItemMap();
-	    try (Connection con = DBConnection.getInstance().getDBcon();
+		Connection con = DBConnection.getInstance().getDBcon();
+	    try (
 	    	 PreparedStatement ps = con.prepareStatement(
 	    			"insert into dbo.Tables(layoutItemID,capacity) values(?,?)");) {
 	    	for(Point point: idMap.keySet()) {
@@ -132,7 +133,8 @@ public class TableConcreteDAO implements TableDAO {
 
 	@Override
 	public void delete(ArrayList<Table> tableList) {
-	    try (Connection con = DBConnection.getInstance().getDBcon();
+		Connection con = DBConnection.getInstance().getDBcon();
+	    try (
 	    	 PreparedStatement ps = con.prepareStatement(
 	    			"delete from dbo.Tables where layoutItemID = ?");) {
 	    	for(Table table: tableList) {
@@ -170,6 +172,26 @@ public class TableConcreteDAO implements TableDAO {
 			e.printStackTrace();
 		}
 		return null;
+	}
+
+	@Override
+	public ArrayList<Long> getTableListById(ArrayList<Long> idList) {
+		HashMap<Point,LayoutItem> itemMap = (HashMap<Point, LayoutItem>) restaurantLayout.getItemMap();
+		Connection con = DBConnection.getInstance().getDBcon();
+	    try (
+	    	 PreparedStatement ps = con.prepareStatement(
+	    			"insert into dbo.Tables(layoutItemID,capacity) values(?,?)");) {
+	    	for(Point point: idMap.keySet()) {
+	    		Table table = (Table) itemMap.get(point);
+	    		ps.setInt(4, idMap.get(point));
+				ps.setInt(5, table.getCapacity());
+	    		ps.addBatch();
+	    	}
+	    	ps.executeBatch();
+	    } catch (SQLException ex) {
+	            System.out.println(ex.getMessage());
+	        }	
+	    return null;
 	}
 
 }
