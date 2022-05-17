@@ -52,7 +52,7 @@ import model.Table;
 			con.rollback();
 		}
 		finally{
-			con.close();
+			DBConnection.closeConnection();
 		}
 		
 	}
@@ -76,7 +76,7 @@ import model.Table;
 			con.rollback();
 		}
 		finally{
-			con.close();
+			DBConnection.closeConnection();
 		}
 	}
 	

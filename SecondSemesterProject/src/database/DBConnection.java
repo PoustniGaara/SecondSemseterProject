@@ -4,6 +4,8 @@ import java.sql.Connection;
 import java.sql.DatabaseMetaData;
 import java.sql.DriverManager;
 
+import com.microsoft.sqlserver.jdbc.SQLServerDataSource;
+
 public class DBConnection {
 
 	private static final String driver = "jdbc:sqlserver:hildur.ucn.dk"; 
@@ -31,7 +33,16 @@ public class DBConnection {
 		}
 
 		try {
-			con = DriverManager.getConnection(url);
+			
+			SQLServerDataSource ds = new SQLServerDataSource();
+			ds.setUser("CSC-CSD-S212_10407574");
+			ds.setPassword("Password1!");
+			ds.setServerName("hildur.ucn.dk");
+			ds.setDatabaseName("CSC-CSD-S212_10407574");
+			ds.setEncrypt(false);
+			ds.getConnection();
+			
+			con = ds.getConnection();
 			con.setAutoCommit(true);
 			dma = con.getMetaData();
 			System.out.println("Driver name: " + dma.getDriverName());
