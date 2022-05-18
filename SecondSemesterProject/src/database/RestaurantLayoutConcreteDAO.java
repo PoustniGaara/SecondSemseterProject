@@ -66,9 +66,8 @@ import model.Table;
 			con.setAutoCommit(false);
 			Long restaurantLayoutID = 
 					createRestaurantLayout(restaurantLayout);
-			ArrayList<Long> idList = 
 					LayoutItemConcreteDAO.getInstance().createLayoutItems(restaurantLayout,restaurantLayoutID);
-			TableConcreteDAO.getInstance().createTables(restaurantLayout,idList);
+			TableConcreteDAO.getInstance().createTables(restaurantLayout,restaurantLayoutID);
 			System.out.println("commit is = " + con.getAutoCommit());
 			con.commit();
 		}

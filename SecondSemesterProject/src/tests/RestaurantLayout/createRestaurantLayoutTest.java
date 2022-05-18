@@ -49,7 +49,8 @@ class createRestaurantLayoutTest {
 		}
 		
 		//Assert
-		assertEquals(restaurantLayout,rlc.getRestaurantLayoutByName(restaurantLayout.getName()),"are equal");
+		assertEquals(restaurantLayout.getName(),rlc.getRestaurantLayoutByName(restaurantLayout.getName()).getName(),
+				"are equal");
 	}
 	
 	

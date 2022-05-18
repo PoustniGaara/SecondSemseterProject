@@ -48,40 +48,25 @@ public class LayoutItemConcreteDAO implements LayoutItemDAO {
 	}
 	
 	@Override
-	public ArrayList<Long> createLayoutItems(RestaurantLayout restaurantLayout, Long restaurantLayoutID) {
-		ArrayList<Long> idList = new ArrayList<>();
-		HashMap<Point,LayoutItem> itemMap = (HashMap<Point, LayoutItem>) restaurantLayout.getItemMap();
+	public void createLayoutItems(RestaurantLayout restaurantLayout, Long restaurantLayoutID) {
+		HashMap<Point,LayoutItem> itemMap = restaurantLayout.getItemMap();
 		Connection con = DBConnection.getInstance().getDBcon();
-        try (
-        		PreparedStatement ps = con.prepareStatement("insert into dbo.LayoutItems(name,type,"
-        				+ "locationX,locationY,restaurantLayoutID) values(?,?,?,?,?)",
-        				Statement.RETURN_GENERATED_KEYS);) {
-        	int count = 0;
-
+        try (PreparedStatement ps = con.prepareStatement("insert into dbo.LayoutItems(name,type,"
+        				+ "locationX,locationY,restaurantLayoutID) values(?,?,?,?,?)")
+        	) {
         	for (Map.Entry<Point,LayoutItem> entry : itemMap.entrySet()) {
         		ps.setString(1, entry.getValue().getName());
         		ps.setString(2, entry.getValue().getType());
         		ps.setInt(3, (int) entry.getKey().getX());
         		ps.setInt(4, (int) entry.getKey().getY());
         		ps.setLong(5, restaurantLayoutID);
-
         		ps.addBatch();
-        		count++;
-      	 		// execute every 100 rows or less
-        		if (count % 100 == 0 || count == itemMap.size()) {
-        			ps.executeBatch();
         		}
-        	}
-        	ResultSet rs = ps.getGeneratedKeys();
-        	while (rs.next()) {
-        		idList.add(rs.getLong(1));
-        	}
-        	return idList;
-        		
+        	ps.executeBatch();
+	
         } catch (SQLException ex) {
         	System.out.println(ex.getMessage());
         	}
-		return null;
 	}
 
 	@Override

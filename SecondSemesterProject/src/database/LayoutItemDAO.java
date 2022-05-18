@@ -7,6 +7,7 @@ import java.util.Map;
 
 import model.LayoutItem;
 import model.RestaurantLayout;
+import model.Table;
 
 public interface LayoutItemDAO {
 	
@@ -16,7 +17,7 @@ public interface LayoutItemDAO {
 
 	void delete(ArrayList<LayoutItem> layoutItemList);
 	
-	ArrayList<Long> createLayoutItems(RestaurantLayout restaurantLayout, Long restaurantLayoutID);
+	void createLayoutItems(RestaurantLayout restaurantLayout, Long restaurantLayoutID);
 	
 
 }

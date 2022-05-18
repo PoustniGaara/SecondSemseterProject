@@ -30,16 +30,15 @@ public class TableConcreteDAO implements TableDAO {
 	}
 	
 	@Override
-	public void createTables(RestaurantLayout restaurantLayout, ArrayList<Long> idList) {
-		HashMap<Point,LayoutItem> itemMap = (HashMap<Point, LayoutItem>) restaurantLayout.getItemMap();
+	public void createTables(RestaurantLayout restaurantLayout, Long restaurantLayoutID) {
+		ArrayList<Table> tableList = getTableListByRestaurantLayout(restaurantLayout, restaurantLayoutID);
 		Connection con = DBConnection.getInstance().getDBcon();
 	    try (
 	    	 PreparedStatement ps = con.prepareStatement(
 	    			"insert into dbo.Tables(layoutItemID,capacity) values(?,?)");) {
-	    	for(Point point: idMap.keySet()) {
-	    		Table table = (Table) itemMap.get(point);
-	    		ps.setInt(4, idMap.get(point));
-				ps.setInt(5, table.getCapacity());
+	    	for(Table table: tableList) {
+	    		ps.setLong(1, table.getId());
+				ps.setInt(2, table.getCapacity());
 	    		ps.addBatch();
 	    	}
 	    	ps.executeBatch();
@@ -175,20 +174,24 @@ public class TableConcreteDAO implements TableDAO {
 	}
 
 	@Override
-	public ArrayList<Long> getTableListById(ArrayList<Long> idList) {
-		HashMap<Point,LayoutItem> itemMap = (HashMap<Point, LayoutItem>) restaurantLayout.getItemMap();
+	public ArrayList<Table> getTableListByRestaurantLayout(RestaurantLayout restaurantLayout, long restaurantLayoutID) {
+		HashMap<Point,LayoutItem> itemMap = restaurantLayout.getItemMap();
+		ArrayList<Table> tableList = new ArrayList<>();
 		Connection con = DBConnection.getInstance().getDBcon();
-	    try (
-	    	 PreparedStatement ps = con.prepareStatement(
-	    			"insert into dbo.Tables(layoutItemID,capacity) values(?,?)");) {
-	    	for(Point point: idMap.keySet()) {
-	    		Table table = (Table) itemMap.get(point);
-	    		ps.setInt(4, idMap.get(point));
-				ps.setInt(5, table.getCapacity());
-	    		ps.addBatch();
+	    try (PreparedStatement ps = con.prepareStatement(
+	    			"select * from dbo.LayoutItems where restaurantLayoutID = ?  and type = ?");
+	    	) {
+	    	ps.setLong(1, restaurantLayoutID);
+	    	ps.setString(2, "table");
+	    	ResultSet rs = ps.executeQuery();
+	    	while(rs.next()) {
+	    		Table table = (Table) itemMap.get(new Point(rs.getInt("locationX"), rs.getInt("locationY")));
+				table.setId(rs.getLong("layoutItemID"));
+				tableList.add(table);
 	    	}
-	    	ps.executeBatch();
-	    } catch (SQLException ex) {
+	    	return tableList;
+		}
+	    catch (SQLException ex) {
 	            System.out.println(ex.getMessage());
 	        }	
 	    return null;

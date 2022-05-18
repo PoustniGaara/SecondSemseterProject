@@ -3,14 +3,13 @@ package model;
 import java.awt.Point;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 public class RestaurantLayout {
 	
 	private String name;
 	private int sizeX, sizeY;
-	private Map<Point, LayoutItem> itemMap;
+	private HashMap<Point, LayoutItem> itemMap;
+	private long id;
 	
 	public RestaurantLayout(String name, int sizeX, int sizeY, HashMap<Point,LayoutItem> itemMap) {
 		setName(name);
@@ -56,11 +55,19 @@ public class RestaurantLayout {
 	public void setSizeY(int sizeY) {
 		this.sizeY = sizeY;
 	}
-	public Map<Point, LayoutItem> getItemMap() {
+	public HashMap<Point, LayoutItem> getItemMap() {
 		return itemMap;
 	}
 	public void setItemMap(HashMap<Point, LayoutItem> itemMap) {
 		this.itemMap = itemMap;
+	}
+	
+	public void setId(long id) {
+		this.id = id;
+	}
+	
+	public long getId() {
+		return id;
 	}
 
 }
