@@ -52,9 +52,8 @@ public class TableConcreteDAO implements TableDAO {
 
 		try {
 			Statement tablesStatement = con.createStatement();
-			ResultSet tablesResultSet = tablesStatement
-					.executeQuery("SELECT * FROM [Tables], ReservedTables, Reservations "
-							+ "WHERE [Tables].layoutItemID = ReservedTables.layoutItemID AND ReservedTables.reservationID = "
+			ResultSet tablesResultSet = tablesStatement.executeQuery(
+					"SELECT * FROM Reservations JOIN ReservedTables ON Reservations.reservationID = ReservedTables.reservationID JOIN Tables ON ReservedTables.layoutItemID = Tables.layoutItemID JOIN LayoutItems ON Tables.layoutItemID = LayoutItems.layoutItemID WHERE ReservedTables.reservationID = "
 							+ reservationid);
 			while (tablesResultSet.next()) {
 				String name = tablesResultSet.getString("name");

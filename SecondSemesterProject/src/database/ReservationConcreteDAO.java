@@ -106,14 +106,8 @@ public class ReservationConcreteDAO implements ReservationDAO {
 							+ "VALUES (?,?,?,?,?)",
 					Statement.RETURN_GENERATED_KEYS);
 
-			Calendar c1 = Calendar.getInstance();
-			c1.set(Calendar.HOUR_OF_DAY, 20);
-			c1.set(Calendar.MINUTE, 15);
-			c1.set(Calendar.SECOND, 0);
-			c1.set(Calendar.MILLISECOND, 0);
-			java.util.Date dateTime = c1.getTime();
+			java.util.Date dateTime = reservation.getTimestamp().getTime();
 			java.sql.Timestamp timestamp = new java.sql.Timestamp(dateTime.getTime());
-			System.out.println("timestamp: " + timestamp.toString());
 			ps.setTimestamp(1, timestamp);
 			ps.setInt(2, reservation.getDuration());
 			ps.setInt(3, reservation.getGuests());
@@ -123,7 +117,6 @@ public class ReservationConcreteDAO implements ReservationDAO {
 
 			ResultSet generatedKeys = ps.getGeneratedKeys();
 			if (generatedKeys.next()) {
-				System.out.println("! KEY: " + generatedKeys.getLong(1));
 				return generatedKeys.getLong(1);
 			} else {
 				throw new SQLException("Creating reservation failed, no ID obtained.");

@@ -35,6 +35,7 @@ public class MenuConcreteDAO implements MenuDAO {
 				String name = menusResultSet.getString("name");
 				int menuid = menusResultSet.getInt("menuID");
 				Menu menu = new Menu(name, MealConcreteDAO.getInstance().getMenuMeals(menuid));
+				menu.setID(menuid);
 				menus.add(menu);
 			}
 		} catch (SQLException e) {
@@ -55,6 +56,7 @@ public class MenuConcreteDAO implements MenuDAO {
 			while (menusResultSet.next()) {
 				String name = menusResultSet.getString("name");
 				Menu menu = new Menu(name, MealConcreteDAO.getInstance().getMenuMeals(id));
+				menu.setID(id);
 				return menu;
 			}
 		} catch (SQLException e) {
@@ -96,6 +98,7 @@ public class MenuConcreteDAO implements MenuDAO {
 				String name = menusResultSet.getString("name");
 				int menuid = menusResultSet.getInt("menuID");
 				Menu menu = new Menu(name, MealConcreteDAO.getInstance().getMenuMeals(menuid));
+				menu.setID(menuid);
 				menus.add(menu);
 			}
 		} catch (SQLException e) {

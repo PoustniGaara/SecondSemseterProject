@@ -27,9 +27,8 @@ public class ReservedMenusConcreteDAO implements ReservedMenusDAO {
 	public void create(Reservation reservation) {
 		Connection con = DBConnection.getInstance().getDBcon();
 		try {
-			con.setAutoCommit(false);
-			PreparedStatement ps = con.prepareStatement(
-					"INSERT INTO ReservedMenus (reservationID, menuID, amount) VALUES (?,?,?)");
+			PreparedStatement ps = con
+					.prepareStatement("INSERT INTO ReservedMenus (reservationID, menuID, amount) VALUES (?,?,?)");
 			HashMap<Menu, Integer> groupedMenus = groupMenus(reservation.getMenus());
 			for (Menu m : groupedMenus.keySet()) {
 				ps.setLong(1, reservation.getId());
@@ -38,16 +37,9 @@ public class ReservedMenusConcreteDAO implements ReservedMenusDAO {
 				ps.addBatch();
 			}
 			ps.executeBatch();
-			con.commit();
+
 		} catch (SQLException e) {
 			e.printStackTrace();
-		} finally {
-			try {
-				con.setAutoCommit(true);
-			} catch (SQLException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
 		}
 	}
 
