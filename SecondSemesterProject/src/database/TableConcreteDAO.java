@@ -30,8 +30,8 @@ public class TableConcreteDAO implements TableDAO {
 	}
 	
 	@Override
-	public void createTables(RestaurantLayout restaurantLayout, Long restaurantLayoutID) {
-		ArrayList<Table> tableList = getTableListByRestaurantLayout(restaurantLayout, restaurantLayoutID);
+	public void createTables(HashMap<Point,LayoutItem> itemMap, long restaurantLayoutID) {
+		ArrayList<Table> tableList = getTableList(itemMap, restaurantLayoutID);
 		Connection con = DBConnection.getInstance().getDBcon();
 	    try (
 	    	 PreparedStatement ps = con.prepareStatement(
@@ -79,7 +79,7 @@ public class TableConcreteDAO implements TableDAO {
 
 		try {
 			Statement tablesStatement = con.createStatement();
-			ResultSet tablesResultSet = tablesStatement.executeQuery("SELECT * FROM Tables");
+			ResultSet tablesResultSet = tablesStatement.executeQuery("SELECT * FROM dbo.Tables");
 			while (tablesResultSet.next()) {
 				String name = tablesResultSet.getString("name");
 				String type = tablesResultSet.getString("type");
@@ -119,15 +119,20 @@ public class TableConcreteDAO implements TableDAO {
 	}
 
 	@Override
-	public void create(Table table) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void update(Table table) {
-		// TODO Auto-generated method stub
-		
+	public void update(ArrayList<Table> tableList) {
+		Connection con = DBConnection.getInstance().getDBcon();
+		try (PreparedStatement ps = con.prepareStatement(
+		    	"update dbo.Tables capacity = ? where layoutItemID = ?");) {
+		    for(Table table: tableList) {
+		    	ps.setInt(1, table.getCapacity());
+				ps.setLong(2, table.getId());
+		    	ps.addBatch();
+		    }
+		    ps.executeBatch();
+		}
+		catch (SQLException ex) {
+			System.out.println(ex.getMessage());
+		}	
 	}
 
 	@Override
@@ -174,8 +179,7 @@ public class TableConcreteDAO implements TableDAO {
 	}
 
 	@Override
-	public ArrayList<Table> getTableListByRestaurantLayout(RestaurantLayout restaurantLayout, long restaurantLayoutID) {
-		HashMap<Point,LayoutItem> itemMap = restaurantLayout.getItemMap();
+	public ArrayList<Table> getTableList(HashMap<Point,LayoutItem> itemMap, long restaurantLayoutID) {
 		ArrayList<Table> tableList = new ArrayList<>();
 		Connection con = DBConnection.getInstance().getDBcon();
 	    try (PreparedStatement ps = con.prepareStatement(

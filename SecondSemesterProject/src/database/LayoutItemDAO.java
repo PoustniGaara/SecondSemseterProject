@@ -7,17 +7,16 @@ import java.util.Map;
 
 import model.LayoutItem;
 import model.RestaurantLayout;
-import model.Table;
 
 public interface LayoutItemDAO {
 	
 	Map<Point,LayoutItem> getLayoutItems(long restaurantLayoutID);
 	
-	void update(RestaurantLayout restaurantLayout);
+	void update(HashMap<Point,LayoutItem> itemMap, long restaurantLayoutID);
 
 	void delete(ArrayList<LayoutItem> layoutItemList);
 	
-	void createLayoutItems(RestaurantLayout restaurantLayout, Long restaurantLayoutID);
+	void createLayoutItems(HashMap<Point,LayoutItem> itemMap, long restaurantLayoutID);
 	
 
 }

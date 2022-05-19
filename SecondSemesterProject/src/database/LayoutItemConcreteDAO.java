@@ -9,6 +9,7 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import model.LayoutItem;
 import model.RestaurantLayout;
@@ -48,8 +49,7 @@ public class LayoutItemConcreteDAO implements LayoutItemDAO {
 	}
 	
 	@Override
-	public void createLayoutItems(RestaurantLayout restaurantLayout, Long restaurantLayoutID) {
-		HashMap<Point,LayoutItem> itemMap = restaurantLayout.getItemMap();
+	public void createLayoutItems(HashMap<Point,LayoutItem> itemMap, long restaurantLayoutID) {
 		Connection con = DBConnection.getInstance().getDBcon();
         try (PreparedStatement ps = con.prepareStatement("insert into dbo.LayoutItems(name,type,"
         				+ "locationX,locationY,restaurantLayoutID) values(?,?,?,?,?)")
@@ -70,26 +70,43 @@ public class LayoutItemConcreteDAO implements LayoutItemDAO {
 	}
 
 	@Override
-	public void update(RestaurantLayout restaurantLayout) {
-		// TODO Auto-generated method stub
+	public void update(HashMap<Point,LayoutItem> itemMap, long restaurantLayoutID) {
+		Connection con = DBConnection.getInstance().getDBcon();
+		try(PreparedStatement ps = con.prepareStatement("update dbo.LayoutItems set name = ?, type = ?,"
+				+ "locationX = ?, locationY = ? where restaurantLayouID = ?");
+		){
+			for(Entry<Point, LayoutItem> entry : itemMap.entrySet()) {
+				ps.setString(1, entry.getValue().getName());
+				ps.setString(2, entry.getValue().getType());
+				ps.setInt(3, (int) entry.getKey().getX());
+				ps.setInt(4, (int) entry.getKey().getY());
+				ps.setLong(5, restaurantLayoutID);
+				ps.addBatch();
+			}
+			ps.executeBatch();
+			
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		
 	}
 
 	@Override
 	public void delete(ArrayList<LayoutItem> layoutItemList) {
 		Connection con = DBConnection.getInstance().getDBcon();
-	    try (
-		    	 PreparedStatement ps = con.prepareStatement(
-		    			"delete from dbo.LayoutItems where layoutItemID = ?");) {
-		    	for(LayoutItem layoutItem : layoutItemList) {
-					ps.setLong(1, layoutItem.getId());
-		    		ps.addBatch();
-		    	}
-		    	ps.executeBatch();
-		    } catch (SQLException ex) {
+	    try(PreparedStatement ps = con.prepareStatement(
+	    		"delete from dbo.LayoutItems where layoutItemID = ?");
+	    ){
+		    for(LayoutItem layoutItem : layoutItemList) {
+				ps.setLong(1, layoutItem.getId());
+		    	ps.addBatch();
+		    }
+		    ps.executeBatch();
+		} 
+	    catch (SQLException ex) {
 		            System.out.println(ex.getMessage());
-		        }	
-		
+		}	
 	}
 	
 	public static LayoutItemConcreteDAO getInstance() {

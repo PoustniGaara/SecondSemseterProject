@@ -8,12 +8,9 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 import model.LayoutItem;
 import model.RestaurantLayout;
-import model.Table;
 
  public class RestaurantLayoutConcreteDAO implements RestaurantLayoutDAO {
 	 
@@ -25,13 +22,48 @@ import model.Table;
 
 	@Override
 	public ArrayList<RestaurantLayout> read() {
-		// TODO Auto-generated method stub
+		ArrayList<RestaurantLayout> listOfRestaurantLayouts = new ArrayList<>();
+		try(Connection con = DBConnection.getInstance().getDBcon();
+			Statement st = con.createStatement();
+		){
+			ResultSet rs = st.executeQuery("select * from dbo.RestaurantLayouts");
+			while(rs.next()) {
+				HashMap<Point,LayoutItem> itemMap = 
+						LayoutItemConcreteDAO.getInstance().getLayoutItems(rs.getLong("restaurantLayoutID"));
+				RestaurantLayout restaurantLayout = new RestaurantLayout(rs.getString("name"),
+						rs.getInt("locationX"), rs.getInt("locationY"),itemMap);
+				listOfRestaurantLayouts.add(restaurantLayout);
+			}
+			return listOfRestaurantLayouts;
+		}
+		catch(SQLException e){
+			e.printStackTrace();
+		}
 		return null;
 	}
-
+	
 	@Override
-	public void update(RestaurantLayout restaurantLayout) {
-		
+	public void update(RestaurantLayout restaurantLayout) throws SQLException {
+		Connection con = DBConnection.getInstance().getDBcon();
+		try(PreparedStatement ps = con.prepareStatement("update dbo.RestaurantLayout set name = ?,"
+				+ "set sizeX = ? , set sizeY = ? where restaurantLayoutID = ?")) {
+			con.setAutoCommit(false);
+			ps.setString(1, restaurantLayout.getName());
+			ps.setInt(2, restaurantLayout.getSizeX());
+			ps.setInt(3, restaurantLayout.getSizeY());
+			ps.setLong(4, restaurantLayout.getId());
+			LayoutItemConcreteDAO.getInstance().update(restaurantLayout.getItemMap(), restaurantLayout.getId());
+			TableConcreteDAO.getInstance().update(restaurantLayout.getTableList());
+			con.commit();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			con.rollback();
+		}
+		finally{
+//			DBConnection.closeConnection();
+			con.setAutoCommit(true);
+		}
 	}
 
 	@Override
@@ -64,15 +96,14 @@ import model.Table;
 		Connection con = DBConnection.getInstance().getDBcon();
 		try{
 			con.setAutoCommit(false);
-			Long restaurantLayoutID = 
-					createRestaurantLayout(restaurantLayout);
-					LayoutItemConcreteDAO.getInstance().createLayoutItems(restaurantLayout,restaurantLayoutID);
-			TableConcreteDAO.getInstance().createTables(restaurantLayout,restaurantLayoutID);
-			System.out.println("commit is = " + con.getAutoCommit());
+			long restaurantLayouID = createRestaurantLayout(restaurantLayout);
+					LayoutItemConcreteDAO.getInstance().createLayoutItems(restaurantLayout.getItemMap(),
+							restaurantLayouID);
+			TableConcreteDAO.getInstance().createTables(restaurantLayout.getItemMap(),
+					restaurantLayouID);
 			con.commit();
 		}
 		catch(SQLException e){
-		   // If there is any error.
 			e.printStackTrace();
 			con.rollback();
 		}
@@ -99,7 +130,9 @@ import model.Table;
 		    	 throw new SQLException("Creating user failed, no rows affected.");
 		        
 		     try (ResultSet generatedKeys = ps.getGeneratedKeys()) {
-		         if(generatedKeys.next()) return generatedKeys.getLong(1);
+		         if(generatedKeys.next()) { restaurantLayout.setId(generatedKeys.getLong(1));
+		         return restaurantLayout.getId();
+		         }
 		         else throw new SQLException("Creating restaurant layout failed, no ID obtained.");
 		           
 		        }
@@ -133,8 +166,6 @@ import model.Table;
 //		return null;
 //	}
 	
-
-
 	@Override
 	public RestaurantLayout getRestaurantLayoutByName(String name) {
 		long restaurantLayoutID = 0;
@@ -162,24 +193,6 @@ import model.Table;
 		return null;
 	}
 	
-//	@Override
-//	public Integer getRestaurantLayoutID(String restaurantLayoutName) {
-//		Integer id = null;
-//		try(Connection con = DBConnection.getInstance().getDBcon();
-//			PreparedStatement ps = con.prepareStatement("select restaurantLayoutID"
-//					+ " from dbo.RestaurantLayouts where name = ?");
-//		){
-//			ResultSet rs = ps.executeQuery();
-//			while(rs.next()) {
-//				id = rs.getInt("restaurantLayoutID"); 
-//			}	
-//		}
-//		catch(Exception e) {
-//			e.printStackTrace();
-//		}
-//		return id;
-//	}
-
 	public static RestaurantLayoutConcreteDAO getInstance() {
 		if(instance == null) return new RestaurantLayoutConcreteDAO();
 		else return instance;

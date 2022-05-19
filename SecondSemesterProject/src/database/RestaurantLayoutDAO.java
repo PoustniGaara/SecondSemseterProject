@@ -18,7 +18,7 @@ public interface RestaurantLayoutDAO {
 
 	Long createRestaurantLayout(RestaurantLayout restaurantLayout);
 	
-	void update(RestaurantLayout restaurantLayout);
+	void update(RestaurantLayout restaurantLayout) throws SQLException;
 
 	void delete(String restaurantLayoutName) throws SQLException;
 	

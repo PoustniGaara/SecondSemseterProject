@@ -16,15 +16,13 @@ public interface TableDAO {
 
 	Table read(int id);
 	
-	ArrayList<Table> getTableListByRestaurantLayout(RestaurantLayout restaurantLayout,  long restaurantLayoutID);
+	ArrayList<Table> getTableList(HashMap<Point,LayoutItem> itemMap, long restaurantLayoutID);
 
-	void create(Table table);
-
-	void update(Table table);
+	void update(ArrayList<Table> tableList);
 
 	void delete(ArrayList<Table> tableList);
 	
-	void createTables(RestaurantLayout restaurantLayout, Long restaurantLayoutID);
+	void createTables(HashMap<Point,LayoutItem> itemMap, long restaurantLayoutID);
 	
 	HashMap<Point, LayoutItem> getTableMap(long restaurantLayoutID);
 	
