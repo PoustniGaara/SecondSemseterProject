@@ -85,7 +85,7 @@ public class ReservationConcreteDAO implements ReservationDAO {
 			con.setAutoCommit(false);
 			
 			createReservation(reservation);
-			reservation.setId(1);
+			System.out.println(reservation.getId());
 			ReservedMenusConcreteDAO.getInstance().create(reservation);
 			ReservedTablesConcreteDAO.getInstance().create(reservation);
 			
@@ -106,13 +106,18 @@ public class ReservationConcreteDAO implements ReservationDAO {
 		try {
 			PreparedStatement ps = con
 					.prepareStatement("INSERT INTO dbo.Reservations (timestamp, duration, noOfGuests, note, customerPhone)"
-							+ "VALUES (DEFAULT,?,?,?,?)");		
+							+ "VALUES (DEFAULT,?,?,?,?)", Statement.RETURN_GENERATED_KEYS);		
 			
 			ps.setInt(1, reservation.getDuration());
 			ps.setInt(2, reservation.getGuests());
 			ps.setString(3, reservation.getNote());
 			ps.setString(4, reservation.getCustomer().getPhone());
 			ps.execute();
+			
+			ResultSet rs = ps.getGeneratedKeys();
+			while (rs.next()) {
+		         reservation.setId(rs.getInt(1));
+		      }
 
 		} catch (SQLException e) {
 			e.printStackTrace();

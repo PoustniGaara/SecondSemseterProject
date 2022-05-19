@@ -28,8 +28,9 @@ public class ReservedTablesConcreteDAO implements ReservedTablesDAO{
 				.prepareStatement("INSERT INTO dbo.ReservedTables (layoutItemID, reservationID)"
 						+ "VALUES (?,?)");
 
-        		ps.setLong(1, reservation.getTables().get(0).getId());
+        		ps.setLong(1, 4);
         		ps.setInt(2, reservation.getId());
+        		ps.execute();
         		
         	/*for (Table a : reservation.getTables()) {
         		ps.setLong(1, a.getId());
