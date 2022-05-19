@@ -25,25 +25,25 @@ public class LayoutItemConcreteDAO implements LayoutItemDAO {
 	
 	@Override
 	public HashMap<Point, LayoutItem> getLayoutItems(long restaurantLayoutID) {
+		HashMap<Point, LayoutItem> tableMap = TableConcreteDAO.getInstance().getTableMap(restaurantLayoutID);
+		Connection con = DBConnection.getInstance().getDBcon();
 		HashMap<Point, LayoutItem> itemMap = new HashMap<>();
-		try(Connection con = DBConnection.getInstance().getDBcon();
-				PreparedStatement ps = con.prepareStatement(" select * from dbo.LayoutItems where restaurantLayoutID = ?");
-				){
+		try(PreparedStatement ps = con.prepareStatement(" select * from dbo.LayoutItems where restaurantLayoutID = ?");
+		){
 			ps.setLong(1, restaurantLayoutID);
 			ResultSet rs = ps.executeQuery();
 			while(rs.next()) {
 				if(!rs.getString("type").equals("table")) {
-					LayoutItem layoutItem = new LayoutItem(rs.getNString("name"), rs.getNString("type"));
+					LayoutItem layoutItem = new LayoutItem(rs.getString("name"), rs.getString("type"));
 					layoutItem.setId(rs.getLong("layoutItemUD"));
 					itemMap.put(new Point(rs.getInt("locationX"),rs.getInt("locationY")),layoutItem);
 				}
 			}
-		HashMap<Point, LayoutItem> tableMap = TableConcreteDAO.getInstance().getTableMap(restaurantLayoutID);
+
 		itemMap.putAll(tableMap);
 		return itemMap;
 		}
 		catch(SQLException e) {
-			
 		}
 		return null;
 	}
@@ -105,7 +105,7 @@ public class LayoutItemConcreteDAO implements LayoutItemDAO {
 		    ps.executeBatch();
 		} 
 	    catch (SQLException ex) {
-		            System.out.println(ex.getMessage());
+	    	System.out.println(ex.getMessage());
 		}	
 	}
 	

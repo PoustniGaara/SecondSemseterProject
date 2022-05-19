@@ -165,7 +165,7 @@ public class TableConcreteDAO implements TableDAO {
 			ResultSet rs = ps.executeQuery();
 			while(rs.next()) {
 				if(rs.getString("type").equals("table")) {
-					Table table = new Table(rs.getNString("name"), rs.getNString("type"), rs.getInt("capacity"));
+					Table table = new Table(rs.getString("name"), rs.getString("type"), rs.getInt("capacity"));
 					table.setId(rs.getLong("layoutItemID"));
 					tableMap.put(new Point(rs.getInt("locationX"),rs.getInt("locationY")),table);
 				}

@@ -68,8 +68,8 @@ import model.RestaurantLayout;
 
 	@Override
 	public void delete(String restaurantLayoutName) throws SQLException {
-		Connection con = DBConnection.getInstance().getDBcon();
 		RestaurantLayout restaurantLayout = getRestaurantLayoutByName(restaurantLayoutName);
+		Connection con = DBConnection.getInstance().getDBcon();
 		try(PreparedStatement ps = con.prepareStatement("DELETE FROM dbo.RestaurantLayouts WHERE name = ?")
 			){
 			con.setAutoCommit(false);
@@ -142,39 +142,16 @@ import model.RestaurantLayout;
 		}
 		return null;
 	}
-
-//	public Map<Point, LayoutItem> getUpdatedItemMapByTableID(RestaurantLayout restaurantLayout) {
-//		Map<Point, LayoutItem> itemMap = new HashMap<>(restaurantLayout.getItemMap());
-//		try(Connection con = DBConnection.getInstance().getDBcon();
-//				PreparedStatement ps = con.prepareStatement("select layoutItemID"
-//						+ " from dbo.LayoutItems where restaurantLayoutID = ? and type = ?");
-//			){
-//			ps.setInt(1, getRestaurantLayoutID(restaurantLayout.getName()));
-//			ps.setString(2, "table");
-//			ResultSet rs = ps.executeQuery();
-//			while(rs.next()) {
-//					Table table = (Table) itemMap.get(new Point(rs.getInt("locationX"),
-//							rs.getInt("locationY")));
-//					table.setId(rs.getInt("layoutItemID"));
-//					itemMap.replace(new Point(rs.getInt("locationX"),rs.getInt("locationY")), table);
-//			}
-//			return itemMap;
-//		} catch (SQLException e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		}
-//		return null;
-//	}
 	
 	@Override
 	public RestaurantLayout getRestaurantLayoutByName(String name) {
+		Connection con = DBConnection.getInstance().getDBcon();
 		long restaurantLayoutID = 0;
 		String restaurantLayoutName = null;
 		int sizeX = 0;
 		int sizeY = 0;
 		HashMap<Point, LayoutItem> itemMap;
-		try(Connection con = DBConnection.getInstance().getDBcon();
-			PreparedStatement ps = con.prepareStatement(" select * from dbo.RestaurantLayouts where name = ?");
+		try(PreparedStatement ps = con.prepareStatement(" select * from dbo.RestaurantLayouts where name = ?");
 			){
 			ps.setString(1, name);
 			ResultSet rs = ps.executeQuery();
@@ -197,7 +174,5 @@ import model.RestaurantLayout;
 		if(instance == null) return new RestaurantLayoutConcreteDAO();
 		else return instance;
 	}
-
-
 
 }
