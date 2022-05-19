@@ -43,6 +43,10 @@ public class ReservationController {
 	public Reservation getReservationById(int id) {
 		return reservationDAO.read(id);
 	}
+	
+	public Reservation getCompleteReservationById(int id) {
+		return reservationDAO.readAll(id);
+	}
 
 	public ArrayList<Reservation> getAllReservations() {
 		return reservationDAO.read();

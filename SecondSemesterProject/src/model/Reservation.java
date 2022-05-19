@@ -82,4 +82,5 @@ public class Reservation {
 	public void setMenus(ArrayList<Menu> menus) {
 		this.menus = menus;
 	}
+	
 }

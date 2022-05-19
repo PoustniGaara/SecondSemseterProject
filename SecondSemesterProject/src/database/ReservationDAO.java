@@ -10,6 +10,8 @@ public interface ReservationDAO {
 	ArrayList<Reservation> read();
 
 	Reservation read(int id);
+	
+	Reservation readAll(int id);
 
 	void create(Reservation reservation) throws SQLException;
 
