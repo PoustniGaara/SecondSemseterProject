@@ -34,7 +34,7 @@ public class MenuConcreteDAO implements MenuDAO {
 			while (menusResultSet.next()) {
 				String name = menusResultSet.getString("name");
 				int menuid = menusResultSet.getInt("menuID");
-				Menu menu = new Menu(name, null);
+				Menu menu = new Menu(name, MealConcreteDAO.getInstance().getMenuMeals(menuid));
 				menus.add(menu);
 			}
 		} catch (SQLException e) {
@@ -51,12 +51,10 @@ public class MenuConcreteDAO implements MenuDAO {
 
 		try {
 			Statement menusStatement = con.createStatement();
-			ResultSet menusResultSet = menusStatement.executeQuery("SELECT * FROM Meals WHERE menuID = " + id);
+			ResultSet menusResultSet = menusStatement.executeQuery("SELECT * FROM Menus WHERE menuID = " + id);
 			while (menusResultSet.next()) {
 				String name = menusResultSet.getString("name");
-				String description = menusResultSet.getString("description");
-				float price = menusResultSet.getFloat("price");
-				Menu menu = new Menu(name, null);
+				Menu menu = new Menu(name, MealConcreteDAO.getInstance().getMenuMeals(id));
 				return menu;
 			}
 		} catch (SQLException e) {

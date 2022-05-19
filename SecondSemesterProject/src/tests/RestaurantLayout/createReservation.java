@@ -6,65 +6,69 @@ import static org.junit.jupiter.api.Assertions.fail;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
+import java.util.GregorianCalendar;
 
 import org.junit.After;
 import org.junit.Before;
 import org.junit.jupiter.api.Test;
 
 import controller.ReservationController;
+import database.MenuConcreteDAO;
+import database.TableConcreteDAO;
+import model.Customer;
 import model.Menu;
 import model.Reservation;
 import model.Table;
 
 public class createReservation {
-	
+
 	ReservationController cntrl;
-	
+
 	@Before
 	public void setUp() {
-		 cntrl = new ReservationController();
 	}
 
 	@Test
 	void test() throws SQLException {
-		//Arrange
-		 cntrl = new ReservationController();
+		// Arrange
+		cntrl = new ReservationController();
 
-		Calendar calendar = Calendar.getInstance();
+		Calendar calendar = new GregorianCalendar();
+		calendar.setTimeInMillis(System.currentTimeMillis());
+
 		ArrayList<Table> tables = new ArrayList<>();
-		Table table = new Table("test", "test", 0);
-		table.setId(1);
-		tables.add(table);
+		Table table1 = TableConcreteDAO.getInstance().read(1);
+		Table table2 = TableConcreteDAO.getInstance().read(2);
+		tables.add(table1);
+		tables.add(table2);
+
+		Reservation reservation = cntrl.createReservation(calendar, tables);
+
 		ArrayList<Menu> menus = new ArrayList<>();
-		Menu menu = new Menu("Hehe", null);
-		menu.setID(1);
-		menus.add(menu);
-		
-		cntrl.createReservation(calendar, tables);
+		menus.add(MenuConcreteDAO.getInstance().read(1));
 		
 		String phone = "52785254";
-		
-		String name = cntrl.setPhone(phone).getName();
-		String sureName = cntrl.setPhone(phone).getSurname();
-		String note = "somebody work hard today";
-		
-		cntrl.confirmReservation(name, sureName, phone, 10, menus, note);
-		
-		Reservation reservation = new Reservation(calendar, tables);
-		reservation.setCustomer(cntrl.setPhone(phone));
+		Customer customer = cntrl.setPhone(phone);
+
+		String note = "Please, decorate the table with flowers :)";
+
+		cntrl.confirmReservation(customer, 11, menus, note);
+
+		reservation.setCustomer(customer);
 		reservation.setTables(tables);
 		reservation.setMenus(menus);
-		
-		//Act
-		
-		//Assert	
+
+		// Act
+
+		// Assert
 		assertEquals(reservation, cntrl.getReservationById(1));
 	}
-	
+
 	/** Fixture for pay station testing. */
 	@After
 	public void cleanUp() {
 //		ps.setReady();
 	}
-	
+
 }

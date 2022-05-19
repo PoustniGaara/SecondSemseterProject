@@ -5,7 +5,7 @@ import java.util.Calendar;
 
 public class Reservation {
 
-	private int id;
+	private Long id;
 	private Calendar timestamp;
 	private int duration = 2;
 	private int guests;
@@ -19,7 +19,7 @@ public class Reservation {
 		this.tables = tables;
 	}
 
-	public int getId() {
+	public Long getId() {
 		return id;
 	}
 
@@ -51,7 +51,7 @@ public class Reservation {
 		return menus;
 	}
 
-	public void setId(int id) {
+	public void setId(Long id) {
 		this.id = id;
 	}
 

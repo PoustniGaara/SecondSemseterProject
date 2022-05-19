@@ -16,22 +16,24 @@ public class ReservationController {
 	private Reservation reservation;
 	private CustomerController control = new CustomerController();
 
-	public void createReservation(Calendar timestamp, ArrayList<Table> tables) {
+	public Reservation createReservation(Calendar timestamp, ArrayList<Table> tables) {
 		reservation = new Reservation(timestamp, tables);
+		return reservation;
 	}
 
-	public void confirmReservation(String name, String surname, String phone, int guests, ArrayList<Menu> menus, String note) throws SQLException {
+	public void confirmReservation(Customer customer, int guests, ArrayList<Menu> menus, String note)
+			throws SQLException {
 		reservation.setGuests(guests);
 		reservation.setMenus(menus);
 		reservation.setNote(note);
-		
-		if(setPhone(phone) != null) {
-			reservation.setCustomer(setPhone(phone));
+
+		if (customer != null) {
+			reservation.setCustomer(customer);
 		} else {
-			control.createCustomer(new Customer (name, surname, null, phone, null, null, null, null));
+			control.createCustomer(customer);
 		}
-		
-		createReservation(reservation);
+		System.out.println(reservation.getCustomer().getName() + ", " + reservation.getTables().toString());
+		reservationDAO.create(reservation);
 	}
 
 	public ReservationController() {
@@ -46,10 +48,6 @@ public class ReservationController {
 		return reservationDAO.read();
 	}
 
-	private void createReservation(Reservation reservation) throws SQLException {
-		reservationDAO.create(reservation);
-	}
-
 	public void updateReservation(Reservation reservation) {
 		reservationDAO.update(reservation);
 	}
@@ -57,7 +55,7 @@ public class ReservationController {
 	public void deleteReservation(Reservation reservation) {
 		reservationDAO.delete(reservation);
 	}
-	
+
 	public Customer setPhone(String phone) {
 		if (control.findByPhone(phone) != null) {
 			return control.findByPhone(phone);
