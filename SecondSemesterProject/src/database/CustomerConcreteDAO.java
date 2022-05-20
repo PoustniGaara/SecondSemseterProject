@@ -44,9 +44,7 @@ public class CustomerConcreteDAO implements CustomerDAO {
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
-		} finally {
-			DBConnection.closeConnection();
-		}
+		} 
 		return customers;
 	}
 
@@ -70,9 +68,7 @@ public class CustomerConcreteDAO implements CustomerDAO {
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
-		} finally {
-			DBConnection.closeConnection();
-		}
+		} 
 		return null;
 	}
 
@@ -94,8 +90,6 @@ public class CustomerConcreteDAO implements CustomerDAO {
 			ps.execute();
 		} catch (SQLException e) {
 			e.printStackTrace();
-		} finally {
-			DBConnection.closeConnection();
 		}
 	}
 
@@ -108,9 +102,7 @@ public class CustomerConcreteDAO implements CustomerDAO {
 			ps.execute();
 		} catch (SQLException e) {
 			e.printStackTrace();
-		} finally {
-			DBConnection.closeConnection();
-		}
+		} 
 	}
 
 }

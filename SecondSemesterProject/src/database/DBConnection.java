@@ -54,17 +54,6 @@ public class DBConnection {
 		}
 	}
 
-	public static void closeConnection() {
-//		try {
-//			con.close();
-//			instance = null;
-//			System.out.println("Database connection was closed");
-//		} catch (Exception e) {
-//			System.out.println("Error trying to close the connection to the database.");
-//			e.printStackTrace();
-//		}
-	}
-
 	public Connection getDBcon() {
 		return con;
 	}

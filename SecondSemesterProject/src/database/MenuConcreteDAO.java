@@ -40,9 +40,7 @@ public class MenuConcreteDAO implements MenuDAO {
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
-		} finally {
-			DBConnection.closeConnection();
-		}
+		} 
 		return menus;
 	}
 
@@ -61,8 +59,6 @@ public class MenuConcreteDAO implements MenuDAO {
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
-		} finally {
-			DBConnection.closeConnection();
 		}
 		return null;
 	}
@@ -103,9 +99,7 @@ public class MenuConcreteDAO implements MenuDAO {
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
-		} finally {
-			DBConnection.closeConnection();
-		}
+		} 
 		return menus;
 	}
 }

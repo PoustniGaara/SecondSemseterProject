@@ -49,8 +49,6 @@ public class ReservationConcreteDAO implements ReservationDAO {
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
-		} finally {
-			DBConnection.closeConnection();
 		}
 		return reservations;
 	}
@@ -72,8 +70,6 @@ public class ReservationConcreteDAO implements ReservationDAO {
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
-		} finally {
-			DBConnection.closeConnection();
 		}
 		return null;
 	}
@@ -107,8 +103,6 @@ public class ReservationConcreteDAO implements ReservationDAO {
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
-		} finally {
-			DBConnection.closeConnection();
 		}
 		return null;
 	}
@@ -172,8 +166,6 @@ public class ReservationConcreteDAO implements ReservationDAO {
 			ps.execute();
 		} catch (SQLException e) {
 			e.printStackTrace();
-		} finally {
-			DBConnection.closeConnection();
 		}
 	}
 
@@ -194,8 +186,6 @@ public class ReservationConcreteDAO implements ReservationDAO {
 			ps.execute();
 		} catch (SQLException e) {
 			e.printStackTrace();
-		} finally {
-			DBConnection.closeConnection();
 		}
 	}
 

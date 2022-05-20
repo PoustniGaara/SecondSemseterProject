@@ -40,8 +40,6 @@ public class MealConcreteDAO implements MealDAO {
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
-		} finally {
-			DBConnection.closeConnection();
 		}
 		return meals;
 	}
@@ -62,9 +60,7 @@ public class MealConcreteDAO implements MealDAO {
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
-		} finally {
-			DBConnection.closeConnection();
-		}
+		} 
 		return null;
 	}
 
@@ -104,9 +100,7 @@ public class MealConcreteDAO implements MealDAO {
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
-		} finally {
-			DBConnection.closeConnection();
-		}
+		} 
 		return meals;
 	}
 }
