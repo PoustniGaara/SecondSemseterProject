@@ -21,7 +21,7 @@ public class LayoutItemConcreteDAO implements LayoutItemDAO {
 	}
 	
 	@Override
-	public HashMap<Point, LayoutItem> getLayoutItems(long restaurantLayoutID) {
+	public HashMap<Point, LayoutItem> getLayoutItems(long restaurantLayoutID) throws SQLException {
 		HashMap<Point, LayoutItem> tableMap = TableConcreteDAO.getInstance().getTableMap(restaurantLayoutID);
 		Connection con = DBConnection.getInstance().getDBcon();
 		HashMap<Point, LayoutItem> itemMap = new HashMap<>();
@@ -41,14 +41,16 @@ public class LayoutItemConcreteDAO implements LayoutItemDAO {
 		return itemMap;
 		}
 		catch(SQLException e) {
+			e.printStackTrace();
+			throw new SQLException("Error in getting LayoutItems:"+ e.getMessage());
 		}
-		return null;
 	}
 	
 	@Override
-	public void createLayoutItems(HashMap<Point,LayoutItem> itemMap, long restaurantLayoutID) {
+	public void createLayoutItems(HashMap<Point,LayoutItem> itemMap, long restaurantLayoutID) throws SQLException {
 		Connection con = DBConnection.getInstance().getDBcon();
-        try (PreparedStatement ps = con.prepareStatement("insert into dbo.LayoutItems(name,type,"
+		try (
+        		PreparedStatement ps = con.prepareStatement("insert into dbo.LayoutItems(name,type,"
         				+ "locationX,locationY,restaurantLayoutID) values(?,?,?,?,?)")
         	) {
         	for (Map.Entry<Point,LayoutItem> entry : itemMap.entrySet()) {
@@ -61,13 +63,14 @@ public class LayoutItemConcreteDAO implements LayoutItemDAO {
         		}
         	ps.executeBatch();
 	
-        } catch (SQLException ex) {
-        	System.out.println(ex.getMessage());
+        } catch (SQLException e) {
+			e.printStackTrace();
+			throw new SQLException("Error in creating LayoutItems:"+ e.getMessage());
         	}
 	}
 
 	@Override
-	public void update(HashMap<Point,LayoutItem> itemMap, long restaurantLayoutID) {
+	public void update(HashMap<Point,LayoutItem> itemMap, long restaurantLayoutID) throws SQLException {
 		Connection con = DBConnection.getInstance().getDBcon();
 		try(PreparedStatement ps = con.prepareStatement("update dbo.LayoutItems set name = ?, type = ?,"
 				+ "locationX = ?, locationY = ? where restaurantLayouID = ?");
@@ -83,14 +86,14 @@ public class LayoutItemConcreteDAO implements LayoutItemDAO {
 			ps.executeBatch();
 			
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
+			throw new SQLException("Error in updating LayoutItems:"+ e.getMessage());
 		}
 		
 	}
 
 	@Override
-	public void delete(ArrayList<LayoutItem> layoutItemList) {
+	public void delete(ArrayList<LayoutItem> layoutItemList) throws SQLException {
 		Connection con = DBConnection.getInstance().getDBcon();
 	    try(PreparedStatement ps = con.prepareStatement(
 	    		"delete from dbo.LayoutItems where layoutItemID = ?");
@@ -101,8 +104,9 @@ public class LayoutItemConcreteDAO implements LayoutItemDAO {
 		    }
 		    ps.executeBatch();
 		} 
-	    catch (SQLException ex) {
-	    	System.out.println(ex.getMessage());
+	    catch (SQLException e) {
+			e.printStackTrace();
+			throw new SQLException("Error in deleting LayoutItems:"+ e.getMessage());
 		}	
 	}
 	

@@ -16,7 +16,7 @@ public class RestaurantLayoutController {
 		restaurantLayoutDAO = RestaurantLayoutConcreteDAO.getInstance();
 	}
 	
-	public void createRestaurantLayout(RestaurantLayout restaurantLayout) {
+	public void createRestaurantLayout(RestaurantLayout restaurantLayout) throws SQLException {
 		restaurantLayoutDAO.createRestaurantLayout(restaurantLayout);
 	}
 	

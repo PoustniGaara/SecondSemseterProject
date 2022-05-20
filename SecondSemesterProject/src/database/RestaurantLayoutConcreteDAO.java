@@ -21,7 +21,7 @@ import model.RestaurantLayout;
 	 }
 
 	@Override
-	public ArrayList<RestaurantLayout> read() {
+	public ArrayList<RestaurantLayout> read() throws SQLException {
 		ArrayList<RestaurantLayout> listOfRestaurantLayouts = new ArrayList<>();
 		try(Connection con = DBConnection.getInstance().getDBcon();
 			Statement st = con.createStatement();
@@ -38,8 +38,8 @@ import model.RestaurantLayout;
 		}
 		catch(SQLException e){
 			e.printStackTrace();
+			throw new SQLException("Error in getting RestaurantLayouts from DB:"+ e.getMessage());
 		}
-		return null;
 	}
 	
 	@Override
@@ -56,12 +56,11 @@ import model.RestaurantLayout;
 			TableConcreteDAO.getInstance().update(restaurantLayout.getTableList());
 			con.commit();
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
 			con.rollback();
+			e.printStackTrace();
+			throw new SQLException("Error in updating RestaurantLayout:"+ e.getMessage());
 		}
 		finally{
-//			DBConnection.closeConnection();
 			con.setAutoCommit(true);
 		}
 	}
@@ -76,6 +75,7 @@ import model.RestaurantLayout;
 		}
 		catch(SQLException e){
 			e.printStackTrace();
+			throw new SQLException("Error in deleting RestaurantLayout:"+ e.getMessage());
 		}
 	}
 
@@ -93,17 +93,17 @@ import model.RestaurantLayout;
 			con.commit();
 		}
 		catch(SQLException e){
-			e.printStackTrace();
 			con.rollback();
+			e.printStackTrace();
+			throw new SQLException("Error in saving RestaurantLayout:"+ e.getMessage());
 		}
 		finally{
-//			DBConnection.closeConnection();
 			con.setAutoCommit(true);
 		}
 	}
 	
 	@Override
-	public Long createRestaurantLayout(RestaurantLayout restaurantLayout) {
+	public Long createRestaurantLayout(RestaurantLayout restaurantLayout) throws SQLException {
 		Connection con = DBConnection.getInstance().getDBcon();
 		try(
 			PreparedStatement ps = con.prepareStatement("insert into dbo.RestaurantLayouts("
@@ -126,8 +126,8 @@ import model.RestaurantLayout;
 		}
 		catch(Exception e) {
 			e.printStackTrace();
+			throw new SQLException("Error in creating RestaurantLayout:"+ e.getMessage());
 		}
-		return null;
 	}
 	
 	@Override
@@ -140,6 +140,7 @@ import model.RestaurantLayout;
 		HashMap<Point, LayoutItem> itemMap;
 		try(PreparedStatement ps = con.prepareStatement(" select * from dbo.RestaurantLayouts where name = ?");
 			){
+			con.setAutoCommit(false);
 			ps.setString(1, name);
 			ResultSet rs = ps.executeQuery();
 			while(rs.next()) {
@@ -153,11 +154,11 @@ import model.RestaurantLayout;
 		}
 		catch(Exception e) {
 			e.printStackTrace();
+			throw new SQLException("Error in getting RestaurantLayout:"+ e.getMessage());
 		}
 		finally {
-//			con.close();
+			con.setAutoCommit(true);
 		}
-		return null;
 	}
 	
 	public static RestaurantLayoutConcreteDAO getInstance() {

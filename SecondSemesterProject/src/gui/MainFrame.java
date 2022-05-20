@@ -28,7 +28,6 @@ public class MainFrame extends JFrame {
 	private ReservationsPanel reservationsPanel;
 	private JPanel currentPanel;
 	
-	
 	public static void main(String[] args) {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
@@ -42,7 +41,6 @@ public class MainFrame extends JFrame {
 		});
 	}
 
-	
 	private MainFrame() {
 		
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -88,8 +86,6 @@ public class MainFrame extends JFrame {
 		menuPanel.setVisible(true);
 		currentPanel = menuPanel;
 	}
-
-	
 	public void setupScreen() {
 		loginPanel.setVisible(false);
 		
@@ -98,7 +94,6 @@ public class MainFrame extends JFrame {
 		this.add(mainPanel);
 		
 		currentPanel = overviewPanel;
-		
 	}
 	
 	private void openLoginPanel() {

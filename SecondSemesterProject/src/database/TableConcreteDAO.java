@@ -30,7 +30,7 @@ public class TableConcreteDAO implements TableDAO {
 	}
 
 	@Override
-	public void createTables(HashMap<Point, LayoutItem> itemMap, long restaurantLayoutID) {
+	public void createTables(HashMap<Point, LayoutItem> itemMap, long restaurantLayoutID) throws SQLException {
 		ArrayList<Table> tableList = getTableList(itemMap, restaurantLayoutID);
 		Connection con = DBConnection.getInstance().getDBcon();
 		try (PreparedStatement ps = con
@@ -41,13 +41,13 @@ public class TableConcreteDAO implements TableDAO {
 				ps.addBatch();
 			}
 			ps.executeBatch();
-		} catch (SQLException ex) {
-			
-			System.out.println(ex.getMessage());
+		} catch (SQLException e) {
+			e.printStackTrace();
+			throw new SQLException("Error in creating Tables:"+ e.getMessage());
 		}
 	}
 
-	public ArrayList<Table> getReservationTables(int reservationid) {
+	public ArrayList<Table> getReservationTables(int reservationid) throws SQLException {
 		Connection con = DBConnection.getInstance().getDBcon();
 		ArrayList<Table> tables = new ArrayList<Table>();
 
@@ -64,18 +64,16 @@ public class TableConcreteDAO implements TableDAO {
 				Table table = new Table(name, type, capacity);
 				tables.add(table);
 			}
+			return tables;
 		} catch (SQLException e) {
 			e.printStackTrace();
-		} finally {
-//			DBConnection.closeConnection();
+			throw new SQLException("Error in getting reservationTables:"+ e.getMessage());
 		}
-		return tables;
 	}
 
-	public ArrayList<Table> read() {
+	public ArrayList<Table> read() throws SQLException {
 		Connection con = DBConnection.getInstance().getDBcon();
 		ArrayList<Table> tables = new ArrayList<Table>();
-
 		try {
 			Statement tablesStatement = con.createStatement();
 			ResultSet tablesResultSet = tablesStatement.executeQuery(
@@ -90,17 +88,15 @@ public class TableConcreteDAO implements TableDAO {
 				table.setId(id);
 				tables.add(table);
 			}
+			return tables;
 		} catch (SQLException e) {
 			e.printStackTrace();
-		} finally {
-//			DBConnection.closeConnection();
+			throw new SQLException("Error in getting Tables:"+ e.getMessage());
 		}
-		return tables;
 	}
 
-	public Table read(int id) {
+	public Table read(int id) throws SQLException {
 		Connection con = DBConnection.getInstance().getDBcon();
-
 		try {
 			Statement tablesStatement = con.createStatement();
 			ResultSet tablesResultSet = tablesStatement.executeQuery(
@@ -117,14 +113,12 @@ public class TableConcreteDAO implements TableDAO {
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
-		} finally {
-//			DBConnection.closeConnection();
 		}
 		return null;
 	}
 
 	@Override
-	public void update(ArrayList<Table> tableList) {
+	public void update(ArrayList<Table> tableList) throws SQLException {
 		Connection con = DBConnection.getInstance().getDBcon();
 		try (PreparedStatement ps = con.prepareStatement("update dbo.Tables capacity = ? where layoutItemID = ?");) {
 			for (Table table : tableList) {
@@ -139,7 +133,7 @@ public class TableConcreteDAO implements TableDAO {
 	}
 
 	@Override
-	public void delete(ArrayList<Table> tableList) {
+	public void delete(ArrayList<Table> tableList) throws SQLException {
 		Connection con = DBConnection.getInstance().getDBcon();
 		try (PreparedStatement ps = con.prepareStatement("delete from dbo.Tables where layoutItemID = ?");) {
 			for (Table table : tableList) {
@@ -153,7 +147,7 @@ public class TableConcreteDAO implements TableDAO {
 	}
 
 	@Override
-	public HashMap<Point, LayoutItem> getTableMap(long restaurantLayoutID) {
+	public HashMap<Point, LayoutItem> getTableMap(long restaurantLayoutID) throws SQLException {
 		HashMap<Point, LayoutItem> tableMap = new HashMap<>();
 		try (Connection con = DBConnection.getInstance().getDBcon();
 				PreparedStatement ps = con.prepareStatement(
@@ -177,7 +171,7 @@ public class TableConcreteDAO implements TableDAO {
 	}
 
 	@Override
-	public ArrayList<Table> getTableList(HashMap<Point, LayoutItem> itemMap, long restaurantLayoutID) {
+	public ArrayList<Table> getTableList(HashMap<Point, LayoutItem> itemMap, long restaurantLayoutID) throws SQLException {
 		ArrayList<Table> tableList = new ArrayList<>();
 		Connection con = DBConnection.getInstance().getDBcon();
 		try (PreparedStatement ps = con
