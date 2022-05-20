@@ -140,7 +140,6 @@ import model.RestaurantLayout;
 		HashMap<Point, LayoutItem> itemMap;
 		try(PreparedStatement ps = con.prepareStatement(" select * from dbo.RestaurantLayouts where name = ?");
 			){
-			con.setAutoCommit(false);
 			ps.setString(1, name);
 			ResultSet rs = ps.executeQuery();
 			while(rs.next()) {
@@ -155,9 +154,6 @@ import model.RestaurantLayout;
 		catch(Exception e) {
 			e.printStackTrace();
 			throw new SQLException("Error in getting RestaurantLayout:"+ e.getMessage());
-		}
-		finally {
-			con.setAutoCommit(true);
 		}
 	}
 	

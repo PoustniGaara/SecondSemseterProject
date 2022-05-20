@@ -32,11 +32,10 @@ public class LayoutItemConcreteDAO implements LayoutItemDAO {
 			while(rs.next()) {
 				if(!rs.getString("type").equals("table")) {
 					LayoutItem layoutItem = new LayoutItem(rs.getString("name"), rs.getString("type"));
-					layoutItem.setId(rs.getLong("layoutItemUD"));
+					layoutItem.setId(rs.getLong("layoutItemID"));
 					itemMap.put(new Point(rs.getInt("locationX"),rs.getInt("locationY")),layoutItem);
 				}
 			}
-
 		itemMap.putAll(tableMap);
 		return itemMap;
 		}
@@ -49,8 +48,7 @@ public class LayoutItemConcreteDAO implements LayoutItemDAO {
 	@Override
 	public void createLayoutItems(HashMap<Point,LayoutItem> itemMap, long restaurantLayoutID) throws SQLException {
 		Connection con = DBConnection.getInstance().getDBcon();
-		try (
-        		PreparedStatement ps = con.prepareStatement("insert into dbo.LayoutItems(name,type,"
+		try (PreparedStatement ps = con.prepareStatement("insert into dbo.LayoutItems(name,type,"
         				+ "locationX,locationY,restaurantLayoutID) values(?,?,?,?,?)")
         	) {
         	for (Map.Entry<Point,LayoutItem> entry : itemMap.entrySet()) {
