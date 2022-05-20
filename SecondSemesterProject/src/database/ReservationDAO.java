@@ -11,8 +11,6 @@ public interface ReservationDAO {
 
 	Reservation read(int id) throws SQLException;
 	
-	Reservation readAll(int id) throws SQLException;
-
 	void create(Reservation reservation) throws SQLException;
 
 	void update(Reservation reservation) throws SQLException;

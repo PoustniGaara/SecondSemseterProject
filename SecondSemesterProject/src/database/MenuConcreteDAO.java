@@ -84,27 +84,5 @@ public class MenuConcreteDAO implements MenuDAO {
 
 	}
 
-	@Override
-	public ArrayList<Menu> getReservationMenus(int reservationId) throws SQLException {
-		Connection con = DBConnection.getInstance().getDBcon();
-		ArrayList<Menu> menus = new ArrayList<>();
-		try {
-			Statement menusStatement = con.createStatement();
-			ResultSet menusResultSet = menusStatement.executeQuery(
-					"SELECT * FROM ReservedMenus JOIN Menus ON ReservedMenus.menuID = Menus.menuID WHERE ReservedMenus.reservationID = "
-							+ reservationId);
-			while (menusResultSet.next()) {
-				String name = menusResultSet.getString("name");
-				int menuid = menusResultSet.getInt("menuID");
-				Menu menu = new Menu(name, MealConcreteDAO.getInstance().getMenuMeals(menuid));
-				menu.setID(menuid);
-				menus.add(menu);
-			}
-		} 
-		catch(SQLException e){
-			e.printStackTrace();
-			throw new SQLException("Error in getting RestaurantLayouts from DB:"+ e.getMessage());
-		}
-		return menus;
-	}
+	
 }

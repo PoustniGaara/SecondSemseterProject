@@ -1,5 +1,6 @@
 package controller;
 
+import java.sql.SQLException;
 import java.util.ArrayList;
 
 import database.CustomerConcreteDAO;
@@ -13,19 +14,19 @@ public class CustomerController {
 		customerDAO = CustomerConcreteDAO.getInstance();
 	}
 
-	public Customer findByPhone(String phone) {
+	public Customer findByPhone(String phone) throws SQLException {
 		return customerDAO.read(phone);
 	}
 
-	public ArrayList<Customer> getAllCustomers() {
+	public ArrayList<Customer> getAllCustomers() throws SQLException {
 		return customerDAO.read();
 	}
 
-	public void createCustomer(Customer customer) {
+	public void createCustomer(Customer customer) throws SQLException {
 		customerDAO.create(customer);
 	}
 
-	public void deleteCustomer(Customer customer) {
+	public void deleteCustomer(Customer customer) throws SQLException {
 		customerDAO.delete(customer);
 	}
 }

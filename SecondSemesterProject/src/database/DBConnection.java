@@ -7,20 +7,12 @@ import com.microsoft.sqlserver.jdbc.SQLServerDataSource;
 
 public class DBConnection {
 
-	private static final String driver = "jdbc:sqlserver:hildur.ucn.dk"; 
-	private static final String databaseName = ";databaseName=CSC-CSD-S212_10407574";
-
-	private static String userName = ";user=CSC-CSD-S212_10407574";
-	private static String password = ";password=Password1!";
-	private static String encrypt = ";encrypt=false";
-	
 	private static Connection con;
 	private DatabaseMetaData dma;
 
 	private static DBConnection instance = null;
 
 	private DBConnection() {
-		String url = driver + databaseName + userName + password + encrypt;
 
 		try {
 			Class.forName("com.microsoft.sqlserver.jdbc.SQLServerDriver");
@@ -48,7 +40,6 @@ public class DBConnection {
 			System.out.println("Product version: " + dma.getDatabaseProductVersion());
 		} catch (Exception e) {
 			System.out.println("Could not connect to the database");
-			System.out.println(url);
 			e.printStackTrace();
 		}
 	}

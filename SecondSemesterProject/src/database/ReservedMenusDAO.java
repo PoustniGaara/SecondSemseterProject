@@ -1,11 +1,15 @@
 package database;
 
 import java.sql.SQLException;
+import java.util.ArrayList;
 
+import model.Menu;
 import model.Reservation;
 
 public interface ReservedMenusDAO {
 	
 	void create(Reservation reservation) throws SQLException;
+
+	ArrayList<Menu> getReservationMenus(int reservationId) throws SQLException;
 
 }

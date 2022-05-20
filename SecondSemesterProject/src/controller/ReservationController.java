@@ -31,7 +31,7 @@ public class ReservationController {
 		if (customer == null) {
 			control.createCustomer(customer);
 		}
-		
+
 		reservation.setCustomer(customer);
 
 		reservationDAO.create(reservation);
@@ -40,32 +40,28 @@ public class ReservationController {
 	public ReservationController() {
 		reservationDAO = ReservationConcreteDAO.getInstance();
 	}
-
-	public Reservation getReservationById(int id) {
+	
+	public Reservation getReservationById(int id) throws SQLException {
 		return reservationDAO.read(id);
 	}
 
-	public Reservation getCompleteReservationById(int id) {
-		return reservationDAO.readAll(id);
-	}
-
-	public ArrayList<Reservation> getAllReservations() {
+	public ArrayList<Reservation> getAllReservations() throws SQLException {
 		return reservationDAO.read();
 	}
 
-	public void updateReservation(Reservation reservation) {
+	public void updateReservation(Reservation reservation) throws SQLException {
 		reservationDAO.update(reservation);
 	}
 
-	public void deleteReservation(Reservation reservation) {
+	public void deleteReservation(Reservation reservation) throws SQLException {
 		reservationDAO.delete(reservation);
 	}
 
 	// rename checkByPhone
-	public Customer checkCustomer(String phone) {
+	public Customer checkCustomer(String phone) throws SQLException {
 		if (control.findByPhone(phone) != null) {
 			return control.findByPhone(phone);
-		}
+		} 
 		return null;
 	}
 
