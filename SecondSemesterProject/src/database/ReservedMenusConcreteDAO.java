@@ -24,7 +24,7 @@ public class ReservedMenusConcreteDAO implements ReservedMenusDAO {
 	}
 
 	@Override
-	public void create(Reservation reservation) {
+	public void create(Reservation reservation) throws SQLException {
 		Connection con = DBConnection.getInstance().getDBcon();
 		try {
 			PreparedStatement ps = con
@@ -38,12 +38,14 @@ public class ReservedMenusConcreteDAO implements ReservedMenusDAO {
 			}
 			ps.executeBatch();
 
-		} catch (SQLException e) {
+		}
+		catch(SQLException e){
 			e.printStackTrace();
+			throw new SQLException("Error in getting RestaurantLayouts from DB:"+ e.getMessage());
 		}
 	}
 
-	private HashMap<Menu, Integer> groupMenus(ArrayList<Menu> menus) {
+	private HashMap<Menu, Integer> groupMenus(ArrayList<Menu> menus) throws SQLException {
 		HashMap<Menu, Integer> groupedMenus = new HashMap<>();
 		for (Menu m : menus) {
 			if (groupedMenus.containsKey(m)) {

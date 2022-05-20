@@ -24,7 +24,7 @@ public class MenuConcreteDAO implements MenuDAO {
 	}
 
 	@Override
-	public ArrayList<Menu> read() {
+	public ArrayList<Menu> read() throws SQLException {
 		Connection con = DBConnection.getInstance().getDBcon();
 		ArrayList<Menu> menus = new ArrayList<Menu>();
 
@@ -38,14 +38,16 @@ public class MenuConcreteDAO implements MenuDAO {
 				menu.setID(menuid);
 				menus.add(menu);
 			}
-		} catch (SQLException e) {
-			e.printStackTrace();
 		} 
+		catch(SQLException e){
+			e.printStackTrace();
+			throw new SQLException("Error in getting RestaurantLayouts from DB:"+ e.getMessage());
+		}
 		return menus;
 	}
 
 	@Override
-	public Menu read(int id) {
+	public Menu read(int id) throws SQLException {
 		Connection con = DBConnection.getInstance().getDBcon();
 
 		try {
@@ -57,8 +59,9 @@ public class MenuConcreteDAO implements MenuDAO {
 				menu.setID(id);
 				return menu;
 			}
-		} catch (SQLException e) {
+		} catch(SQLException e){
 			e.printStackTrace();
+			throw new SQLException("Error in getting RestaurantLayouts from DB:"+ e.getMessage());
 		}
 		return null;
 	}
@@ -82,7 +85,7 @@ public class MenuConcreteDAO implements MenuDAO {
 	}
 
 	@Override
-	public ArrayList<Menu> getReservationMenus(int reservationId) {
+	public ArrayList<Menu> getReservationMenus(int reservationId) throws SQLException {
 		Connection con = DBConnection.getInstance().getDBcon();
 		ArrayList<Menu> menus = new ArrayList<>();
 		try {
@@ -97,9 +100,11 @@ public class MenuConcreteDAO implements MenuDAO {
 				menu.setID(menuid);
 				menus.add(menu);
 			}
-		} catch (SQLException e) {
-			e.printStackTrace();
 		} 
+		catch(SQLException e){
+			e.printStackTrace();
+			throw new SQLException("Error in getting RestaurantLayouts from DB:"+ e.getMessage());
+		}
 		return menus;
 	}
 }

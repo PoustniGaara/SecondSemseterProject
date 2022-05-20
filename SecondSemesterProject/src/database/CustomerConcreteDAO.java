@@ -24,7 +24,7 @@ public class CustomerConcreteDAO implements CustomerDAO {
 	}
 
 	@Override
-	public ArrayList<Customer> read() {
+	public ArrayList<Customer> read() throws SQLException {
 		ArrayList<Customer> customers = new ArrayList<Customer>();
 		Connection con = DBConnection.getInstance().getDBcon();
 		try {
@@ -42,14 +42,16 @@ public class CustomerConcreteDAO implements CustomerDAO {
 				Customer customer = new Customer(name, surname, phone, email, town, zipcode, street, streetNumber);
 				customers.add(customer);
 			}
-		} catch (SQLException e) {
-			e.printStackTrace();
-		} 
+		}
+			catch(SQLException e){
+				e.printStackTrace();
+				throw new SQLException("Error in getting RestaurantLayouts from DB:"+ e.getMessage());
+			}
 		return customers;
 	}
 
 	@Override
-	public Customer read(String phone) {
+	public Customer read(String phone) throws SQLException {
 		Connection con = DBConnection.getInstance().getDBcon();
 		try {
 			PreparedStatement statement = con.prepareStatement("SELECT * FROM dbo.Customers WHERE phone=?");
@@ -66,14 +68,16 @@ public class CustomerConcreteDAO implements CustomerDAO {
 				Customer customer = new Customer(name, surname, phone, email, town, zipcode, street, streetNumber);
 				return customer;
 			}
-		} catch (SQLException e) {
-			e.printStackTrace();
-		} 
+		}
+			catch(SQLException e){
+				e.printStackTrace();
+				throw new SQLException("Error in getting RestaurantLayouts from DB:"+ e.getMessage());
+			}
 		return null;
 	}
 
 	@Override
-	public void create(Customer customer) {
+	public void create(Customer customer) throws SQLException {
 		Connection con = DBConnection.getInstance().getDBcon();
 		try {
 			PreparedStatement ps = con.prepareStatement(
@@ -88,21 +92,25 @@ public class CustomerConcreteDAO implements CustomerDAO {
 			ps.setString(7, customer.getStreet());
 			ps.setString(8, customer.getStreetNumber());
 			ps.execute();
-		} catch (SQLException e) {
+		}
+		catch(SQLException e){
 			e.printStackTrace();
+			throw new SQLException("Error in getting RestaurantLayouts from DB:"+ e.getMessage());
 		}
 	}
 
 	@Override
-	public void delete(Customer customer) {
+	public void delete(Customer customer) throws SQLException {
 		Connection con = DBConnection.getInstance().getDBcon();
 		try {
 			PreparedStatement ps = con.prepareStatement("DELETE FROM dbo.Customers WHERE phone=?");
 			ps.setString(1, customer.getPhone());
 			ps.execute();
-		} catch (SQLException e) {
+		}
+		catch(SQLException e){
 			e.printStackTrace();
-		} 
+			throw new SQLException("Error in getting RestaurantLayouts from DB:"+ e.getMessage());
+		}
 	}
 
 }

@@ -24,7 +24,7 @@ public class MealConcreteDAO implements MealDAO {
 	}
 
 	@Override
-	public ArrayList<Meal> read() {
+	public ArrayList<Meal> read() throws SQLException {
 		Connection con = DBConnection.getInstance().getDBcon();
 		ArrayList<Meal> meals = new ArrayList<Meal>();
 
@@ -38,14 +38,15 @@ public class MealConcreteDAO implements MealDAO {
 				Meal meal = new Meal(name, description, price);
 				meals.add(meal);
 			}
-		} catch (SQLException e) {
+		} catch(SQLException e){
 			e.printStackTrace();
+			throw new SQLException("Error in getting RestaurantLayouts from DB:"+ e.getMessage());
 		}
 		return meals;
 	}
 
 	@Override
-	public Meal read(int id) {
+	public Meal read(int id) throws SQLException {
 		Connection con = DBConnection.getInstance().getDBcon();
 
 		try {
@@ -58,9 +59,11 @@ public class MealConcreteDAO implements MealDAO {
 				Meal meal = new Meal(name, description, price);
 				return meal;
 			}
-		} catch (SQLException e) {
-			e.printStackTrace();
 		} 
+		catch(SQLException e){
+			e.printStackTrace();
+			throw new SQLException("Error in getting RestaurantLayouts from DB:"+ e.getMessage());
+		}
 		return null;
 	}
 
@@ -83,7 +86,7 @@ public class MealConcreteDAO implements MealDAO {
 	}
 
 	@Override
-	public ArrayList<Meal> getMenuMeals(int menuId) {
+	public ArrayList<Meal> getMenuMeals(int menuId) throws SQLException {
 		Connection con = DBConnection.getInstance().getDBcon();
 		ArrayList<Meal> meals = new ArrayList<>();
 		try {
@@ -98,9 +101,11 @@ public class MealConcreteDAO implements MealDAO {
 				Meal meal = new Meal(name, description, price);
 				meals.add(meal);
 			}
-		} catch (SQLException e) {
-			e.printStackTrace();
 		} 
+		catch(SQLException e){
+			e.printStackTrace();
+			throw new SQLException("Error in getting RestaurantLayouts from DB:"+ e.getMessage());
+		}
 		return meals;
 	}
 }

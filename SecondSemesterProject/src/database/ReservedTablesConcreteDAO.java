@@ -20,7 +20,7 @@ public class ReservedTablesConcreteDAO implements ReservedTablesDAO {
 	}
 
 	@Override
-	public void create(Reservation reservation) {
+	public void create(Reservation reservation) throws SQLException {
 		Connection con = DBConnection.getInstance().getDBcon();
 
 		try {
@@ -34,8 +34,10 @@ public class ReservedTablesConcreteDAO implements ReservedTablesDAO {
 			}
 			ps.executeBatch();
 
-		} catch (SQLException e) {
+		}
+		catch(SQLException e){
 			e.printStackTrace();
+			throw new SQLException("Error in getting RestaurantLayouts from DB:"+ e.getMessage());
 		}
 	}
 

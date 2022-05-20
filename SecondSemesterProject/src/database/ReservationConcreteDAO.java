@@ -31,7 +31,7 @@ public class ReservationConcreteDAO implements ReservationDAO {
 	}
 
 	@Override
-	public ArrayList<Reservation> read() {
+	public ArrayList<Reservation> read() throws SQLException {
 		Connection con = DBConnection.getInstance().getDBcon();
 		ArrayList<Reservation> reservations = new ArrayList<Reservation>();
 
@@ -47,14 +47,16 @@ public class ReservationConcreteDAO implements ReservationDAO {
 				Reservation reservation = new Reservation(cal, TableConcreteDAO.getInstance().getReservationTables(id));
 				reservations.add(reservation);
 			}
-		} catch (SQLException e) {
+		} 
+		catch(SQLException e){
 			e.printStackTrace();
+			throw new SQLException("Error in getting RestaurantLayouts from DB:"+ e.getMessage());
 		}
 		return reservations;
 	}
 
 	@Override
-	public Reservation read(int id) {
+	public Reservation read(int id) throws SQLException {
 		Connection con = DBConnection.getInstance().getDBcon();
 
 		try {
@@ -68,14 +70,16 @@ public class ReservationConcreteDAO implements ReservationDAO {
 				Reservation reservation = new Reservation(cal, TableConcreteDAO.getInstance().getReservationTables(id));
 				return reservation;
 			}
-		} catch (SQLException e) {
+		} 
+		catch(SQLException e){
 			e.printStackTrace();
+			throw new SQLException("Error in getting RestaurantLayouts from DB:"+ e.getMessage());
 		}
 		return null;
 	}
 	
 	@Override
-	public Reservation readAll(int id) {
+	public Reservation readAll(int id) throws SQLException {
 		Connection con = DBConnection.getInstance().getDBcon();
 
 		try {
@@ -101,8 +105,10 @@ public class ReservationConcreteDAO implements ReservationDAO {
 				
 				return reservation;
 			}
-		} catch (SQLException e) {
+		}
+		catch(SQLException e){
 			e.printStackTrace();
+			throw new SQLException("Error in getting RestaurantLayouts from DB:"+ e.getMessage());
 		}
 		return null;
 	}
@@ -127,7 +133,7 @@ public class ReservationConcreteDAO implements ReservationDAO {
 		}
 	}
 
-	private Long createReservation(Reservation reservation) {
+	private Long createReservation(Reservation reservation) throws SQLException {
 		Connection con = DBConnection.getInstance().getDBcon();
 		try {
 			PreparedStatement ps = con.prepareStatement(
@@ -151,26 +157,29 @@ public class ReservationConcreteDAO implements ReservationDAO {
 				throw new SQLException("Creating reservation failed, no ID obtained.");
 			}
 
-		} catch (SQLException e) {
-			e.printStackTrace();
 		}
-		return null;
+		catch(SQLException e){
+			e.printStackTrace();
+			throw new SQLException("Error in getting RestaurantLayouts from DB:"+ e.getMessage());
+		}
 	}
 
 	@Override
-	public void delete(Reservation reservation) {
+	public void delete(Reservation reservation) throws SQLException {
 		Connection con = DBConnection.getInstance().getDBcon();
 		try {
 			PreparedStatement ps = con.prepareStatement("DELETE FROM dbo.Reservations WHERE reservationID=?");
 			ps.setLong(1, reservation.getId());
 			ps.execute();
-		} catch (SQLException e) {
+		}
+		catch(SQLException e){
 			e.printStackTrace();
+			throw new SQLException("Error in getting RestaurantLayouts from DB:"+ e.getMessage());
 		}
 	}
 
 	@Override
-	public void update(Reservation reservation) {
+	public void update(Reservation reservation) throws SQLException {
 		Connection con = DBConnection.getInstance().getDBcon();
 		try {
 			PreparedStatement ps = con.prepareStatement(
@@ -184,8 +193,10 @@ public class ReservationConcreteDAO implements ReservationDAO {
 			ps.setString(5, reservation.getCustomer().getPhone());
 			ps.setLong(6, reservation.getId());
 			ps.execute();
-		} catch (SQLException e) {
+		}
+		catch(SQLException e){
 			e.printStackTrace();
+			throw new SQLException("Error in getting RestaurantLayouts from DB:"+ e.getMessage());
 		}
 	}
 

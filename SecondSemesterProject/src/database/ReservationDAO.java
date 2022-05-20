@@ -7,16 +7,16 @@ import model.Reservation;
 
 public interface ReservationDAO {
 
-	ArrayList<Reservation> read();
+	ArrayList<Reservation> read() throws SQLException;
 
-	Reservation read(int id);
+	Reservation read(int id) throws SQLException;
 	
-	Reservation readAll(int id);
+	Reservation readAll(int id) throws SQLException;
 
 	void create(Reservation reservation) throws SQLException;
 
-	void update(Reservation reservation);
+	void update(Reservation reservation) throws SQLException;
 
-	void delete(Reservation reservation);
+	void delete(Reservation reservation) throws SQLException;
 
 }
