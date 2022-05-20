@@ -33,7 +33,6 @@ public class MainFrame extends JFrame {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
-
 					MainFrame frame = MainFrame.getInstance();
 					frame.setVisible(true);
 				} catch (Exception e) {

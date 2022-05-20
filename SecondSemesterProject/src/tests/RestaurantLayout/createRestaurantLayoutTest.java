@@ -8,6 +8,7 @@ import java.util.HashMap;
 
 import org.junit.After;
 import org.junit.Before;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -49,13 +50,18 @@ class createRestaurantLayoutTest {
 			e.printStackTrace();
 		}
 		//Assert
-		assertEquals(restaurantLayout.getName(),rlc.getRestaurantLayoutByName(restaurantLayout.getName()).getName(),
-				"are equal");
-		
+		try {
+			assertEquals(restaurantLayout.getName(),rlc.getRestaurantLayoutByName(restaurantLayout.getName()).getName(),
+					"are equal");
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 //		cleanUp();
+
 	}
 	
-	@After
+	@AfterEach
 	public void cleanUp() {
 		try {
 			System.out.print("im here");

@@ -68,26 +68,15 @@ import model.RestaurantLayout;
 
 	@Override
 	public void delete(String restaurantLayoutName) throws SQLException {
-		RestaurantLayout restaurantLayout = getRestaurantLayoutByName(restaurantLayoutName);
-		Connection con = DBConnection.getInstance().getDBcon();
-		try(PreparedStatement ps = con.prepareStatement("DELETE FROM dbo.RestaurantLayouts WHERE name = ?")
+		try(Connection con = DBConnection.getInstance().getDBcon();
+			PreparedStatement ps = con.prepareStatement("DELETE FROM dbo.RestaurantLayouts WHERE name = ?")
 			){
-			con.setAutoCommit(false);
-			TableConcreteDAO.getInstance().delete(restaurantLayout.getTableList());
-			LayoutItemConcreteDAO.getInstance().delete(restaurantLayout.getLayoutItems());
 			ps.setString(1, restaurantLayoutName);
-			con.commit();
+			ps.execute();
 		}
 		catch(SQLException e){
-		   // If there is any error.
 			e.printStackTrace();
-			con.rollback();
 		}
-		finally{
-//			DBConnection.closeConnection();
-			con.setAutoCommit(true);
-		}
-		
 	}
 
 	@Override
@@ -126,16 +115,14 @@ import model.RestaurantLayout;
 			
 		    int affectedRows = ps.executeUpdate();
 		    
-		    if(affectedRows == 0) 
-		    	 throw new SQLException("Creating user failed, no rows affected.");
-		        
-		     try (ResultSet generatedKeys = ps.getGeneratedKeys()) {
+		    if(affectedRows == 0) throw new SQLException("Creating user failed, no rows affected.");
+		    	 
+		       	 ResultSet generatedKeys = ps.getGeneratedKeys();
+		       	 
 		         if(generatedKeys.next()) { restaurantLayout.setId(generatedKeys.getLong(1));
 		         return restaurantLayout.getId();
 		         }
 		         else throw new SQLException("Creating restaurant layout failed, no ID obtained.");
-		           
-		        }
 		}
 		catch(Exception e) {
 			e.printStackTrace();
@@ -144,7 +131,7 @@ import model.RestaurantLayout;
 	}
 	
 	@Override
-	public RestaurantLayout getRestaurantLayoutByName(String name) {
+	public RestaurantLayout getRestaurantLayoutByName(String name) throws SQLException {
 		Connection con = DBConnection.getInstance().getDBcon();
 		long restaurantLayoutID = 0;
 		String restaurantLayoutName = null;
@@ -166,6 +153,9 @@ import model.RestaurantLayout;
 		}
 		catch(Exception e) {
 			e.printStackTrace();
+		}
+		finally {
+			con.close();
 		}
 		return null;
 	}

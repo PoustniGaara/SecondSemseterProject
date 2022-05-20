@@ -24,7 +24,7 @@ public class RestaurantLayoutController {
 		restaurantLayoutDAO.saveRestaurantLayout(name, sizeX, sizeY, itemMap);
 	}
 	
-	public RestaurantLayout getRestaurantLayoutByName(String name) {
+	public RestaurantLayout getRestaurantLayoutByName(String name) throws SQLException {
 		return restaurantLayoutDAO.getRestaurantLayoutByName(name);
 	}
 	

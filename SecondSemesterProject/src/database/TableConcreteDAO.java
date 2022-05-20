@@ -42,6 +42,7 @@ public class TableConcreteDAO implements TableDAO {
 			}
 			ps.executeBatch();
 		} catch (SQLException ex) {
+			
 			System.out.println(ex.getMessage());
 		}
 	}

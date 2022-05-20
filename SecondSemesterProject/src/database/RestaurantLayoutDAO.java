@@ -12,7 +12,7 @@ public interface RestaurantLayoutDAO {
 	
 	List<RestaurantLayout> read();
 
-	RestaurantLayout getRestaurantLayoutByName(String restaurantLayoutName);
+	RestaurantLayout getRestaurantLayoutByName(String restaurantLayoutName) throws SQLException;
 	
 	void saveRestaurantLayout(String name, int sizeX, int sizeY, HashMap<Point,LayoutItem> itemMap) throws SQLException;
 
