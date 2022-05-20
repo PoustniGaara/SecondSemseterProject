@@ -32,7 +32,6 @@ public class DBConnection {
 		}
 
 		try {
-			
 			SQLServerDataSource ds = new SQLServerDataSource();
 			ds.setUser("CSC-CSD-S212_10407574");
 			ds.setPassword("Password1!");

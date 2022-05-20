@@ -153,8 +153,8 @@ public class TableConcreteDAO implements TableDAO {
 	@Override
 	public HashMap<Point, LayoutItem> getTableMap(long restaurantLayoutID) throws SQLException {
 		HashMap<Point, LayoutItem> tableMap = new HashMap<>();
-		try (Connection con = DBConnection.getInstance().getDBcon();
-				PreparedStatement ps = con.prepareStatement(
+		Connection con = DBConnection.getInstance().getDBcon();
+		try (PreparedStatement ps = con.prepareStatement(
 						" select * \r\n" + "from dbo.LayoutItems \r\n" + "FULL OUTER JOIN dbo.Tables\r\n"
 								+ "	ON dbo.LayoutItems.layoutItemID = dbo.Tables.layoutItemID\r\n"
 								+ "where restaurantLayoutID = ?");) {
