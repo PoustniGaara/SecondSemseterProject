@@ -160,7 +160,6 @@ public class ReservationConcreteDAO implements ReservationDAO {
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
-		System.out.println("! NO KEY ! ");
 		return null;
 	}
 
@@ -193,8 +192,6 @@ public class ReservationConcreteDAO implements ReservationDAO {
 			ps.setString(5, reservation.getCustomer().getPhone());
 			ps.setLong(6, reservation.getId());
 			ps.execute();
-
-			con.commit();
 		} catch (SQLException e) {
 			e.printStackTrace();
 		} finally {

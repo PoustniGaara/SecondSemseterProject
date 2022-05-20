@@ -68,7 +68,7 @@ public class createReservation {
 	/** Fixture for pay station testing. */
 	@After
 	public void cleanUp() {
-//		ps.setReady();
+		cntrl.deleteReservation(cntrl.getReservationById(1));
 	}
 
 }

@@ -16,7 +16,8 @@ public class ReservationController {
 	private Reservation reservation;
 	private CustomerController control = new CustomerController();
 
-	public Reservation createReservation(Calendar timestamp, ArrayList<Table> tables) {
+	// rename to startReservation
+	public Reservation startReservation(Calendar timestamp, ArrayList<Table> tables) {
 		reservation = new Reservation(timestamp, tables);
 		return reservation;
 	}
@@ -27,12 +28,12 @@ public class ReservationController {
 		reservation.setMenus(menus);
 		reservation.setNote(note);
 
-		if (customer != null) {
-			reservation.setCustomer(customer);
-		} else {
+		if (customer == null) {
 			control.createCustomer(customer);
 		}
-		System.out.println(reservation.getCustomer().getName() + ", " + reservation.getTables().toString());
+		
+		reservation.setCustomer(customer);
+
 		reservationDAO.create(reservation);
 	}
 
@@ -43,7 +44,7 @@ public class ReservationController {
 	public Reservation getReservationById(int id) {
 		return reservationDAO.read(id);
 	}
-	
+
 	public Reservation getCompleteReservationById(int id) {
 		return reservationDAO.readAll(id);
 	}
@@ -60,7 +61,8 @@ public class ReservationController {
 		reservationDAO.delete(reservation);
 	}
 
-	public Customer setPhone(String phone) {
+	// rename checkByPhone
+	public Customer checkCustomer(String phone) {
 		if (control.findByPhone(phone) != null) {
 			return control.findByPhone(phone);
 		}
