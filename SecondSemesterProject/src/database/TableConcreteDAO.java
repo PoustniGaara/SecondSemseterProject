@@ -111,8 +111,10 @@ public class TableConcreteDAO implements TableDAO {
 				table.setId(id);
 				return table;
 			}
+			
 		} catch (SQLException e) {
 			e.printStackTrace();
+			throw new SQLException("Error in getting Table:"+ e.getMessage());
 		}
 		return null;
 	}
@@ -127,8 +129,9 @@ public class TableConcreteDAO implements TableDAO {
 				ps.addBatch();
 			}
 			ps.executeBatch();
-		} catch (SQLException ex) {
-			System.out.println(ex.getMessage());
+		} catch (SQLException e) {
+			e.printStackTrace();
+			throw new SQLException("Error in updating Tables:"+ e.getMessage());
 		}
 	}
 
@@ -141,8 +144,9 @@ public class TableConcreteDAO implements TableDAO {
 				ps.addBatch();
 			}
 			ps.executeBatch();
-		} catch (SQLException ex) {
-			System.out.println(ex.getMessage());
+		} catch (SQLException e) {
+			e.printStackTrace();
+			throw new SQLException("Error in deleting Table:"+ e.getMessage());
 		}
 	}
 
@@ -166,8 +170,8 @@ public class TableConcreteDAO implements TableDAO {
 			return tableMap;
 		} catch (SQLException e) {
 			e.printStackTrace();
+			throw new SQLException("Error in updating Tables:"+ e.getMessage());
 		}
-		return null;
 	}
 
 	@Override
@@ -185,10 +189,10 @@ public class TableConcreteDAO implements TableDAO {
 				tableList.add(table);
 			}
 			return tableList;
-		} catch (SQLException ex) {
-			System.out.println(ex.getMessage());
+		} catch (SQLException e) {
+			e.printStackTrace();
+			throw new SQLException("Error in getting TableList:"+ e.getMessage());
 		}
-		return null;
 	}
 
 }
