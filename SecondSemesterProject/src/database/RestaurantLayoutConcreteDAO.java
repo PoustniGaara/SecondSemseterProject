@@ -155,7 +155,7 @@ import model.RestaurantLayout;
 			e.printStackTrace();
 		}
 		finally {
-			con.close();
+//			con.close();
 		}
 		return null;
 	}

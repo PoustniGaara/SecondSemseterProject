@@ -64,10 +64,8 @@ class createRestaurantLayoutTest {
 	@AfterEach
 	public void cleanUp() {
 		try {
-			System.out.print("im here");
 			rlc.deleteRestaurantLayout("TestEclipse");
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}

@@ -63,9 +63,7 @@ public class MainFrame extends JFrame {
 		mainPanel.setLayout(new BorderLayout());
 		
 		openLoginPanel();
-		
 	}
-	
 	
 	public void showReservationsPanel() {
 		currentPanel.setVisible(false);

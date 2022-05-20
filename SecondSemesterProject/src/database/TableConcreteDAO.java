@@ -67,7 +67,7 @@ public class TableConcreteDAO implements TableDAO {
 		} catch (SQLException e) {
 			e.printStackTrace();
 		} finally {
-			DBConnection.closeConnection();
+//			DBConnection.closeConnection();
 		}
 		return tables;
 	}
@@ -93,7 +93,7 @@ public class TableConcreteDAO implements TableDAO {
 		} catch (SQLException e) {
 			e.printStackTrace();
 		} finally {
-			DBConnection.closeConnection();
+//			DBConnection.closeConnection();
 		}
 		return tables;
 	}
@@ -118,7 +118,7 @@ public class TableConcreteDAO implements TableDAO {
 		} catch (SQLException e) {
 			e.printStackTrace();
 		} finally {
-			DBConnection.closeConnection();
+//			DBConnection.closeConnection();
 		}
 		return null;
 	}

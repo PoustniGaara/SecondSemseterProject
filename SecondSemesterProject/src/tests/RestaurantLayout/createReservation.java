@@ -43,13 +43,13 @@ public class createReservation {
 		tables.add(table1);
 		tables.add(table2);
 
-		Reservation reservation = cntrl.createReservation(calendar, tables);
+		Reservation reservation = cntrl.startReservation(calendar, tables);
 
 		ArrayList<Menu> menus = new ArrayList<>();
 		menus.add(MenuConcreteDAO.getInstance().read(1));
 		
 		String phone = "52785254";
-		Customer customer = cntrl.setPhone(phone);
+		Customer customer = cntrl.checkCustomer(phone);
 
 		String note = "Please, decorate the table with flowers :)";
 
