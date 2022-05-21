@@ -68,7 +68,6 @@ public class ReservationConcreteDAO implements ReservationDAO {
 	@Override
 	public Reservation read(int id) throws SQLException {
 		Connection con = DBConnection.getInstance().getDBcon();
-
 		try {
 			Statement statement = con.createStatement();
 			ResultSet rs = statement.executeQuery("SELECT * FROM Reservations WHERE reservationID = " + id);
@@ -89,7 +88,6 @@ public class ReservationConcreteDAO implements ReservationDAO {
 				reservation.setGuests(guests);
 				reservation.setNote(note);
 				reservation.setCustomer(CustomerConcreteDAO.getInstance().read(phone));
-
 				return reservation;
 			}
 		} catch (SQLException e) {
@@ -104,13 +102,11 @@ public class ReservationConcreteDAO implements ReservationDAO {
 		Connection con = DBConnection.getInstance().getDBcon();
 		try {
 			con.setAutoCommit(false);
-
 			Long id = createReservation(reservation);
 			reservation.setId(id);
 			ReservedTablesConcreteDAO.getInstance().create(reservation);
 			ReservedMenusConcreteDAO.getInstance().create(reservation);
 			con.commit();
-
 		} catch (SQLException e) {
 			e.printStackTrace();
 			con.rollback();

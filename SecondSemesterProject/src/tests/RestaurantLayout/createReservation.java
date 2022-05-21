@@ -11,6 +11,7 @@ import java.util.GregorianCalendar;
 
 import org.junit.After;
 import org.junit.Before;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 
 import controller.ReservationController;
@@ -38,10 +39,8 @@ public class createReservation {
 		calendar.setTimeInMillis(System.currentTimeMillis());
 
 		ArrayList<Table> tables = new ArrayList<>();
-		Table table1 = TableConcreteDAO.getInstance().read(1);
-		Table table2 = TableConcreteDAO.getInstance().read(2);
+		Table table1 = TableConcreteDAO.getInstance().read(213);
 		tables.add(table1);
-		tables.add(table2);
 
 		Reservation reservation = cntrl.startReservation(calendar, tables);
 
@@ -62,14 +61,14 @@ public class createReservation {
 		// Act
 
 		// Assert
-		assertEquals(reservation, cntrl.getReservationById(1));
+		assertEquals(reservation.getNote(), cntrl.getReservationById(3).getNote());
 	}
 
 	/** Fixture for pay station testing. */
-	@After
+	@AfterEach
 	public void cleanUp() {
 		try {
-			cntrl.deleteReservation(cntrl.getReservationById(1));
+			cntrl.deleteReservation(cntrl.getReservationById(3));
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

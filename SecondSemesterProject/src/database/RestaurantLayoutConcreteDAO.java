@@ -17,7 +17,6 @@ import model.RestaurantLayout;
 	 private static RestaurantLayoutConcreteDAO instance;
 	 
 	 private RestaurantLayoutConcreteDAO() {
-		 
 	 }
 
 	@Override

@@ -6,6 +6,7 @@ import java.util.HashMap;
 
 import database.RestaurantLayoutConcreteDAO;
 import database.RestaurantLayoutDAO;
+import database.TableDAO;
 import model.LayoutItem;
 import model.RestaurantLayout;
 
@@ -31,5 +32,6 @@ public class RestaurantLayoutController {
 	public void deleteRestaurantLayout(String restaurantLayoutName) throws SQLException {
 		restaurantLayoutDAO.delete(restaurantLayoutName);
 	}
+	
 
 }

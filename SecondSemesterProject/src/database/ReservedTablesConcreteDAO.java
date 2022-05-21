@@ -46,7 +46,6 @@ public class ReservedTablesConcreteDAO implements ReservedTablesDAO {
 	public ArrayList<Table> getReservationTables(int reservationid) throws SQLException {
 		Connection con = DBConnection.getInstance().getDBcon();
 		ArrayList<Table> tables = new ArrayList<Table>();
-
 		try {
 			Statement tablesStatement = con.createStatement();
 			ResultSet tablesResultSet = tablesStatement.executeQuery(

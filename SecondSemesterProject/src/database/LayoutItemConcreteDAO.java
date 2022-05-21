@@ -9,7 +9,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
-
 import model.LayoutItem;
 
 public class LayoutItemConcreteDAO implements LayoutItemDAO {
@@ -17,7 +16,6 @@ public class LayoutItemConcreteDAO implements LayoutItemDAO {
 	private static LayoutItemConcreteDAO instance;
 	
 	private LayoutItemConcreteDAO() {
-		
 	}
 	
 	@Override
@@ -60,7 +58,6 @@ public class LayoutItemConcreteDAO implements LayoutItemDAO {
         		ps.addBatch();
         		}
         	ps.executeBatch();
-	
         } catch (SQLException e) {
 			e.printStackTrace();
 			throw new SQLException("Error in creating LayoutItems:"+ e.getMessage());
@@ -73,21 +70,19 @@ public class LayoutItemConcreteDAO implements LayoutItemDAO {
 		try(PreparedStatement ps = con.prepareStatement("update dbo.LayoutItems set name = ?, type = ?,"
 				+ "locationX = ?, locationY = ? where restaurantLayouID = ?");
 		){
-			for(Entry<Point, LayoutItem> entry : itemMap.entrySet()) {
-				ps.setString(1, entry.getValue().getName());
-				ps.setString(2, entry.getValue().getType());
-				ps.setInt(3, (int) entry.getKey().getX());
-				ps.setInt(4, (int) entry.getKey().getY());
-				ps.setLong(5, restaurantLayoutID);
-				ps.addBatch();
+		for(Entry<Point, LayoutItem> entry : itemMap.entrySet()) {
+			ps.setString(1, entry.getValue().getName());
+			ps.setString(2, entry.getValue().getType());
+			ps.setInt(3, (int) entry.getKey().getX());
+			ps.setInt(4, (int) entry.getKey().getY());
+			ps.setLong(5, restaurantLayoutID);
+			ps.addBatch();
 			}
 			ps.executeBatch();
-			
 		} catch (SQLException e) {
 			e.printStackTrace();
 			throw new SQLException("Error in updating LayoutItems:"+ e.getMessage());
 		}
-		
 	}
 
 	@Override
@@ -96,7 +91,7 @@ public class LayoutItemConcreteDAO implements LayoutItemDAO {
 	    try(PreparedStatement ps = con.prepareStatement(
 	    		"delete from dbo.LayoutItems where layoutItemID = ?");
 	    ){
-		    for(LayoutItem layoutItem : layoutItemList) {
+	    for(LayoutItem layoutItem : layoutItemList) {
 				ps.setLong(1, layoutItem.getId());
 		    	ps.addBatch();
 		    }
@@ -105,7 +100,9 @@ public class LayoutItemConcreteDAO implements LayoutItemDAO {
 	    catch (SQLException e) {
 			e.printStackTrace();
 			throw new SQLException("Error in deleting LayoutItems:"+ e.getMessage());
-		}	
+		}
+	    finally {
+		}
 	}
 	
 	public static LayoutItemConcreteDAO getInstance() {

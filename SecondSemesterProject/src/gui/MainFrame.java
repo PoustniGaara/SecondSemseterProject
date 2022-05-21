@@ -4,6 +4,7 @@ import java.awt.BorderLayout;
 import java.awt.EventQueue;
 import java.awt.Point;
 import java.awt.Toolkit;
+import java.util.ArrayList;
 import java.util.HashMap;
 
 import javax.swing.JFrame;
@@ -11,13 +12,14 @@ import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 
 import controller.RestaurantLayoutController;
+import database.LayoutItemConcreteDAO;
+import database.TableConcreteDAO;
 import model.LayoutItem;
 import model.RestaurantLayout;
 import model.Table;
 
 public class MainFrame extends JFrame {
 
-	private JPanel contentPane;
 	public static int width,height;
 	private LoginPanel loginPanel;
 	private OverviewPanel overviewPanel;
