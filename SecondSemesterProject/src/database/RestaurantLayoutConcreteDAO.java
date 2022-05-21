@@ -66,7 +66,8 @@ import model.RestaurantLayout;
 
 	@Override
 	public void delete(String restaurantLayoutName) throws SQLException {
-		try(Connection con = DBConnection.getInstance().getDBcon();
+		Connection con = DBConnection.getInstance().getDBcon();
+		try(
 			PreparedStatement ps = con.prepareStatement("DELETE FROM dbo.RestaurantLayouts WHERE name = ?")
 			){
 			ps.setString(1, restaurantLayoutName);

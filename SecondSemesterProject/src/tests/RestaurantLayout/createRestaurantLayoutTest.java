@@ -14,6 +14,8 @@ import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
 import controller.RestaurantLayoutController;
+import database.RestaurantLayoutConcreteDAO;
+import database.RestaurantLayoutDAO;
 import model.LayoutItem;
 import model.RestaurantLayout;
 import model.Table;
@@ -57,8 +59,6 @@ class createRestaurantLayoutTest {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-//		cleanUp();
-
 	}
 	
 	@AfterEach

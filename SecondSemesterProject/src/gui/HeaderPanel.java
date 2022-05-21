@@ -19,6 +19,7 @@ import org.kordamp.ikonli.swing.FontIcon;
 public class HeaderPanel extends JPanel {
 	
 	private static HeaderPanel instance;
+	private ConnectionCheckPanel conPanel;
 	private FButtonMoreC overviewButton, reservationButton, menuButton, currentButton;
 	private FButtonOneC optionButton;
 	
@@ -27,7 +28,7 @@ public class HeaderPanel extends JPanel {
 		//Panel dimensions setup
 		int mainHeight = (int)MainFrame.height;
 		int mainWidth = (int)MainFrame.width;
-		int panelHeight = (int) ((int)mainHeight*0.07);
+		int panelHeight = (int) ((int)mainHeight*0.08);
 		int panelWidth = mainWidth;
 		
 		//Panel functional setup
@@ -52,6 +53,7 @@ public class HeaderPanel extends JPanel {
 		currentButton = overviewButton;
 		overviewButton.isClicked(true);
 		overviewButton.addActionListener(e -> showOverview());
+		gbc.gridheight = 2;
 		gbc.gridx = 0;
 		gbc.gridy = 0;
 		add(overviewButton, gbc);
@@ -79,15 +81,25 @@ public class HeaderPanel extends JPanel {
 		optionButton.setState(true);
 		optionButton.addActionListener(e -> openOptionFrame());
 		FontIcon endIcon = FontIcon.of(CoreUiFree.COG);
-		endIcon.setIconSize(32);
+		endIcon.setIconSize(30);
 		optionButton.setIcon(endIcon);
 		optionButton.setText("Options");
 		optionButton.setFont(font2);
-		optionButton.setPreferredSize(new Dimension((int) (mainWidth*0.1), panelHeight/2));
+		optionButton.setPreferredSize(new Dimension((int) (mainWidth*0.12), panelHeight/2));
 		gbc.anchor = GridBagConstraints.LAST_LINE_END;
+		gbc.gridheight = 1;
 		gbc.gridx = 3;
+		gbc.gridy = 1;
 		gbc.weightx = 1;
 		add(optionButton,gbc);
+		
+		conPanel = ConnectionCheckPanel.getInstance();
+		conPanel.setPreferredSize(new Dimension((int) (mainWidth*0.12), panelHeight/2));
+		gbc.anchor = GridBagConstraints.LAST_LINE_END;
+		gbc.gridx = 3;
+		gbc.gridy = 2;
+		gbc.weightx = 1;
+		add(conPanel,gbc);
 		
 	}//end of constructor
 	
@@ -116,10 +128,8 @@ public class HeaderPanel extends JPanel {
 		currentButton = menuButton;
 	}
 	
-	
 	public static HeaderPanel getInstance() {
 		if(instance == null) return new HeaderPanel();
 		else return instance;
 	}
-
 }
