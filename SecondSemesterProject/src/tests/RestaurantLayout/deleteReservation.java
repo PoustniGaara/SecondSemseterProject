@@ -30,10 +30,8 @@ public class deleteReservation {
 		Calendar calendar = new GregorianCalendar();
 		calendar.setTimeInMillis(System.currentTimeMillis());
 		ArrayList<Table> tables = new ArrayList<>();
-		Table table1 = TableConcreteDAO.getInstance().read(1);
-		Table table2 = TableConcreteDAO.getInstance().read(2);
+		Table table1 = TableConcreteDAO.getInstance().read(213);
 		tables.add(table1);
-		tables.add(table2);
 		Reservation reservation = cntrl.startReservation(calendar, tables);
 		ArrayList<Menu> menus = new ArrayList<>();
 		menus.add(MenuConcreteDAO.getInstance().read(1));

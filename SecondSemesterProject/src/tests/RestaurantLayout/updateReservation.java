@@ -19,7 +19,7 @@ public class updateReservation {
 
 		// Arrange
 		cntrl = new ReservationController();
-		Reservation r = cntrl.getReservationById(2);
+		Reservation r = cntrl.getReservationById(41);
 		r.setDuration(50);
 		r.setGuests(50);
 		r.setNote("Changed Note");
@@ -28,19 +28,18 @@ public class updateReservation {
 		cntrl.updateReservation(r);
 
 		// Assert
-		assertEquals(cntrl.getReservationById(2).getDuration(), 50);
-		assertEquals(cntrl.getReservationById(2).getGuests(), 50);
-		assertEquals(cntrl.getReservationById(2).getNote(), "Changed Note");
+		assertEquals(cntrl.getReservationById(41).getDuration(), 50);
+		assertEquals(cntrl.getReservationById(41).getGuests(), 50);
+		assertEquals(cntrl.getReservationById(41).getNote(), "Changed Note");
 
 	}
 
 	@After
 	public void cleanUp() {
 		try {
-			cntrl.getReservationById(2).setDuration(2);
-
-			cntrl.getReservationById(2).setGuests(11);
-			cntrl.getReservationById(2).setNote("Please, decorate the table with flowers :)");
+			cntrl.getReservationById(41).setDuration(2);
+			cntrl.getReservationById(41).setGuests(11);
+			cntrl.getReservationById(41).setNote("Please, decorate the table with flowers :)");
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

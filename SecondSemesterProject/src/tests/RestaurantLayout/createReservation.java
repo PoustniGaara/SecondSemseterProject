@@ -25,7 +25,8 @@ import model.Table;
 public class createReservation {
 
 	ReservationController cntrl;
-
+	private int id;
+	
 	@Before
 	public void setUp() {
 	}
@@ -49,26 +50,26 @@ public class createReservation {
 		
 		String phone = "52785254";
 		Customer customer = cntrl.checkCustomer(phone);
-
+		
 		String note = "Please, decorate the table with flowers :)";
-
-		cntrl.confirmReservation(customer, 11, menus, note);
 
 		reservation.setCustomer(customer);
 		reservation.setTables(tables);
 		reservation.setMenus(menus);
 
 		// Act
+		cntrl.confirmReservation(customer, 6, menus, note);
 
 		// Assert
-		assertEquals(reservation.getNote(), cntrl.getReservationById(3).getNote());
+		id = reservation.getId().intValue();
+		assertEquals(reservation.getNote(), cntrl.getReservationById(id).getNote());
 	}
 
 	/** Fixture for pay station testing. */
 	@AfterEach
 	public void cleanUp() {
 		try {
-			cntrl.deleteReservation(cntrl.getReservationById(3));
+			cntrl.deleteReservation(cntrl.getReservationById(id));
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
