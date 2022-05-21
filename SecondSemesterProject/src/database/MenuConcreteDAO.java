@@ -6,7 +6,6 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 
-import model.Meal;
 import model.Menu;
 
 public class MenuConcreteDAO implements MenuDAO {
@@ -34,14 +33,13 @@ public class MenuConcreteDAO implements MenuDAO {
 			while (menusResultSet.next()) {
 				String name = menusResultSet.getString("name");
 				int menuid = menusResultSet.getInt("menuID");
-				Menu menu = new Menu(name, MealConcreteDAO.getInstance().getMenuMeals(menuid));
+				Menu menu = new Menu(name, MenuMealsConcreteDAO.getInstance().getMenuMeals(menuid));
 				menu.setID(menuid);
 				menus.add(menu);
 			}
-		} 
-		catch(SQLException e){
+		} catch (SQLException e) {
 			e.printStackTrace();
-			throw new SQLException("Error in getting RestaurantLayouts from DB:"+ e.getMessage());
+			throw new SQLException("Error in getting RestaurantLayouts from DB:" + e.getMessage());
 		}
 		return menus;
 	}
@@ -55,13 +53,13 @@ public class MenuConcreteDAO implements MenuDAO {
 			ResultSet menusResultSet = menusStatement.executeQuery("SELECT * FROM Menus WHERE menuID = " + id);
 			while (menusResultSet.next()) {
 				String name = menusResultSet.getString("name");
-				Menu menu = new Menu(name, MealConcreteDAO.getInstance().getMenuMeals(id));
+				Menu menu = new Menu(name, MenuMealsConcreteDAO.getInstance().getMenuMeals(id));
 				menu.setID(id);
 				return menu;
 			}
-		} catch(SQLException e){
+		} catch (SQLException e) {
 			e.printStackTrace();
-			throw new SQLException("Error in getting RestaurantLayouts from DB:"+ e.getMessage());
+			throw new SQLException("Error in getting RestaurantLayouts from DB:" + e.getMessage());
 		}
 		return null;
 	}
@@ -84,5 +82,4 @@ public class MenuConcreteDAO implements MenuDAO {
 
 	}
 
-	
 }

@@ -1,15 +1,12 @@
 package tests.RestaurantLayout;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.jupiter.api.Assertions.fail;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.GregorianCalendar;
 
-import org.junit.After;
 import org.junit.Before;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
@@ -26,7 +23,7 @@ public class createReservation {
 
 	ReservationController cntrl;
 	private int id;
-	
+
 	@Before
 	public void setUp() {
 	}
@@ -47,10 +44,10 @@ public class createReservation {
 
 		ArrayList<Menu> menus = new ArrayList<>();
 		menus.add(MenuConcreteDAO.getInstance().read(1));
-		
+
 		String phone = "52785254";
 		Customer customer = cntrl.checkCustomer(phone);
-		
+
 		String note = "Please, decorate the table with flowers :)";
 
 		reservation.setCustomer(customer);

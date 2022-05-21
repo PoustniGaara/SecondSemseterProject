@@ -10,11 +10,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 
-import model.Customer;
-import model.Meal;
-import model.Menu;
 import model.Reservation;
-import model.Table;
 
 public class ReservationConcreteDAO implements ReservationDAO {
 
@@ -47,9 +43,10 @@ public class ReservationConcreteDAO implements ReservationDAO {
 				String phone = rs.getString("customerPhone");
 
 				Calendar cal = new GregorianCalendar();
-				cal.setTimeInMillis(timestamp.getTime()); 
-		
-				Reservation reservation = new Reservation(cal, ReservedTablesConcreteDAO.getInstance().getReservationTables(id.intValue()));
+				cal.setTimeInMillis(timestamp.getTime());
+
+				Reservation reservation = new Reservation(cal,
+						ReservedTablesConcreteDAO.getInstance().getReservationTables(id.intValue()));
 				reservation.setId(id);
 				reservation.setDuration(duration);
 				reservation.setGuests(guests);
@@ -60,7 +57,7 @@ public class ReservationConcreteDAO implements ReservationDAO {
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
-			throw new SQLException("Error in getting RestaurantLayouts from DB:" + e.getMessage());
+			throw new SQLException("Error getting Reservations from DB:" + e.getMessage());
 		}
 		return reservations;
 	}
@@ -82,7 +79,8 @@ public class ReservationConcreteDAO implements ReservationDAO {
 				Calendar cal = new GregorianCalendar();
 				cal.setTimeInMillis(timestamp.getTime());
 
-				Reservation reservation = new Reservation(cal, ReservedTablesConcreteDAO.getInstance().getReservationTables(id));
+				Reservation reservation = new Reservation(cal,
+						ReservedTablesConcreteDAO.getInstance().getReservationTables(id));
 				reservation.setId(reservationID);
 				reservation.setDuration(duration);
 				reservation.setGuests(guests);
@@ -92,7 +90,7 @@ public class ReservationConcreteDAO implements ReservationDAO {
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
-			throw new SQLException("Error in getting RestaurantLayouts from DB:" + e.getMessage());
+			throw new SQLException("Error getting Reservation from DB:" + e.getMessage());
 		}
 		return null;
 	}
@@ -141,7 +139,7 @@ public class ReservationConcreteDAO implements ReservationDAO {
 
 		} catch (SQLException e) {
 			e.printStackTrace();
-			throw new SQLException("Error in getting RestaurantLayouts from DB:" + e.getMessage());
+			throw new SQLException("Error inserting Reservation into DB:" + e.getMessage());
 		}
 	}
 
@@ -162,7 +160,7 @@ public class ReservationConcreteDAO implements ReservationDAO {
 			ps.execute();
 		} catch (SQLException e) {
 			e.printStackTrace();
-			throw new SQLException("Error in getting RestaurantLayouts from DB:" + e.getMessage());
+			throw new SQLException("Error updating Reservation in DB:" + e.getMessage());
 		}
 	}
 
@@ -175,7 +173,7 @@ public class ReservationConcreteDAO implements ReservationDAO {
 			ps.execute();
 		} catch (SQLException e) {
 			e.printStackTrace();
-			throw new SQLException("Error in getting RestaurantLayouts from DB:" + e.getMessage());
+			throw new SQLException("Error deleting Reservation from DB:" + e.getMessage());
 		}
 	}
 

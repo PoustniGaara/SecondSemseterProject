@@ -12,7 +12,8 @@ public class Customer {
 	private String streetNumber;
 	private boolean existingCustomer;
 
-	public Customer(String name, String surname, String phone, String email, String town, String zipCode, String street, String streetNumber) {
+	public Customer(String name, String surname, String phone, String email, String town, String zipCode, String street,
+			String streetNumber) {
 		this.name = name;
 		this.surname = surname;
 		this.town = town;
@@ -86,11 +87,11 @@ public class Customer {
 	public void setStreetNumber(String streetNumber) {
 		this.streetNumber = streetNumber;
 	}
-	
+
 	public void setExistingCustomer(boolean state) {
 		existingCustomer = state;
 	}
-	
+
 	public boolean isExistingCustomer() {
 		return existingCustomer;
 	}

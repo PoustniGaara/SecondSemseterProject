@@ -19,12 +19,12 @@ import model.Reservation;
 import model.Table;
 
 public class deleteReservation {
-	
+
 	ReservationController cntrl;
 
 	@Test
 	void test() throws SQLException {
-		
+
 		// Arrange
 		cntrl = new ReservationController();
 		Calendar calendar = new GregorianCalendar();
@@ -38,20 +38,18 @@ public class deleteReservation {
 		String phone = "52785254";
 		Customer customer = cntrl.checkCustomer(phone);
 		String note = "Please, decorate the table with flowers :)";
-		
+
 		// Act
 		cntrl.confirmReservation(customer, 11, menus, note);
 		int id = reservation.getId().intValue();
 		cntrl.deleteReservation(reservation);
-		
+
 		// Assert
 		assertEquals(cntrl.getReservationById(id), null);
-		
+
 	}
 
 	@After
 	public void cleanUp() {
 	}
 }
-
-

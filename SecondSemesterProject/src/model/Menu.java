@@ -7,7 +7,7 @@ public class Menu {
 	private String name;
 	private ArrayList<Meal> meals;
 	private int id;
-	
+
 	public Menu(String name, ArrayList<Meal> meals) {
 		this.name = name;
 		this.meals = meals;
@@ -28,11 +28,11 @@ public class Menu {
 	public void setMeals(ArrayList<Meal> meals) {
 		this.meals = meals;
 	}
-	
+
 	public int getID() {
 		return id;
 	}
-	
+
 	public void setID(int value) {
 		id = value;
 	}

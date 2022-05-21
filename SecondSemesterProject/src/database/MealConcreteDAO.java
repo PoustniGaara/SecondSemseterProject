@@ -1,13 +1,13 @@
 package database;
 
 import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 
 import model.Meal;
-import model.Menu;
 
 public class MealConcreteDAO implements MealDAO {
 
@@ -38,9 +38,9 @@ public class MealConcreteDAO implements MealDAO {
 				Meal meal = new Meal(name, description, price);
 				meals.add(meal);
 			}
-		} catch(SQLException e){
+		} catch (SQLException e) {
 			e.printStackTrace();
-			throw new SQLException("Error in getting RestaurantLayouts from DB:"+ e.getMessage());
+			throw new SQLException("Error getting Meal from DB:" + e.getMessage());
 		}
 		return meals;
 	}
@@ -59,17 +59,27 @@ public class MealConcreteDAO implements MealDAO {
 				Meal meal = new Meal(name, description, price);
 				return meal;
 			}
-		} 
-		catch(SQLException e){
+		} catch (SQLException e) {
 			e.printStackTrace();
-			throw new SQLException("Error in getting RestaurantLayouts from DB:"+ e.getMessage());
+			throw new SQLException("Error getting Meal from DB:" + e.getMessage());
 		}
 		return null;
 	}
 
 	@Override
-	public void create(Meal meal) {
-		// TODO Auto-generated method stub
+	public void create(Meal meal) throws SQLException {
+		Connection con = DBConnection.getInstance().getDBcon();
+		try {
+			PreparedStatement ps = con
+					.prepareStatement("INSERT INTO dbo.Meals (name, price, description)" + "VALUES (?,?,?,?,?,?,?,?)");
+			ps.setString(1, meal.getName());
+			ps.setFloat(2, meal.getPrice());
+			ps.setString(3, meal.getDescription());
+			ps.execute();
+		} catch (SQLException e) {
+			e.printStackTrace();
+			throw new SQLException("Error inserting Meal from DB:" + e.getMessage());
+		}
 
 	}
 
@@ -83,29 +93,5 @@ public class MealConcreteDAO implements MealDAO {
 	public void delete(Meal meal) {
 		// TODO Auto-generated method stub
 
-	}
-
-	@Override
-	public ArrayList<Meal> getMenuMeals(int menuId) throws SQLException {
-		Connection con = DBConnection.getInstance().getDBcon();
-		ArrayList<Meal> meals = new ArrayList<>();
-		try {
-			Statement menusStatement = con.createStatement();
-			ResultSet menusResultSet = menusStatement.executeQuery(
-					"SELECT * FROM MenuMeals JOIN Meals ON MenuMeals.mealID = Meals.mealID WHERE MenuMeals.menuID = "
-							+ menuId);
-			while (menusResultSet.next()) {
-				String name = menusResultSet.getString("name");
-				String description = menusResultSet.getString("description");
-				float price = menusResultSet.getFloat("price");
-				Meal meal = new Meal(name, description, price);
-				meals.add(meal);
-			}
-		} 
-		catch(SQLException e){
-			e.printStackTrace();
-			throw new SQLException("Error in getting RestaurantLayouts from DB:"+ e.getMessage());
-		}
-		return meals;
 	}
 }

@@ -9,11 +9,9 @@ public interface MealDAO {
 
 	ArrayList<Meal> read() throws SQLException;
 
-	ArrayList<Meal> getMenuMeals(int menuId) throws SQLException;
-
 	Meal read(int id) throws SQLException;
 
-	void create(Meal meal);
+	void create(Meal meal) throws SQLException;
 
 	void update(Meal meal);
 

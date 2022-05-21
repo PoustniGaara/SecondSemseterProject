@@ -8,11 +8,8 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Map;
-import java.util.Map.Entry;
 
 import model.LayoutItem;
-import model.RestaurantLayout;
 import model.Table;
 
 public class TableConcreteDAO implements TableDAO {

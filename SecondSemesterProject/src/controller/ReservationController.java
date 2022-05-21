@@ -16,7 +16,6 @@ public class ReservationController {
 	private Reservation reservation;
 	private CustomerController control = new CustomerController();
 
-	// rename to startReservation
 	public Reservation startReservation(Calendar timestamp, ArrayList<Table> tables) {
 		reservation = new Reservation(timestamp, tables);
 		return reservation;
@@ -57,7 +56,6 @@ public class ReservationController {
 		reservationDAO.delete(reservation);
 	}
 
-	// rename checkByPhone
 	public Customer checkCustomer(String phone) throws SQLException {
 		if (control.findByPhone(phone) != null) {
 			return control.findByPhone(phone);

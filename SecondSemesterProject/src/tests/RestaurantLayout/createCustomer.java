@@ -4,7 +4,6 @@ import static org.junit.Assert.assertEquals;
 
 import java.sql.SQLException;
 
-import org.junit.After;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 
@@ -19,8 +18,8 @@ public class createCustomer {
 	void test() throws SQLException {
 		// Arrange
 		cntrl = new CustomerController();
-		Customer customer = new Customer("John", "Smith", "987654321", "john@gmail.com", "Aalborg", "9000",
-				"Vesterbro", "1");
+		Customer customer = new Customer("John", "Smith", "987654321", "john@gmail.com", "Aalborg", "9000", "Vesterbro",
+				"1");
 		// Act
 		cntrl.createCustomer(customer);
 

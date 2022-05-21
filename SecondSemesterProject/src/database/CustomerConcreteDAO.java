@@ -42,11 +42,10 @@ public class CustomerConcreteDAO implements CustomerDAO {
 				Customer customer = new Customer(name, surname, phone, email, town, zipcode, street, streetNumber);
 				customers.add(customer);
 			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+			throw new SQLException("Error getting Customer from DB:" + e.getMessage());
 		}
-			catch(SQLException e){
-				e.printStackTrace();
-				throw new SQLException("Error in getting RestaurantLayouts from DB:"+ e.getMessage());
-			}
 		return customers;
 	}
 
@@ -68,11 +67,10 @@ public class CustomerConcreteDAO implements CustomerDAO {
 				Customer customer = new Customer(name, surname, phone, email, town, zipcode, street, streetNumber);
 				return customer;
 			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+			throw new SQLException("Error getting Customer from DB:" + e.getMessage());
 		}
-			catch(SQLException e){
-				e.printStackTrace();
-				throw new SQLException("Error in getting RestaurantLayouts from DB:"+ e.getMessage());
-			}
 		return null;
 	}
 
@@ -92,10 +90,9 @@ public class CustomerConcreteDAO implements CustomerDAO {
 			ps.setString(7, customer.getStreet());
 			ps.setString(8, customer.getStreetNumber());
 			ps.execute();
-		}
-		catch(SQLException e){
+		} catch (SQLException e) {
 			e.printStackTrace();
-			throw new SQLException("Error in getting RestaurantLayouts from DB:"+ e.getMessage());
+			throw new SQLException("Error inserting Customer to DB:" + e.getMessage());
 		}
 	}
 
@@ -106,10 +103,9 @@ public class CustomerConcreteDAO implements CustomerDAO {
 			PreparedStatement ps = con.prepareStatement("DELETE FROM dbo.Customers WHERE phone=?");
 			ps.setString(1, customer.getPhone());
 			ps.execute();
-		}
-		catch(SQLException e){
+		} catch (SQLException e) {
 			e.printStackTrace();
-			throw new SQLException("Error in getting RestaurantLayouts from DB:"+ e.getMessage());
+			throw new SQLException("Error deleting Customer from DB:" + e.getMessage());
 		}
 	}
 

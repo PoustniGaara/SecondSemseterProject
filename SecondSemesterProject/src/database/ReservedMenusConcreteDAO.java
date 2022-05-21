@@ -10,7 +10,6 @@ import java.util.HashMap;
 
 import model.Menu;
 import model.Reservation;
-import model.Table;
 
 public class ReservedMenusConcreteDAO implements ReservedMenusDAO {
 
@@ -44,7 +43,6 @@ public class ReservedMenusConcreteDAO implements ReservedMenusDAO {
 		}
 	}
 
-	@Override
 	public ArrayList<Menu> getReservationMenus(int reservationId) throws SQLException {
 		Connection con = DBConnection.getInstance().getDBcon();
 		ArrayList<Menu> menus = new ArrayList<>();
@@ -56,7 +54,7 @@ public class ReservedMenusConcreteDAO implements ReservedMenusDAO {
 			while (menusResultSet.next()) {
 				String name = menusResultSet.getString("name");
 				int menuid = menusResultSet.getInt("menuID");
-				Menu menu = new Menu(name, MealConcreteDAO.getInstance().getMenuMeals(menuid));
+				Menu menu = new Menu(name, MenuMealsConcreteDAO.getInstance().getMenuMeals(menuid));
 				menu.setID(menuid);
 				menus.add(menu);
 			}
@@ -77,6 +75,18 @@ public class ReservedMenusConcreteDAO implements ReservedMenusDAO {
 			}
 		}
 		return groupedMenus;
+	}
+
+	@Override
+	public void update(Reservation reservation) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void delete(Reservation reservation) {
+		// TODO Auto-generated method stub
+
 	}
 
 }

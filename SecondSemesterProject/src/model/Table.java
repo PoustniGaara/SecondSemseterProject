@@ -17,11 +17,11 @@ public class Table extends LayoutItem {
 	public void setCapacity(int capacity) {
 		this.capacity = capacity;
 	}
-	
+
 	public void setId(long id) {
 		this.id = id;
 	}
-	
+
 	public long getId() {
 		return id;
 	}

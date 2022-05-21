@@ -13,7 +13,7 @@ public class Reservation {
 	private ArrayList<Table> tables;
 	private Customer customer;
 	private ArrayList<Menu> menus;
-	
+
 	public Reservation(Calendar timestamp, ArrayList<Table> tables) {
 		this.timestamp = timestamp;
 		this.tables = tables;
@@ -82,5 +82,5 @@ public class Reservation {
 	public void setMenus(ArrayList<Menu> menus) {
 		this.menus = menus;
 	}
-	
+
 }

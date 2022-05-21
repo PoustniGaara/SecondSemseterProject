@@ -6,7 +6,6 @@ import java.util.HashMap;
 
 import database.RestaurantLayoutConcreteDAO;
 import database.RestaurantLayoutDAO;
-import database.TableDAO;
 import model.LayoutItem;
 import model.RestaurantLayout;
 

@@ -42,7 +42,6 @@ public class ReservedTablesConcreteDAO implements ReservedTablesDAO {
 		}
 	}
 
-	@Override
 	public ArrayList<Table> getReservationTables(int reservationid) throws SQLException {
 		Connection con = DBConnection.getInstance().getDBcon();
 		ArrayList<Table> tables = new ArrayList<Table>();
@@ -64,6 +63,18 @@ public class ReservedTablesConcreteDAO implements ReservedTablesDAO {
 			e.printStackTrace();
 			throw new SQLException("Error in getting reservationTables:" + e.getMessage());
 		}
+	}
+
+	@Override
+	public void update(Reservation reservation) throws SQLException {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void delete(Reservation reservation) throws SQLException {
+		// TODO Auto-generated method stub
+
 	}
 
 }
