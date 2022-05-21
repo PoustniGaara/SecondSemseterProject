@@ -37,7 +37,7 @@ public class HeaderPanel extends JPanel {
 		setLayout(new GridBagLayout());
 		GridBagConstraints gbc = new GridBagConstraints();
 		gbc.weightx = 0.0;
-		gbc.weighty = 0.5;
+		gbc.weighty = 1;
 		gbc.anchor = GridBagConstraints.FIRST_LINE_START;
 		
 		//Panel support classes
@@ -85,19 +85,20 @@ public class HeaderPanel extends JPanel {
 		optionButton.setIcon(endIcon);
 		optionButton.setText("Options");
 		optionButton.setFont(font2);
-		optionButton.setPreferredSize(new Dimension((int) (mainWidth*0.12), panelHeight/2));
-		gbc.anchor = GridBagConstraints.LAST_LINE_END;
+		optionButton.setPreferredSize(new Dimension((int) (mainWidth*0.12), (int) (panelHeight*0.65)));
+		gbc.anchor = GridBagConstraints.LINE_END;
 		gbc.gridheight = 1;
+		gbc.weighty = 0.5;
 		gbc.gridx = 3;
-		gbc.gridy = 1;
+		gbc.gridy = 0;
 		gbc.weightx = 1;
 		add(optionButton,gbc);
 		
 		conPanel = ConnectionCheckPanel.getInstance();
-		conPanel.setPreferredSize(new Dimension((int) (mainWidth*0.12), panelHeight/2));
-		gbc.anchor = GridBagConstraints.LAST_LINE_END;
+		conPanel.setPreferredSize(new Dimension((int) (mainWidth*0.12), (int) (panelHeight*0.35)));
+		gbc.anchor = GridBagConstraints.LINE_END;
 		gbc.gridx = 3;
-		gbc.gridy = 2;
+		gbc.gridy = 1;
 		gbc.weightx = 1;
 		add(conPanel,gbc);
 		
