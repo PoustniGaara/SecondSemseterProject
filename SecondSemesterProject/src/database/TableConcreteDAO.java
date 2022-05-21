@@ -43,31 +43,7 @@ public class TableConcreteDAO implements TableDAO {
 			ps.executeBatch();
 		} catch (SQLException e) {
 			e.printStackTrace();
-			throw new SQLException("Error in creating Tables:"+ e.getMessage());
-		}
-	}
-
-	public ArrayList<Table> getReservationTables(int reservationid) throws SQLException {
-		Connection con = DBConnection.getInstance().getDBcon();
-		ArrayList<Table> tables = new ArrayList<Table>();
-
-		try {
-			Statement tablesStatement = con.createStatement();
-			ResultSet tablesResultSet = tablesStatement.executeQuery(
-					"SELECT * FROM Reservations JOIN ReservedTables ON Reservations.reservationID = ReservedTables.reservationID JOIN Tables ON ReservedTables.layoutItemID = Tables.layoutItemID JOIN LayoutItems ON Tables.layoutItemID = LayoutItems.layoutItemID WHERE ReservedTables.reservationID = "
-							+ reservationid);
-			while (tablesResultSet.next()) {
-				String name = tablesResultSet.getString("name");
-				String type = tablesResultSet.getString("type");
-				int capacity = tablesResultSet.getInt("capacity");
-
-				Table table = new Table(name, type, capacity);
-				tables.add(table);
-			}
-			return tables;
-		} catch (SQLException e) {
-			e.printStackTrace();
-			throw new SQLException("Error in getting reservationTables:"+ e.getMessage());
+			throw new SQLException("Error in creating Tables:" + e.getMessage());
 		}
 	}
 
@@ -91,7 +67,7 @@ public class TableConcreteDAO implements TableDAO {
 			return tables;
 		} catch (SQLException e) {
 			e.printStackTrace();
-			throw new SQLException("Error in getting Tables:"+ e.getMessage());
+			throw new SQLException("Error in getting Tables:" + e.getMessage());
 		}
 	}
 
@@ -111,10 +87,10 @@ public class TableConcreteDAO implements TableDAO {
 				table.setId(id);
 				return table;
 			}
-			
+
 		} catch (SQLException e) {
 			e.printStackTrace();
-			throw new SQLException("Error in getting Table:"+ e.getMessage());
+			throw new SQLException("Error in getting Table:" + e.getMessage());
 		}
 		return null;
 	}
@@ -131,7 +107,7 @@ public class TableConcreteDAO implements TableDAO {
 			ps.executeBatch();
 		} catch (SQLException e) {
 			e.printStackTrace();
-			throw new SQLException("Error in updating Tables:"+ e.getMessage());
+			throw new SQLException("Error in updating Tables:" + e.getMessage());
 		}
 	}
 
@@ -146,7 +122,7 @@ public class TableConcreteDAO implements TableDAO {
 			ps.executeBatch();
 		} catch (SQLException e) {
 			e.printStackTrace();
-			throw new SQLException("Error in deleting Table:"+ e.getMessage());
+			throw new SQLException("Error in deleting Table:" + e.getMessage());
 		}
 	}
 
@@ -154,10 +130,9 @@ public class TableConcreteDAO implements TableDAO {
 	public HashMap<Point, LayoutItem> getTableMap(long restaurantLayoutID) throws SQLException {
 		HashMap<Point, LayoutItem> tableMap = new HashMap<>();
 		Connection con = DBConnection.getInstance().getDBcon();
-		try (PreparedStatement ps = con.prepareStatement(
-						" select * \r\n" + "from dbo.LayoutItems \r\n" + "FULL OUTER JOIN dbo.Tables\r\n"
-								+ "	ON dbo.LayoutItems.layoutItemID = dbo.Tables.layoutItemID\r\n"
-								+ "where restaurantLayoutID = ?");) {
+		try (PreparedStatement ps = con.prepareStatement(" select * \r\n" + "from dbo.LayoutItems \r\n"
+				+ "FULL OUTER JOIN dbo.Tables\r\n" + "	ON dbo.LayoutItems.layoutItemID = dbo.Tables.layoutItemID\r\n"
+				+ "where restaurantLayoutID = ?");) {
 			ps.setLong(1, restaurantLayoutID);
 			ResultSet rs = ps.executeQuery();
 			while (rs.next()) {
@@ -170,12 +145,13 @@ public class TableConcreteDAO implements TableDAO {
 			return tableMap;
 		} catch (SQLException e) {
 			e.printStackTrace();
-			throw new SQLException("Error in updating Tables:"+ e.getMessage());
+			throw new SQLException("Error in updating Tables:" + e.getMessage());
 		}
 	}
 
 	@Override
-	public ArrayList<Table> getTableList(HashMap<Point, LayoutItem> itemMap, long restaurantLayoutID) throws SQLException {
+	public ArrayList<Table> getTableList(HashMap<Point, LayoutItem> itemMap, long restaurantLayoutID)
+			throws SQLException {
 		ArrayList<Table> tableList = new ArrayList<>();
 		Connection con = DBConnection.getInstance().getDBcon();
 		try (PreparedStatement ps = con
@@ -191,8 +167,7 @@ public class TableConcreteDAO implements TableDAO {
 			return tableList;
 		} catch (SQLException e) {
 			e.printStackTrace();
-			throw new SQLException("Error in getting TableList:"+ e.getMessage());
+			throw new SQLException("Error in getting TableList:" + e.getMessage());
 		}
 	}
-
 }

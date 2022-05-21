@@ -47,9 +47,9 @@ public class ReservationConcreteDAO implements ReservationDAO {
 				String phone = rs.getString("customerPhone");
 
 				Calendar cal = new GregorianCalendar();
-				cal.setTimeInMillis(timestamp.getTime());
+				cal.setTimeInMillis(timestamp.getTime()); 
 		
-				Reservation reservation = new Reservation(cal, TableConcreteDAO.getInstance().getReservationTables(id.intValue()));
+				Reservation reservation = new Reservation(cal, ReservedTablesConcreteDAO.getInstance().getReservationTables(id.intValue()));
 				reservation.setId(id);
 				reservation.setDuration(duration);
 				reservation.setGuests(guests);
@@ -83,7 +83,7 @@ public class ReservationConcreteDAO implements ReservationDAO {
 				Calendar cal = new GregorianCalendar();
 				cal.setTimeInMillis(timestamp.getTime());
 
-				Reservation reservation = new Reservation(cal, TableConcreteDAO.getInstance().getReservationTables(id));
+				Reservation reservation = new Reservation(cal, ReservedTablesConcreteDAO.getInstance().getReservationTables(id));
 				reservation.setId(reservationID);
 				reservation.setDuration(duration);
 				reservation.setGuests(guests);

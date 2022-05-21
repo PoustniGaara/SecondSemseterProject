@@ -11,8 +11,6 @@ public interface TableDAO {
 
 	ArrayList<Table> read() throws SQLException;
 	
-	ArrayList<Table> getReservationTables(int reservationId) throws SQLException;
-
 	Table read(int id) throws SQLException;
 	
 	ArrayList<Table> getTableList(HashMap<Point,LayoutItem> itemMap, long restaurantLayoutID) throws SQLException;

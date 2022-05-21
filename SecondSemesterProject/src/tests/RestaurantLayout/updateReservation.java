@@ -10,35 +10,40 @@ import org.junit.jupiter.api.Test;
 import controller.ReservationController;
 import model.Reservation;
 
-
 public class updateReservation {
-	
+
 	ReservationController cntrl;
 
 	@Test
 	void test() throws SQLException {
-		
+
 		// Arrange
 		cntrl = new ReservationController();
-		Reservation r = cntrl.getCompleteReservationById(2);
+		Reservation r = cntrl.getReservationById(2);
 		r.setDuration(50);
 		r.setGuests(50);
 		r.setNote("Changed Note");
-		
+
 		// Act
 		cntrl.updateReservation(r);
-		
+
 		// Assert
-		assertEquals(cntrl.getCompleteReservationById(2).getDuration(), 50);
-		assertEquals(cntrl.getCompleteReservationById(2).getGuests(), 50);
-		assertEquals(cntrl.getCompleteReservationById(2).getNote(), "Changed Note");
+		assertEquals(cntrl.getReservationById(2).getDuration(), 50);
+		assertEquals(cntrl.getReservationById(2).getGuests(), 50);
+		assertEquals(cntrl.getReservationById(2).getNote(), "Changed Note");
 
 	}
 
 	@After
 	public void cleanUp() {
-		cntrl.getCompleteReservationById(2).setDuration(2);
-		cntrl.getCompleteReservationById(2).setGuests(11);
-		cntrl.getCompleteReservationById(2).setNote("Please, decorate the table with flowers :)");
+		try {
+			cntrl.getReservationById(2).setDuration(2);
+
+			cntrl.getReservationById(2).setGuests(11);
+			cntrl.getReservationById(2).setNote("Please, decorate the table with flowers :)");
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 }

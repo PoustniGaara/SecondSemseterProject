@@ -68,7 +68,12 @@ public class createReservation {
 	/** Fixture for pay station testing. */
 	@After
 	public void cleanUp() {
-		cntrl.deleteReservation(cntrl.getReservationById(1));
+		try {
+			cntrl.deleteReservation(cntrl.getReservationById(1));
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 
 }
