@@ -22,7 +22,7 @@ public class ConnectionCheckDAO {
 			}
 		}
 		catch(Exception e){
-			e.printStackTrace();
+//			e.printStackTrace();
 			throw new SQLException("Error with connection"+ e.getMessage());
 		}
 		return null;

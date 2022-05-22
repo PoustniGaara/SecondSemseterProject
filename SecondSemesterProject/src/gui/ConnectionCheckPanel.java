@@ -2,6 +2,8 @@ package gui;
 
 import java.awt.Color;
 import java.awt.Font;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -27,16 +29,27 @@ public class ConnectionCheckPanel extends JPanel {
 		
 		// Lambda Runnable
 		Runnable task = () -> { 
-			while(this.isVisible()) {
-				checkConnection();
+			boolean running = true;
+			while(running) {
 				try {
-					Thread.sleep(5*1000);
-				} catch (Exception e) {
 					checkConnection();
+					Thread.sleep(5*1000);
+				} catch (InterruptedException e) {
 					e.printStackTrace();
+					return;
+				}
 				} // sleep for 5 seconds
-			}
 		};
+		
+//	    int delay = 5000; // delay for 5 sec.
+//	    int period = 5000; // repeat every sec.
+//	    Timer timer = new Timer();
+//
+//	    timer.scheduleAtFixedRate(new TimerTask() {
+//	      public void run() {
+//	        
+//	      }
+//	    }, delay, period);
 
 		new Thread(task).start();
 	}
@@ -49,6 +62,7 @@ public class ConnectionCheckPanel extends JPanel {
 					connLabel.setForeground(Color.GREEN);
 					this.repaint();
 					repaintSuper();
+					setConnected(true);
 				}
 			}
 			else {
@@ -57,6 +71,7 @@ public class ConnectionCheckPanel extends JPanel {
 					connLabel.setForeground(Color.RED);
 					this.repaint();
 					repaintSuper();
+					setConnected(false);
 				}
 			}
 	       
@@ -67,6 +82,7 @@ public class ConnectionCheckPanel extends JPanel {
 				connLabel.setForeground(Color.RED);
 				this.repaint();
 				repaintSuper();
+				setConnected(false);
 			}
 		}
 	}
@@ -78,6 +94,10 @@ public class ConnectionCheckPanel extends JPanel {
 	public static ConnectionCheckPanel getInstance() {
 		if(instance == null) return new ConnectionCheckPanel();
 		else return instance;
+	}
+	
+	private void setConnected(boolean state) {
+		isConnected = state;
 	}
 }
 

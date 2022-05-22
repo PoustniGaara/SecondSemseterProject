@@ -2,6 +2,7 @@ package database;
 
 import java.sql.Connection;
 import java.sql.DatabaseMetaData;
+import java.sql.SQLException;
 
 import com.microsoft.sqlserver.jdbc.SQLServerDataSource;
 
@@ -45,6 +46,22 @@ public class DBConnection {
 	}
 
 	public Connection getDBcon() {
+		try {
+			if(con.isClosed()) {
+				SQLServerDataSource ds = new SQLServerDataSource();
+				ds.setUser("CSC-CSD-S212_10407574");
+				ds.setPassword("Password1!");
+				ds.setServerName("hildur.ucn.dk");
+				ds.setDatabaseName("CSC-CSD-S212_10407574");
+				ds.setEncrypt(false);
+				
+				con = ds.getConnection();
+				con.setAutoCommit(true);
+				dma = con.getMetaData();
+			}
+		} catch (Exception e) {
+		}
+	
 		return con;
 	}
 
