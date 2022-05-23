@@ -13,8 +13,8 @@ public interface MenuDAO {
 
 	void create(Menu menu);
 
-	void update(Menu menu);
-
 	void delete(Menu menu);
+
+	void update(ArrayList<Menu> menus) throws SQLException;
 
 }

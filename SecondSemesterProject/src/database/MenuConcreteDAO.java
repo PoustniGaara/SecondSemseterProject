@@ -1,12 +1,14 @@
 package database;
 
 import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 
 import model.Menu;
+import model.Table;
 
 public class MenuConcreteDAO implements MenuDAO {
 
@@ -71,9 +73,22 @@ public class MenuConcreteDAO implements MenuDAO {
 	}
 
 	@Override
-	public void update(Menu menu) {
-		// TODO Auto-generated method stub
+	public void update(ArrayList<Menu> menus) throws SQLException {
+		Connection con = DBConnection.getInstance().getDBcon();
+		try (PreparedStatement ps = con.prepareStatement("update dbo.Menus SET name = ? where menuID = ?");) {
+			for (Menu menu: menus) {
+				ps.setString(1, menu.getName());
+				ps.setInt(2, menu.getID());
+				System.out.println(menu.getID());
+				System.out.println(menu.getName());
 
+				ps.addBatch();
+			}
+			ps.executeBatch();
+		} catch (SQLException e) {
+			e.printStackTrace();
+			throw new SQLException("Error in updating menus:" + e.getMessage());
+		}
 	}
 
 	@Override

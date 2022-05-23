@@ -95,7 +95,7 @@ public class TableConcreteDAO implements TableDAO {
 	@Override
 	public void update(ArrayList<Table> tableList) throws SQLException {
 		Connection con = DBConnection.getInstance().getDBcon();
-		try (PreparedStatement ps = con.prepareStatement("update dbo.Tables capacity = ? where layoutItemID = ?");) {
+		try (PreparedStatement ps = con.prepareStatement("update dbo.Tables SET capacity = ? where layoutItemID = ?");) {
 			for (Table table : tableList) {
 				ps.setInt(1, table.getCapacity());
 				ps.setLong(2, table.getId());

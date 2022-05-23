@@ -147,6 +147,23 @@ public class ReservationConcreteDAO implements ReservationDAO {
 	public void update(Reservation reservation) throws SQLException {
 		Connection con = DBConnection.getInstance().getDBcon();
 		try {
+			con.setAutoCommit(false);
+			
+			updateReservation(reservation);
+			TableConcreteDAO.getInstance().update(reservation.getTables());
+			
+			con.commit();
+		} catch (SQLException e) {
+			e.printStackTrace();
+			con.rollback();
+		} finally {
+			con.setAutoCommit(true);
+		}
+	}
+	
+	private void updateReservation(Reservation reservation) throws SQLException {
+		Connection con = DBConnection.getInstance().getDBcon();
+		try {
 			PreparedStatement ps = con.prepareStatement(
 					"UPDATE dbo.Reservations SET timestamp=?, duration=?, noOfGuests=?, note=?, customerPhone=? WHERE reservationID=?");
 			java.util.Date dateTime = reservation.getTimestamp().getTime();
