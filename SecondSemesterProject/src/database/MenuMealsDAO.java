@@ -1,5 +1,6 @@
 package database;
 
+import java.sql.SQLException;
 import java.util.ArrayList;
 
 import model.Meal;
@@ -12,5 +13,7 @@ public interface MenuMealsDAO {
 	void update(Menu menu);
 
 	void delete(Menu menu);
+	
+	ArrayList<Meal> getMenuMeals(int menuId) throws SQLException;
 
 }

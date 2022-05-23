@@ -16,8 +16,6 @@ public interface RestaurantLayoutDAO {
 	
 	void save(String name, int sizeX, int sizeY, HashMap<Point,LayoutItem> itemMap) throws SQLException;
 
-	Long create(RestaurantLayout restaurantLayout) throws SQLException;
-	
 	void update(RestaurantLayout restaurantLayout) throws SQLException;
 
 	void delete(String restaurantLayoutName) throws SQLException;

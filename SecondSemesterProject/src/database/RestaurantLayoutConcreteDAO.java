@@ -14,7 +14,7 @@ import model.RestaurantLayout;
 
  public class RestaurantLayoutConcreteDAO implements RestaurantLayoutDAO {
 	 
-	 private static RestaurantLayoutConcreteDAO instance;
+	 private static RestaurantLayoutDAO instance;
 	 
 	 private RestaurantLayoutConcreteDAO() {
 	 }
@@ -28,7 +28,7 @@ import model.RestaurantLayout;
 			ResultSet rs = st.executeQuery("select * from dbo.RestaurantLayouts");
 			while(rs.next()) {
 				HashMap<Point,LayoutItem> itemMap = 
-						LayoutItemConcreteDAO.getInstance().getLayoutItems(rs.getLong("restaurantLayoutID"));
+						(HashMap<Point, LayoutItem>) LayoutItemConcreteDAO.getInstance().getLayoutItems(rs.getLong("restaurantLayoutID"));
 				RestaurantLayout restaurantLayout = new RestaurantLayout(rs.getString("name"),
 						rs.getInt("locationX"), rs.getInt("locationY"),itemMap);
 				listOfRestaurantLayouts.add(restaurantLayout);
@@ -70,12 +70,17 @@ import model.RestaurantLayout;
 		try(
 			PreparedStatement ps = con.prepareStatement("DELETE FROM dbo.RestaurantLayouts WHERE name = ?")
 			){
+			con.setAutoCommit(false);
 			ps.setString(1, restaurantLayoutName);
-			ps.execute();
+			con.commit();
 		}
 		catch(SQLException e){
 			e.printStackTrace();
+			con.rollback();
 			throw new SQLException("Error in deleting RestaurantLayout:"+ e.getMessage());
+		}
+		finally {
+			con.setAutoCommit(true);
 		}
 	}
 
@@ -102,8 +107,7 @@ import model.RestaurantLayout;
 		}
 	}
 	
-	@Override
-	public Long create(RestaurantLayout restaurantLayout) throws SQLException {
+	private Long create(RestaurantLayout restaurantLayout) throws SQLException {
 		Connection con = DBConnection.getInstance().getDBcon();
 		try(
 			PreparedStatement ps = con.prepareStatement("insert into dbo.RestaurantLayouts("
@@ -148,7 +152,7 @@ import model.RestaurantLayout;
 				sizeX = rs.getInt("sizeX");
 				sizeY = rs.getInt("sizeY");
 			}
-		itemMap = LayoutItemConcreteDAO.getInstance().getLayoutItems(restaurantLayoutID);
+		itemMap = (HashMap<Point, LayoutItem>) LayoutItemConcreteDAO.getInstance().getLayoutItems(restaurantLayoutID);
 		return new RestaurantLayout(restaurantLayoutName, sizeX, sizeY,itemMap);
 		}
 		catch(Exception e) {
@@ -157,7 +161,7 @@ import model.RestaurantLayout;
 		}
 	}
 	
-	public static RestaurantLayoutConcreteDAO getInstance() {
+	public static RestaurantLayoutDAO getInstance() {
 		if(instance == null) return new RestaurantLayoutConcreteDAO();
 		else return instance;
 	}

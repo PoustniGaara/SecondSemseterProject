@@ -17,7 +17,7 @@ public class ConnectionCheckPanel extends JPanel {
 	private JLabel connLabel;
 	private boolean isConnected = false;
 	private static ConnectionCheckPanel instance;
-	public ConnectionCheckPanel(){
+	private ConnectionCheckPanel(){
 		
 		this.setBackground(PColors.get(PColors.GREEN));
 		

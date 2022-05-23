@@ -37,7 +37,7 @@ public class ReservationController {
 	}
 
 	public ReservationController() {
-		reservationDAO = ReservationConcreteDAO.getInstance();
+		reservationDAO = (ReservationConcreteDAO) ReservationConcreteDAO.getInstance();
 	}
 	
 	public Reservation getReservationById(int id) throws SQLException {

@@ -12,9 +12,9 @@ import model.Table;
 
 public class ReservedTablesConcreteDAO implements ReservedTablesDAO {
 
-	private static ReservedTablesConcreteDAO instance = new ReservedTablesConcreteDAO();
+	private static ReservedTablesDAO instance = new ReservedTablesConcreteDAO();
 
-	public static ReservedTablesConcreteDAO getInstance() {
+	public static ReservedTablesDAO getInstance() {
 		if (instance == null) {
 			instance = new ReservedTablesConcreteDAO();
 		}
@@ -41,7 +41,8 @@ public class ReservedTablesConcreteDAO implements ReservedTablesDAO {
 			throw new SQLException("Error in getting RestaurantLayouts from DB:" + e.getMessage());
 		}
 	}
-
+	
+	@Override
 	public ArrayList<Table> getReservationTables(int reservationid) throws SQLException {
 		Connection con = DBConnection.getInstance().getDBcon();
 		ArrayList<Table> tables = new ArrayList<Table>();

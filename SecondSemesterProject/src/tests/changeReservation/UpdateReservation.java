@@ -13,7 +13,7 @@ import database.TableConcreteDAO;
 import model.Reservation;
 import model.Table;
 
-public class updateReservation {
+public class UpdateReservation {
 
 	ReservationController cntrl;
 

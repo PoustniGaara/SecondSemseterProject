@@ -48,7 +48,7 @@ public class CreateReservation {
 		String phone = "52785254";
 		Customer customer = cntrl.checkCustomer(phone);
 
-		String note = "Please, decorate the table with flowers :)";
+		String note = "Please, decorate the table with dead kittens :)";
 
 		reservation.setCustomer(customer);
 		reservation.setTables(tables);
@@ -62,7 +62,6 @@ public class CreateReservation {
 		assertEquals(reservation.getNote(), cntrl.getReservationById(id).getNote());
 	}
 
-	/** Fixture for pay station testing. */
 	@AfterEach
 	public void cleanUp() {
 		try {

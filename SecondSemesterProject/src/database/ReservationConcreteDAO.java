@@ -14,12 +14,12 @@ import model.Reservation;
 
 public class ReservationConcreteDAO implements ReservationDAO {
 
-	private static ReservationConcreteDAO instance = new ReservationConcreteDAO();
+	private static ReservationDAO instance = new ReservationConcreteDAO();
 
 	private ReservationConcreteDAO() {
 	}
 
-	public static ReservationConcreteDAO getInstance() {
+	public static ReservationDAO getInstance() {
 		if (instance == null) {
 			instance = new ReservationConcreteDAO();
 		}

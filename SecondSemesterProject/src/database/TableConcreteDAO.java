@@ -14,12 +14,12 @@ import model.Table;
 
 public class TableConcreteDAO implements TableDAO {
 
-	private static TableConcreteDAO instance = new TableConcreteDAO();
+	private static TableDAO instance = new TableConcreteDAO();
 
 	private TableConcreteDAO() {
 	}
 
-	public static TableConcreteDAO getInstance() {
+	public static TableDAO getInstance() {
 		if (instance == null) {
 			instance = new TableConcreteDAO();
 		}

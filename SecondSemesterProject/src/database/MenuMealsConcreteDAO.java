@@ -11,12 +11,12 @@ import model.Menu;
 
 public class MenuMealsConcreteDAO implements MenuMealsDAO {
 
-	private static MenuMealsConcreteDAO instance = new MenuMealsConcreteDAO();
+	private static MenuMealsDAO instance = new MenuMealsConcreteDAO();
 
 	private MenuMealsConcreteDAO() {
 	}
 
-	public static MenuMealsConcreteDAO getInstance() {
+	public static MenuMealsDAO getInstance() {
 		if (instance == null) {
 			instance = new MenuMealsConcreteDAO();
 		}

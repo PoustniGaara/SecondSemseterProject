@@ -11,7 +11,7 @@ public class CustomerController {
 	private CustomerConcreteDAO customerDAO;
 
 	public CustomerController() {
-		customerDAO = CustomerConcreteDAO.getInstance();
+		customerDAO = (CustomerConcreteDAO) CustomerConcreteDAO.getInstance();
 	}
 
 	public Customer findByPhone(String phone) throws SQLException {

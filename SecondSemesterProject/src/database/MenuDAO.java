@@ -16,5 +16,5 @@ public interface MenuDAO {
 	void delete(Menu menu);
 
 	void update(ArrayList<Menu> menus) throws SQLException;
-
+	
 }

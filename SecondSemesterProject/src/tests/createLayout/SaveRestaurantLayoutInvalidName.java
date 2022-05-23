@@ -1,5 +1,6 @@
 package tests.createLayout;
 
+import static org.junit.Assert.assertTrue;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.awt.Point;
@@ -15,10 +16,10 @@ import model.LayoutItem;
 import model.RestaurantLayout;
 import model.Table;
 
-class SaveRestaurantLayoutTest {
+class SaveRestaurantLayoutInvalidName {
 
-	// This test tests if the creation of the RestaurantLayout in the database is
-	// successful
+	// This test tests if the creation of the RestaurantLayout in to the database is
+	// successful. This test is expected to be unsuccessful because the name of the layout is invalid.
 
 	RestaurantLayoutController rlc;
 
@@ -30,7 +31,6 @@ class SaveRestaurantLayoutTest {
 	@Test
 	public void test() {
 		// Arrange
-		System.out.println(rlc);
 		HashMap<Point, LayoutItem> itemMap = new HashMap<>();
 		itemMap.put(new Point(0, 1), new Table("test", "table", 5));
 		itemMap.put(new Point(0, 2), new Table("test1", "table", 6));
@@ -38,22 +38,17 @@ class SaveRestaurantLayoutTest {
 		itemMap.put(new Point(0, 4), new Table("test3", "table", 8));
 		itemMap.put(new Point(0, 5), new LayoutItem("test4", "bar"));
 		itemMap.put(new Point(0, 5), new LayoutItem("test5", "entrance"));
-		RestaurantLayout restaurantLayout = new RestaurantLayout("TestEclipse", 0, 0, itemMap);
+		RestaurantLayout restaurantLayout = new RestaurantLayout("batchTest", 0, 0, itemMap);
+		
+		Exception testException =  new Exception("There already exists restaurant layout with such a name");
 
+		
 		// Act
-		try {
-			rlc.save("TestEclipse", 0, 0, itemMap);
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
 		// Assert
 		try {
-			assertEquals(restaurantLayout.getName(),
-					rlc.read(restaurantLayout.getName()).getName(), "are equal");
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			rlc.save("batchTest", 0, 0, itemMap);
+		} catch (Exception exception) {
+			assertTrue(exception.getMessage().equals(testException.getMessage()));
 		}
 	}
 

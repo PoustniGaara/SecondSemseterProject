@@ -13,9 +13,9 @@ import model.Reservation;
 
 public class ReservedMenusConcreteDAO implements ReservedMenusDAO {
 
-	private static ReservedMenusConcreteDAO instance = new ReservedMenusConcreteDAO();
+	private static ReservedMenusDAO instance = new ReservedMenusConcreteDAO();
 
-	public static ReservedMenusConcreteDAO getInstance() {
+	public static ReservedMenusDAO getInstance() {
 		if (instance == null) {
 			instance = new ReservedMenusConcreteDAO();
 		}
@@ -42,7 +42,8 @@ public class ReservedMenusConcreteDAO implements ReservedMenusDAO {
 			throw new SQLException("Error in getting RestaurantLayouts from DB:" + e.getMessage());
 		}
 	}
-
+	
+	@Override
 	public ArrayList<Menu> getReservationMenus(int reservationId) throws SQLException {
 		Connection con = DBConnection.getInstance().getDBcon();
 		ArrayList<Menu> menus = new ArrayList<>();

@@ -11,12 +11,12 @@ import model.Customer;
 
 public class CustomerConcreteDAO implements CustomerDAO {
 
-	private static CustomerConcreteDAO instance = new CustomerConcreteDAO();
+	private static CustomerDAO instance = new CustomerConcreteDAO();
 
 	private CustomerConcreteDAO() {
 	}
 
-	public static CustomerConcreteDAO getInstance() {
+	public static CustomerDAO getInstance() {
 		if (instance == null) {
 			instance = new CustomerConcreteDAO();
 		}

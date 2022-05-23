@@ -11,12 +11,12 @@ import model.Meal;
 
 public class MealConcreteDAO implements MealDAO {
 
-	private static MealConcreteDAO instance = new MealConcreteDAO();
+	private static MealDAO instance = new MealConcreteDAO();
 
 	private MealConcreteDAO() {
 	}
 
-	public static MealConcreteDAO getInstance() {
+	public static MealDAO getInstance() {
 		if (instance == null) {
 			instance = new MealConcreteDAO();
 		}

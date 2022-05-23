@@ -20,8 +20,8 @@ public class RestaurantLayoutController {
 	public void save(String name, int sizeX, int sizeY, HashMap<Point,LayoutItem> itemMap)
 			throws SQLException, Exception {
 		if(restaurantLayoutDAO.read(name).getId() != 0)
-		restaurantLayoutDAO.save(name, sizeX, sizeY, itemMap);
-		else throw new Exception("There already exists restaurant layout with such a name");
+		throw new Exception("There already exists restaurant layout with such a name");
+		else restaurantLayoutDAO.save(name, sizeX, sizeY, itemMap);
 	}
 	
 	public RestaurantLayout read(String name) throws SQLException {

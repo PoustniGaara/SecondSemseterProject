@@ -13,7 +13,7 @@ import model.LayoutItem;
 
 public class LayoutItemConcreteDAO implements LayoutItemDAO {
 	
-	private static LayoutItemConcreteDAO instance;
+	private static LayoutItemDAO instance;
 	
 	private LayoutItemConcreteDAO() {
 	}
@@ -105,7 +105,7 @@ public class LayoutItemConcreteDAO implements LayoutItemDAO {
 		}
 	}
 	
-	public static LayoutItemConcreteDAO getInstance() {
+	public static LayoutItemDAO getInstance() {
 		if(instance == null) return new LayoutItemConcreteDAO();
 		else return instance;
 	}
