@@ -1,4 +1,4 @@
-package tests.RestaurantLayout;
+package tests.createLayout;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 

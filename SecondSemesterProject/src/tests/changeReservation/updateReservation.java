@@ -1,4 +1,4 @@
-package tests.RestaurantLayout;
+package tests.changeReservation;
 
 import static org.junit.Assert.assertEquals;
 
