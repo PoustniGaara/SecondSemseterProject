@@ -41,16 +41,6 @@ public class ConnectionCheckPanel extends JPanel {
 				} // sleep for 5 seconds
 		};
 		
-//	    int delay = 5000; // delay for 5 sec.
-//	    int period = 5000; // repeat every sec.
-//	    Timer timer = new Timer();
-//
-//	    timer.scheduleAtFixedRate(new TimerTask() {
-//	      public void run() {
-//	        
-//	      }
-//	    }, delay, period);
-
 		new Thread(task).start();
 	}
 	
@@ -65,16 +55,6 @@ public class ConnectionCheckPanel extends JPanel {
 					setConnected(true);
 				}
 			}
-			else {
-				if(isConnected == true) {
-					connLabel.setText("Not connected to database");
-					connLabel.setForeground(Color.RED);
-					this.repaint();
-					repaintSuper();
-					setConnected(false);
-				}
-			}
-	       
 		}
 		catch(Exception e) {
 			if(isConnected == true) {

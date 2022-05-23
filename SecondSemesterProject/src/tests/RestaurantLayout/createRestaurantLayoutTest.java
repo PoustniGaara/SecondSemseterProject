@@ -43,7 +43,7 @@ class createRestaurantLayoutTest {
 		// Act
 		try {
 			rlc.saveRestaurantLayout("TestEclipse", 0, 0, itemMap);
-		} catch (SQLException e) {
+		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
