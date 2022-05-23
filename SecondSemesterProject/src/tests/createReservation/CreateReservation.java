@@ -19,7 +19,7 @@ import model.Menu;
 import model.Reservation;
 import model.Table;
 
-public class createReservation {
+public class CreateReservation {
 
 	ReservationController cntrl;
 	private int id;

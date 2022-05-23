@@ -10,7 +10,7 @@ import org.junit.jupiter.api.Test;
 import controller.CustomerController;
 import model.Customer;
 
-public class createCustomer {
+public class CreateCustomer {
 
 	CustomerController cntrl;
 

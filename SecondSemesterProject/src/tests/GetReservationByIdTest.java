@@ -11,7 +11,7 @@ import org.junit.jupiter.api.Test;
 import controller.ReservationController;
 import model.Reservation;
 
-public class methodGetReservationByIdTest {
+public class GetReservationByIdTest {
 	
 	ReservationController cntrl;
 

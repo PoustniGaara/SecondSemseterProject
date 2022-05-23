@@ -10,7 +10,7 @@ import org.junit.jupiter.api.Test;
 import controller.ReservationController;
 import model.Reservation;
 
-public class updateReservation {
+public class UpdateReservation {
 
 	ReservationController cntrl;
 

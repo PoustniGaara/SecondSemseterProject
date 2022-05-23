@@ -6,13 +6,13 @@ import java.awt.event.MouseEvent;
 
 import javax.swing.JButton;
 
-public class FButtonOneC extends JButton {
+public class FancyButtonOneClick extends JButton {
 	private boolean isClicked = false;
 	private Color fDefault;
 	private Color bDefault;
 	private Color bEntered;
 	
-	public FButtonOneC(Color fdefault, Color bentered, Color bdefault) {
+	public FancyButtonOneClick(Color fdefault, Color bentered, Color bdefault) {
 	this.fDefault = fdefault;
 	this.bDefault = bdefault;
 	this.bEntered = bentered;

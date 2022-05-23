@@ -16,15 +16,15 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.border.Border;
 
-import gui.tools.FButtonMoreC;
-import gui.tools.FButtonOneC;
+import gui.tools.FancyButtonMoreClick;
+import gui.tools.FancyButtonOneClick;
 import gui.tools.PColors;
 
 public class OptionFrame extends JFrame {
 	
 	public static OptionFrame instance;
-	private FButtonOneC editorBtn;
-	private FButtonMoreC layoutBtn;
+	private FancyButtonOneClick editorBtn;
+	private FancyButtonMoreClick layoutBtn;
 	
 	private OptionFrame () {
 		
@@ -56,7 +56,7 @@ public class OptionFrame extends JFrame {
 		btnPanel.setBackground(PColors.get(PColors.GREEN));
 		mainPanel.add(btnPanel, BorderLayout.NORTH);
 		
-		layoutBtn = new FButtonMoreC(PColors.get(PColors.RED), PColors.get(PColors.GREEN),
+		layoutBtn = new FancyButtonMoreClick(PColors.get(PColors.RED), PColors.get(PColors.GREEN),
 				PColors.get(PColors.RED), PColors.get(PColors.GREEN));
 		layoutBtn.setText("Layout");
 		layoutBtn.setFont(font1);
@@ -80,7 +80,7 @@ public class OptionFrame extends JFrame {
 		gbcLF.weighty = 0.4;
 		mainPanel.add(layoutPanel, BorderLayout.CENTER);
 		
-		editorBtn = new FButtonOneC(PColors.get(PColors.BLACK), PColors.get(PColors.RED), PColors.get(PColors.RED));
+		editorBtn = new FancyButtonOneClick(PColors.get(PColors.BLACK), PColors.get(PColors.RED), PColors.get(PColors.RED));
 		editorBtn.setFont(font1);
 		editorBtn.setBorderPainted(true);
 		editorBtn.setPreferredSize(new Dimension(width/4, height/20));

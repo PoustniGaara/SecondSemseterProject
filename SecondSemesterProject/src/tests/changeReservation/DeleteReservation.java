@@ -18,7 +18,7 @@ import model.Menu;
 import model.Reservation;
 import model.Table;
 
-public class deleteReservation {
+public class DeleteReservation {
 
 	ReservationController cntrl;
 

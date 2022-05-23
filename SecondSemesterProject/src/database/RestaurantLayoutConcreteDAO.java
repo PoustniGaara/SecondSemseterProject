@@ -80,12 +80,12 @@ import model.RestaurantLayout;
 	}
 
 	@Override
-	public void saveRestaurantLayout(String name, int sizeX, int sizeY, HashMap<Point,LayoutItem> itemMap) throws SQLException {
+	public void save(String name, int sizeX, int sizeY, HashMap<Point,LayoutItem> itemMap) throws SQLException {
 		RestaurantLayout restaurantLayout = new RestaurantLayout(name,sizeX,sizeY,itemMap);
 		Connection con = DBConnection.getInstance().getDBcon();
 		try{
 			con.setAutoCommit(false);
-			long restaurantLayouID = createRestaurantLayout(restaurantLayout);
+			long restaurantLayouID = create(restaurantLayout);
 					LayoutItemConcreteDAO.getInstance().createLayoutItems(restaurantLayout.getItemMap(),
 							restaurantLayouID);
 			TableConcreteDAO.getInstance().createTables(restaurantLayout.getItemMap(),
@@ -103,7 +103,7 @@ import model.RestaurantLayout;
 	}
 	
 	@Override
-	public Long createRestaurantLayout(RestaurantLayout restaurantLayout) throws SQLException {
+	public Long create(RestaurantLayout restaurantLayout) throws SQLException {
 		Connection con = DBConnection.getInstance().getDBcon();
 		try(
 			PreparedStatement ps = con.prepareStatement("insert into dbo.RestaurantLayouts("
@@ -131,10 +131,10 @@ import model.RestaurantLayout;
 	}
 	
 	@Override
-	public RestaurantLayout getRestaurantLayoutByName(String name) throws SQLException {
+	public RestaurantLayout read(String name) throws SQLException {
 		Connection con = DBConnection.getInstance().getDBcon();
 		long restaurantLayoutID = 0;
-		String restaurantLayoutName = null;
+		String restaurantLayoutName = "";
 		int sizeX = 0;
 		int sizeY = 0;
 		HashMap<Point, LayoutItem> itemMap;

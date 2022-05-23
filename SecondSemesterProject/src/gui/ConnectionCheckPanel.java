@@ -8,7 +8,7 @@ import java.util.TimerTask;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
-import database.ConnectionCheckDAO;
+import database.ConnectionCheck;
 import database.DBConnection;
 import gui.tools.PColors;
 
@@ -17,7 +17,7 @@ public class ConnectionCheckPanel extends JPanel {
 	private JLabel connLabel;
 	private boolean isConnected = false;
 	private static ConnectionCheckPanel instance;
-	private ConnectionCheckPanel(){
+	public ConnectionCheckPanel(){
 		
 		this.setBackground(PColors.get(PColors.GREEN));
 		
@@ -46,7 +46,7 @@ public class ConnectionCheckPanel extends JPanel {
 	
 	private void checkConnection(){
 		try{
-			if(ConnectionCheckDAO.getInstance().verifyConnection().equals("1")) {
+			if(ConnectionCheck.getInstance().verifyConnection().equals("1")) {
 				if(isConnected == false) {
 					connLabel.setText("Connected to database");
 					connLabel.setForeground(Color.GREEN);

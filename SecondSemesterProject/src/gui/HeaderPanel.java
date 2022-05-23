@@ -9,8 +9,8 @@ import java.awt.GridBagLayout;
 import javax.swing.JButton;
 import javax.swing.JPanel;
 
-import gui.tools.FButtonMoreC;
-import gui.tools.FButtonOneC;
+import gui.tools.FancyButtonMoreClick;
+import gui.tools.FancyButtonOneClick;
 import gui.tools.PColors;
 
 import org.kordamp.ikonli.coreui.CoreUiFree;
@@ -20,8 +20,8 @@ public class HeaderPanel extends JPanel {
 	
 	private static HeaderPanel instance;
 	private ConnectionCheckPanel conPanel;
-	private FButtonMoreC overviewButton, reservationButton, menuButton, currentButton;
-	private FButtonOneC optionButton;
+	private FancyButtonMoreClick overviewButton, reservationButton, menuButton, currentButton;
+	private FancyButtonOneClick optionButton;
 	
 	private HeaderPanel() {
 		
@@ -45,7 +45,7 @@ public class HeaderPanel extends JPanel {
 		Font font2 = new Font("Monaco", Font.PLAIN, 20);
 		
 		//Panel buttons setup
-		overviewButton = new FButtonMoreC(PColors.get(PColors.RED), PColors.get(PColors.GREEN),
+		overviewButton = new FancyButtonMoreClick(PColors.get(PColors.RED), PColors.get(PColors.GREEN),
 				PColors.get(PColors.RED), PColors.get(PColors.GREEN));
 		overviewButton.setText("Overview");
 		overviewButton.setFont(font1);
@@ -58,7 +58,7 @@ public class HeaderPanel extends JPanel {
 		gbc.gridy = 0;
 		add(overviewButton, gbc);
 		
-		reservationButton = new FButtonMoreC(PColors.get(PColors.RED), PColors.get(PColors.GREEN),
+		reservationButton = new FancyButtonMoreClick(PColors.get(PColors.RED), PColors.get(PColors.GREEN),
 				PColors.get(PColors.RED), PColors.get(PColors.GREEN));
 		reservationButton.setText("Reservations");
 		reservationButton.setFont(font1);
@@ -67,7 +67,7 @@ public class HeaderPanel extends JPanel {
 		gbc.gridx = 1;
 		add(reservationButton, gbc);
 		
-		menuButton = new FButtonMoreC(PColors.get(PColors.RED), PColors.get(PColors.GREEN),
+		menuButton = new FancyButtonMoreClick(PColors.get(PColors.RED), PColors.get(PColors.GREEN),
 				PColors.get(PColors.RED), PColors.get(PColors.GREEN));
 		menuButton.setText("Menu");
 		menuButton.setFont(font1);
@@ -76,7 +76,7 @@ public class HeaderPanel extends JPanel {
 		gbc.gridx = 2;
 		add(menuButton, gbc);
 		
-		optionButton = new FButtonOneC (PColors.get(PColors.RED),new Color(7, 100, 90),
+		optionButton = new FancyButtonOneClick (PColors.get(PColors.RED),new Color(7, 100, 90),
 				PColors.get(PColors.GREEN));
 		optionButton.setState(true);
 		optionButton.addActionListener(e -> openOptionFrame());

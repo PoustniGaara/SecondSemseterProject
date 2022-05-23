@@ -15,7 +15,7 @@ import model.LayoutItem;
 import model.RestaurantLayout;
 import model.Table;
 
-class createRestaurantLayoutTest {
+class SaveRestaurantLayoutTest {
 
 	// This test tests if the creation of the RestaurantLayout in the database is
 	// successful
@@ -42,7 +42,7 @@ class createRestaurantLayoutTest {
 
 		// Act
 		try {
-			rlc.saveRestaurantLayout("TestEclipse", 0, 0, itemMap);
+			rlc.save("TestEclipse", 0, 0, itemMap);
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -50,7 +50,7 @@ class createRestaurantLayoutTest {
 		// Assert
 		try {
 			assertEquals(restaurantLayout.getName(),
-					rlc.getRestaurantLayoutByName(restaurantLayout.getName()).getName(), "are equal");
+					rlc.read(restaurantLayout.getName()).getName(), "are equal");
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

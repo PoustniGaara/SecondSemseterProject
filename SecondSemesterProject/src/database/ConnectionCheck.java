@@ -5,11 +5,11 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 
-public class ConnectionCheckDAO {
+public class ConnectionCheck {
 	
-	private static ConnectionCheckDAO instance;
+	private static ConnectionCheck instance;
 	
-	private ConnectionCheckDAO() {
+	private ConnectionCheck() {
 	}
 	
 	public String verifyConnection() throws SQLException {
@@ -22,16 +22,15 @@ public class ConnectionCheckDAO {
 			}
 		}
 		catch(Exception e){
-//			e.printStackTrace();
 			throw new SQLException("Error with connection"+ e.getMessage());
 		}
 		return null;
 		
 	}
 	
-	public static ConnectionCheckDAO getInstance() {
+	public static ConnectionCheck getInstance() {
 		if(instance != null) return instance;
-		else return new ConnectionCheckDAO();
+		else return new ConnectionCheck();
 	}
 
 }

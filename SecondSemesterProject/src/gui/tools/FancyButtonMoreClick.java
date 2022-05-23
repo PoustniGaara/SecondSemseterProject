@@ -8,7 +8,7 @@ import java.awt.event.MouseEvent;
 
 import javax.swing.JButton;
 
-public class FButtonMoreC extends JButton {
+public class FancyButtonMoreClick extends JButton {
 	
 	private boolean isClicked = false;
 	private Color fDefault;
@@ -16,7 +16,7 @@ public class FButtonMoreC extends JButton {
 	private Color bClicked;
 	private Color bEntered;
 	
-	public FButtonMoreC(Color fdefault, Color fclicked, Color bclicked, Color bentered) {
+	public FancyButtonMoreClick(Color fdefault, Color fclicked, Color bclicked, Color bentered) {
 	this.fDefault = fdefault;
 	this.fClicked = fclicked;
 	this.bClicked = bclicked;

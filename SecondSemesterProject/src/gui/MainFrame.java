@@ -12,7 +12,7 @@ import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 
 import controller.RestaurantLayoutController;
-import database.ConnectionCheckDAO;
+import database.ConnectionCheck;
 import database.LayoutItemConcreteDAO;
 import database.TableConcreteDAO;
 import model.LayoutItem;

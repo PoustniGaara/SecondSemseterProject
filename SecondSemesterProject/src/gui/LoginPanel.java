@@ -12,13 +12,13 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
-import gui.tools.FButtonOneC;
+import gui.tools.FancyButtonOneClick;
 import gui.tools.PColors;
 
 public class LoginPanel extends JPanel {
 	
 	private JPanel inputPanel;
-	private FButtonOneC btn;
+	private FancyButtonOneClick btn;
 	private JTextField inputField;
 	private String password = "";
 	private static LoginPanel instance;
@@ -80,7 +80,7 @@ public class LoginPanel extends JPanel {
 		gbcIP.gridy = 0;
 		inputPanel.add(inputField, gbcIP);
 		
-		btn = new FButtonOneC(PColors.get(PColors.BLACK), PColors.get(PColors.GREEN), PColors.get(PColors.RED));
+		btn = new FancyButtonOneClick(PColors.get(PColors.BLACK), PColors.get(PColors.GREEN), PColors.get(PColors.RED));
 		btn.setText("Login");
 		btn.setFont(new Font("Monaco", Font.PLAIN, 25));
 		btn.setPreferredSize(new Dimension((int)inputPanel.getPreferredSize().getWidth() /100 * 98, 
