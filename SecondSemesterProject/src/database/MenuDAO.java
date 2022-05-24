@@ -11,9 +11,9 @@ public interface MenuDAO {
 
 	Menu read(int id) throws SQLException;
 
-	void create(Menu menu);
+	void create(Menu menu) throws SQLException;
 
-	void delete(Menu menu);
+	void delete(Menu menu) throws SQLException;
 
 	void update(ArrayList<Menu> menus) throws SQLException;
 	

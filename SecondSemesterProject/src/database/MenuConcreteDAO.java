@@ -8,6 +8,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 
+import model.Meal;
 import model.Menu;
 import model.Table;
 
@@ -68,9 +69,47 @@ public class MenuConcreteDAO implements MenuDAO {
 	}
 
 	@Override
-	public void create(Menu menu) {
-		// TODO Auto-generated method stub
+	public void create(Menu menu) throws SQLException {
+		Connection con = DBConnection.getInstance().getDBcon();
 
+		try {
+			con.setAutoCommit(false);
+			int id = createMenu(menu);
+			menu.setID(id); 
+			for(Meal m : menu.getMeals()) {
+				MealConcreteDAO.getInstance().create(m);
+			}
+			MenuMealsConcreteDAO.getInstance().create(menu, menu.getMeals());
+			con.commit();
+		} catch (SQLException e) {
+			e.printStackTrace();
+			con.rollback();
+		} finally {
+			con.setAutoCommit(true);
+		}
+
+	}
+
+	private int createMenu(Menu menu) throws SQLException {
+		Connection con = DBConnection.getInstance().getDBcon();
+
+		try {
+			PreparedStatement ps = con.prepareStatement("INSERT INTO dbo.Menus (name) VALUES (?)",
+					Statement.RETURN_GENERATED_KEYS);
+
+			ps.setString(1, menu.getName());
+			ps.execute();
+
+			ResultSet generatedKeys = ps.getGeneratedKeys();
+			if (generatedKeys.next()) {
+				return generatedKeys.getInt(1);
+			} else {
+				throw new SQLException("Creating Menu failed, no ID obtained.");
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+			throw new SQLException("Error inserting Menu into DB:" + e.getMessage());
+		}
 	}
 
 	@Override
@@ -78,33 +117,39 @@ public class MenuConcreteDAO implements MenuDAO {
 		Connection con = DBConnection.getInstance().getDBcon();
 		try (PreparedStatement ps = con.prepareStatement("update dbo.Menus SET name = ? where menuID = ?");) {
 			con.setAutoCommit(true);
-			for (Menu menu: menus) {
+			for (Menu menu : menus) {
 				ps.setString(1, menu.getName());
 				ps.setInt(2, menu.getID());
 				System.out.println(menu.getID());
 				System.out.println(menu.getName());
 				ps.addBatch();
 			}
-    		try {
-    			ps.executeBatch();
-    			con.commit();
-    			}
-    		 catch(BatchUpdateException e){
-    		    con.rollback();
-    		    throw new BatchUpdateException("Error in batching", e.getUpdateCounts());
-    		    }
+			try {
+				ps.executeBatch();
+				con.commit();
+			} catch (BatchUpdateException e) {
+				con.rollback();
+				throw new BatchUpdateException("Error in batching", e.getUpdateCounts());
+			}
 		} catch (SQLException e) {
 			e.printStackTrace();
 			throw new SQLException("Error in updating menus:" + e.getMessage());
-		}
-		finally {
+		} finally {
 			con.setAutoCommit(false);
 		}
 	}
 
 	@Override
-	public void delete(Menu menu) {
-		// TODO Auto-generated method stub
+	public void delete(Menu menu) throws SQLException {
+		Connection con = DBConnection.getInstance().getDBcon();
+		try {
+			PreparedStatement ps = con.prepareStatement("DELETE FROM dbo.Menus WHERE menuID = ?");
+			ps.setLong(1, menu.getID());
+			ps.execute();
+		} catch (SQLException e) {
+			e.printStackTrace();
+			throw new SQLException("Error deleting Menu from DB:" + e.getMessage());
+		}
 
 	}
 

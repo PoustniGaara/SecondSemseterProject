@@ -71,7 +71,7 @@ public class MealConcreteDAO implements MealDAO {
 		Connection con = DBConnection.getInstance().getDBcon();
 		try {
 			PreparedStatement ps = con
-					.prepareStatement("INSERT INTO dbo.Meals (name, price, description)" + "VALUES (?,?,?,?,?,?,?,?)");
+					.prepareStatement("INSERT INTO dbo.Meals (name, price, description) VALUES (?,?,?)");
 			ps.setString(1, meal.getName());
 			ps.setFloat(2, meal.getPrice());
 			ps.setString(3, meal.getDescription());
