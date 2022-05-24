@@ -1,5 +1,6 @@
 package database;
 
+import java.sql.BatchUpdateException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -73,21 +74,31 @@ public class MenuConcreteDAO implements MenuDAO {
 	}
 
 	@Override
-	public void update(ArrayList<Menu> menus) throws SQLException {
+	public void update(ArrayList<Menu> menus) throws SQLException, BatchUpdateException {
 		Connection con = DBConnection.getInstance().getDBcon();
 		try (PreparedStatement ps = con.prepareStatement("update dbo.Menus SET name = ? where menuID = ?");) {
+			con.setAutoCommit(true);
 			for (Menu menu: menus) {
 				ps.setString(1, menu.getName());
 				ps.setInt(2, menu.getID());
 				System.out.println(menu.getID());
 				System.out.println(menu.getName());
-
 				ps.addBatch();
 			}
-			ps.executeBatch();
+    		try {
+    			ps.executeBatch();
+    			con.commit();
+    			}
+    		 catch(BatchUpdateException e){
+    		    con.rollback();
+    		    throw new BatchUpdateException("Error in batching", e.getUpdateCounts());
+    		    }
 		} catch (SQLException e) {
 			e.printStackTrace();
 			throw new SQLException("Error in updating menus:" + e.getMessage());
+		}
+		finally {
+			con.setAutoCommit(false);
 		}
 	}
 

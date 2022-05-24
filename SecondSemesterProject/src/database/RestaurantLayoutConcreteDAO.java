@@ -70,17 +70,12 @@ import model.RestaurantLayout;
 		try(
 			PreparedStatement ps = con.prepareStatement("DELETE FROM dbo.RestaurantLayouts WHERE name = ?")
 			){
-			con.setAutoCommit(false);
 			ps.setString(1, restaurantLayoutName);
-			con.commit();
 		}
 		catch(SQLException e){
 			e.printStackTrace();
 			con.rollback();
 			throw new SQLException("Error in deleting RestaurantLayout:"+ e.getMessage());
-		}
-		finally {
-			con.setAutoCommit(true);
 		}
 	}
 

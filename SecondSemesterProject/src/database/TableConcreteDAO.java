@@ -1,6 +1,7 @@
 package database;
 
 import java.awt.Point;
+import java.sql.BatchUpdateException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -27,20 +28,31 @@ public class TableConcreteDAO implements TableDAO {
 	}
 
 	@Override
-	public void createTables(HashMap<Point, LayoutItem> itemMap, long restaurantLayoutID) throws SQLException {
+	public void createTables(HashMap<Point, LayoutItem> itemMap, long restaurantLayoutID) throws SQLException,BatchUpdateException {
 		ArrayList<Table> tableList = getTableList(itemMap, restaurantLayoutID);
 		Connection con = DBConnection.getInstance().getDBcon();
 		try (PreparedStatement ps = con
 				.prepareStatement("insert into dbo.Tables(layoutItemID,capacity) values(?,?)");) {
+			con.setAutoCommit(false);
 			for (Table table : tableList) {
 				ps.setLong(1, table.getId());
 				ps.setInt(2, table.getCapacity());
 				ps.addBatch();
 			}
-			ps.executeBatch();
+			try {
+    			ps.executeBatch();
+    			con.commit();
+    			}
+    		 catch(BatchUpdateException e){
+    		    con.rollback();
+    		    throw new BatchUpdateException("Error in batching", e.getUpdateCounts());
+    		    }
 		} catch (SQLException e) {
 			e.printStackTrace();
 			throw new SQLException("Error in creating Tables:" + e.getMessage());
+		}
+		finally {
+			con.setAutoCommit(true);
 		}
 	}
 
@@ -93,33 +105,55 @@ public class TableConcreteDAO implements TableDAO {
 	}
 
 	@Override
-	public void update(ArrayList<Table> tableList) throws SQLException {
+	public void update(ArrayList<Table> tableList) throws SQLException, BatchUpdateException {
 		Connection con = DBConnection.getInstance().getDBcon();
 		try (PreparedStatement ps = con.prepareStatement("update dbo.Tables SET capacity = ? where layoutItemID = ?");) {
+			con.setAutoCommit(false);
 			for (Table table : tableList) {
 				ps.setInt(1, table.getCapacity());
 				ps.setLong(2, table.getId());
 				ps.addBatch();
 			}
-			ps.executeBatch();
+    		try {
+    			ps.executeBatch();
+    			con.commit();
+    			}
+    		 catch(BatchUpdateException e){
+    		    con.rollback();
+    		    throw new BatchUpdateException("Error in batching", e.getUpdateCounts());
+    		    }
 		} catch (SQLException e) {
 			e.printStackTrace();
 			throw new SQLException("Error in updating Tables:" + e.getMessage());
 		}
+		finally {
+			con.setAutoCommit(true);
+		}
 	}
 
 	@Override
-	public void delete(ArrayList<Table> tableList) throws SQLException {
+	public void delete(ArrayList<Table> tableList) throws SQLException,BatchUpdateException {
 		Connection con = DBConnection.getInstance().getDBcon();
 		try (PreparedStatement ps = con.prepareStatement("delete from dbo.Tables where layoutItemID = ?");) {
+			con.setAutoCommit(false);
 			for (Table table : tableList) {
 				ps.setLong(1, table.getId());
 				ps.addBatch();
 			}
-			ps.executeBatch();
+    		try {
+    			ps.executeBatch();
+    			con.commit();
+    			}
+    		 catch(BatchUpdateException e){
+    		    con.rollback();
+    		    throw new BatchUpdateException("Error in batching", e.getUpdateCounts());
+    		    }
 		} catch (SQLException e) {
 			e.printStackTrace();
 			throw new SQLException("Error in deleting Table:" + e.getMessage());
+		}
+		finally {
+			con.setAutoCommit(true);
 		}
 	}
 

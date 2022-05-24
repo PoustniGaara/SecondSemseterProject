@@ -1,6 +1,7 @@
 package database;
 
 import java.awt.Point;
+import java.sql.BatchUpdateException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -44,11 +45,12 @@ public class LayoutItemConcreteDAO implements LayoutItemDAO {
 	}
 	
 	@Override
-	public void createLayoutItems(HashMap<Point,LayoutItem> itemMap, long restaurantLayoutID) throws SQLException {
+	public void createLayoutItems(HashMap<Point,LayoutItem> itemMap, long restaurantLayoutID) throws SQLException,BatchUpdateException {
 		Connection con = DBConnection.getInstance().getDBcon();
 		try (PreparedStatement ps = con.prepareStatement("insert into dbo.LayoutItems(name,type,"
         				+ "locationX,locationY,restaurantLayoutID) values(?,?,?,?,?)")
         	) {
+			con.setAutoCommit(false);
         	for (Map.Entry<Point,LayoutItem> entry : itemMap.entrySet()) {
         		ps.setString(1, entry.getValue().getName());
         		ps.setString(2, entry.getValue().getType());
@@ -57,19 +59,30 @@ public class LayoutItemConcreteDAO implements LayoutItemDAO {
         		ps.setLong(5, restaurantLayoutID);
         		ps.addBatch();
         		}
-        	ps.executeBatch();
+    		try {
+    			ps.executeBatch();
+    			con.commit();
+    			}
+    		 catch(BatchUpdateException e){
+    		    con.rollback();
+    		    throw new BatchUpdateException("Error in batching", e.getUpdateCounts());
+    		    }
         } catch (SQLException e) {
 			e.printStackTrace();
 			throw new SQLException("Error in creating LayoutItems:"+ e.getMessage());
         	}
+		finally {
+			con.setAutoCommit(true);
+		}
 	}
 
 	@Override
-	public void update(HashMap<Point,LayoutItem> itemMap, long restaurantLayoutID) throws SQLException {
+	public void update(HashMap<Point,LayoutItem> itemMap, long restaurantLayoutID) throws SQLException,BatchUpdateException {
 		Connection con = DBConnection.getInstance().getDBcon();
 		try(PreparedStatement ps = con.prepareStatement("update dbo.LayoutItems set name = ?, type = ?,"
 				+ "locationX = ?, locationY = ? where restaurantLayouID = ?");
 		){
+		con.setAutoCommit(false);
 		for(Entry<Point, LayoutItem> entry : itemMap.entrySet()) {
 			ps.setString(1, entry.getValue().getName());
 			ps.setString(2, entry.getValue().getType());
@@ -78,31 +91,50 @@ public class LayoutItemConcreteDAO implements LayoutItemDAO {
 			ps.setLong(5, restaurantLayoutID);
 			ps.addBatch();
 			}
+		try {
 			ps.executeBatch();
+			con.commit();
+			}
+		 catch(BatchUpdateException e){
+		    con.rollback();
+		    throw new BatchUpdateException("Error in batching", e.getUpdateCounts());
+		    }
 		} catch (SQLException e) {
 			e.printStackTrace();
 			throw new SQLException("Error in updating LayoutItems:"+ e.getMessage());
 		}
+		finally {
+			con.setAutoCommit(true);
+		}
 	}
 
 	@Override
-	public void delete(ArrayList<LayoutItem> layoutItemList) throws SQLException {
+	public void delete(ArrayList<LayoutItem> layoutItemList) throws SQLException, BatchUpdateException  {
 		Connection con = DBConnection.getInstance().getDBcon();
 	    try(PreparedStatement ps = con.prepareStatement(
 	    		"delete from dbo.LayoutItems where layoutItemID = ?");
 	    ){
+	    con.setAutoCommit(false);
 	    for(LayoutItem layoutItem : layoutItemList) {
 				ps.setLong(1, layoutItem.getId());
 		    	ps.addBatch();
-		    }
+		}
+	    try {
 		    ps.executeBatch();
-		} 
+		    con.commit();
+		}
+	    catch(BatchUpdateException e){
+	    	con.rollback();
+	    	throw new BatchUpdateException("Error in batching", e.getUpdateCounts());
+	    }
+	    }
 	    catch (SQLException e) {
 			e.printStackTrace();
 			throw new SQLException("Error in deleting LayoutItems:"+ e.getMessage());
 		}
 	    finally {
-		}
+	    	con.setAutoCommit(true);
+	    }
 	}
 	
 	public static LayoutItemDAO getInstance() {

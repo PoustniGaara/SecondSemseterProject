@@ -1,5 +1,6 @@
 package database;
 
+import java.sql.BatchUpdateException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -23,23 +24,33 @@ public class ReservedMenusConcreteDAO implements ReservedMenusDAO {
 	}
 
 	@Override
-	public void create(Reservation reservation) throws SQLException {
+	public void create(Reservation reservation) throws SQLException, BatchUpdateException{
 		Connection con = DBConnection.getInstance().getDBcon();
 		try {
 			PreparedStatement ps = con
 					.prepareStatement("INSERT INTO ReservedMenus (reservationID, menuID, amount) VALUES (?,?,?)");
 			HashMap<Menu, Integer> groupedMenus = groupMenus(reservation.getMenus());
+			con.setAutoCommit(false);
 			for (Menu m : groupedMenus.keySet()) {
 				ps.setLong(1, reservation.getId());
 				ps.setInt(2, m.getID());
 				ps.setInt(3, groupedMenus.get(m));
 				ps.addBatch();
 			}
-			ps.executeBatch();
-
+    		try {
+    			ps.executeBatch();
+    			con.commit();
+    			}
+    		 catch(BatchUpdateException e){
+    		    con.rollback();
+    		    throw new BatchUpdateException("Error in batching", e.getUpdateCounts());
+    		    }
 		} catch (SQLException e) {
 			e.printStackTrace();
 			throw new SQLException("Error in getting RestaurantLayouts from DB:" + e.getMessage());
+		}
+		finally {
+			con.setAutoCommit(true);
 		}
 	}
 	

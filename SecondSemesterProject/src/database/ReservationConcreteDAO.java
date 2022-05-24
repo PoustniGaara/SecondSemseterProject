@@ -148,10 +148,8 @@ public class ReservationConcreteDAO implements ReservationDAO {
 		Connection con = DBConnection.getInstance().getDBcon();
 		try {
 			con.setAutoCommit(false);
-			
 			updateReservation(reservation);
 			TableConcreteDAO.getInstance().update(reservation.getTables());
-			
 			con.commit();
 		} catch (SQLException e) {
 			e.printStackTrace();

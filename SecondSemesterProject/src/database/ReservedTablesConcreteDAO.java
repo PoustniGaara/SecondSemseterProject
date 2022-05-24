@@ -1,5 +1,6 @@
 package database;
 
+import java.sql.BatchUpdateException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -22,23 +23,32 @@ public class ReservedTablesConcreteDAO implements ReservedTablesDAO {
 	}
 
 	@Override
-	public void create(Reservation reservation) throws SQLException {
+	public void create(Reservation reservation) throws SQLException,BatchUpdateException {
 		Connection con = DBConnection.getInstance().getDBcon();
 
 		try {
 			PreparedStatement ps = con
 					.prepareStatement("INSERT INTO dbo.ReservedTables (layoutItemID, reservationID) VALUES (?,?)");
-
+			con.setAutoCommit(false);
 			for (Table table : reservation.getTables()) {
 				ps.setLong(1, table.getId());
 				ps.setLong(2, reservation.getId());
 				ps.addBatch();
 			}
-			ps.executeBatch();
-
+    		try {
+    			ps.executeBatch();
+    			con.commit();
+    			}
+    		 catch(BatchUpdateException e){
+    		    con.rollback();
+    		    throw new BatchUpdateException("Error in batching", e.getUpdateCounts());
+    		    }
 		} catch (SQLException e) {
 			e.printStackTrace();
 			throw new SQLException("Error in getting RestaurantLayouts from DB:" + e.getMessage());
+		}
+		finally{
+			con.setAutoCommit(true);
 		}
 	}
 	
