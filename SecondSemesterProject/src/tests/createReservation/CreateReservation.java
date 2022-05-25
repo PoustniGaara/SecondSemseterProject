@@ -9,6 +9,7 @@ import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
 
+import org.junit.After;
 import org.junit.Before;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -41,7 +42,7 @@ public class CreateReservation {
 		rlc = new RestaurantLayoutController();
 		customerCntrl = new CustomerController();
 
-		Customer customer = new Customer("John", "Smith", "387654355", "john@gmail.com", "Aalborg", "9000", "Vesterbro",
+		Customer customer = new Customer("John", "Smith", "387654354", "john@gmail.com", "Aalborg", "9000", "Vesterbro",
 				"1");
 		customerCntrl.createCustomer(customer);
 
@@ -74,7 +75,7 @@ public class CreateReservation {
 		ArrayList<Menu> menus = new ArrayList<>();
 		menus.add(MenuConcreteDAO.getInstance().read(1));
 
-		String phone = "387654355";
+		String phone = "387654354";
 		Customer customer = reservationCntrl.checkCustomer(phone);
 
 		String note = "Please, decorate the table with dead kittens :)";
@@ -89,13 +90,14 @@ public class CreateReservation {
 		// Assert
 		id = reservation.getId().intValue();
 		assertEquals(reservation.getNote(), reservationCntrl.getReservationById(id).getNote());
+		cleanUp();
 	}
 
-	@AfterEach
+	@After
 	public void cleanUp() {
 		try {
 			reservationCntrl.deleteReservation(reservationCntrl.getReservationById(id));
-			customerCntrl.deleteCustomer(customerCntrl.findByPhone("387654355"));
+			customerCntrl.deleteCustomer(customerCntrl.findByPhone("387654354"));
 			rlc.deleteRestaurantLayout("Test Layout 1");
 			ArrayList<Table> t = new ArrayList<Table>();
 			t.add(table);
