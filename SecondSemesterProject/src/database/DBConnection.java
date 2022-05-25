@@ -45,7 +45,7 @@ public class DBConnection {
 		}
 	}
 
-	public Connection getDBcon() {
+	 public Connection getDBcon() {
 		try {
 			if(con.isClosed()) {
 				SQLServerDataSource ds = new SQLServerDataSource();
@@ -65,7 +65,7 @@ public class DBConnection {
 		return con;
 	}
 
-	public static DBConnection getInstance() {
+	public static synchronized DBConnection getInstance() {
 		if (instance == null) {
 			instance = new DBConnection();
 		}
