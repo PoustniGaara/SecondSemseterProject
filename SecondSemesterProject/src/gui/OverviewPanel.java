@@ -53,11 +53,9 @@ public class OverviewPanel extends JPanel {
 		Font font1 = new Font("Monaco", Font.BOLD, 20);
 	
 		//Tool Panel
-		JPanel toolPanel = new JPanel();
+		ToolPanel toolPanel = new ToolPanel();
 		toolPanel.setBorder(borderGreen);
-		toolPanel.setBackground(PColors.get(PColors.GREY));
-		toolPanel.setPreferredSize(new Dimension(panelWidth, toolPanelHeight));
-		toolPanel.setLayout(new GridBagLayout());
+
 		GridBagConstraints gbcTool = new GridBagConstraints();
 		gbcTool.weightx = 0.5;
 		gbcTool.weighty = 0;
@@ -74,7 +72,7 @@ public class OverviewPanel extends JPanel {
 		populatePersonCB();
 		personCB.setMaximumRowCount(5);
 		personCB.setFont(font1);
-		personCB.setPreferredSize(new Dimension(panelWidth/8, toolPanelHeight/3));
+		personCB.setPreferredSize(new Dimension(panelWidth/8, ToolPanel.getPanelHeight()/3));
 		gbcTool.anchor = GridBagConstraints.FIRST_LINE_START;
 		gbcTool.gridx = 0;
 		gbcTool.gridy = 1;
@@ -85,7 +83,7 @@ public class OverviewPanel extends JPanel {
 		FontIcon leftArrowIcon = FontIcon.of(CoreUiFree.ARROW_LEFT);
 		leftArrowIcon.setIconSize(100);
 		dayBackBtn.setIcon(leftArrowIcon);
-		dayBackBtn.setPreferredSize(new Dimension(panelWidth/10, (int) (toolPanelHeight*0.80)));
+		dayBackBtn.setPreferredSize(new Dimension(panelWidth/10, (int) (ToolPanel.getPanelHeight()*0.80)));
 		gbcTool.anchor = GridBagConstraints.CENTER;
 		gbcTool.gridheight = 2;
 		gbcTool.gridx = 1;
@@ -103,7 +101,7 @@ public class OverviewPanel extends JPanel {
 		timeCB = getTimeCB();
 		timeCB.setMaximumRowCount(5);
 		timeCB.setFont(font1);
-		timeCB.setPreferredSize(new Dimension(panelWidth/8, toolPanelHeight/3));
+		timeCB.setPreferredSize(new Dimension(panelWidth/8, ToolPanel.getPanelHeight()/3));
 		gbcTool.anchor = GridBagConstraints.FIRST_LINE_START;
 		gbcTool.gridx = 2;
 		gbcTool.gridy = 1;
@@ -122,7 +120,7 @@ public class OverviewPanel extends JPanel {
 		FontIcon calendarIcon = FontIcon.of(CoreUiFree.CALENDAR);
 		calendarIcon.setIconSize(32);
 		calendarBtn.setIcon(calendarIcon);
-		calendarBtn.setPreferredSize(new Dimension(panelWidth/16, toolPanelHeight/3));
+		calendarBtn.setPreferredSize(new Dimension(panelWidth/16, ToolPanel.getPanelHeight()/3));
 		gbcTool.gridx = 4;
 		gbcTool.anchor = GridBagConstraints.LINE_START;
 		toolPanel.add(calendarBtn,gbcTool);
@@ -130,7 +128,7 @@ public class OverviewPanel extends JPanel {
 		nowBtn = new FancyButtonOneClick(PColors.get(PColors.BLACK), PColors.get(PColors.RED), PColors.get(PColors.RED));
 		nowBtn.setFont(font1);
 		nowBtn.setBorderPainted(true);
-		nowBtn.setPreferredSize(new Dimension(panelWidth/12, toolPanelHeight/2));
+		nowBtn.setPreferredSize(new Dimension(panelWidth/12, ToolPanel.getPanelHeight()/2));
 		nowBtn.setText("now");
 		nowBtn.setBorder(borderBlack);
 		gbcTool.gridheight = 2;
@@ -142,7 +140,7 @@ public class OverviewPanel extends JPanel {
 		FontIcon rightArrowIcon = FontIcon.of(CoreUiFree.ARROW_RIGHT);
 		rightArrowIcon.setIconSize(100);
 		dayForwardBtn.setIcon(rightArrowIcon);
-		dayForwardBtn.setPreferredSize(new Dimension(panelWidth/10, (int) (toolPanelHeight*0.80)));
+		dayForwardBtn.setPreferredSize(new Dimension(panelWidth/10, (int) (ToolPanel.getPanelHeight()*0.80)));
 		gbcTool.anchor = GridBagConstraints.CENTER;
 		gbcTool.gridheight = 2;
 		gbcTool.gridx = 6;

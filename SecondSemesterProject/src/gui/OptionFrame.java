@@ -84,6 +84,7 @@ public class OptionFrame extends JFrame {
 		editorBtn.setFont(font1);
 		editorBtn.setBorderPainted(true);
 		editorBtn.setPreferredSize(new Dimension(width/4, height/20));
+		editorBtn.addActionListener(e -> openLayoutEditorFrame());
 		editorBtn.setText("open editor");
 		editorBtn.setBorder(borderBlack);
 		gbcLF.insets = new Insets(20,-20,0,0);
@@ -99,10 +100,11 @@ public class OptionFrame extends JFrame {
 		gbcLF.gridy = 0;
 		layoutPanel.add(description1, gbcLF);
 		
-		
-		
 	}
 	
+	private void openLayoutEditorFrame() {
+		new LayoutEditorFrame();
+	}
 	
 	public static OptionFrame getInstance() {
 		if(instance == null) return new OptionFrame();
