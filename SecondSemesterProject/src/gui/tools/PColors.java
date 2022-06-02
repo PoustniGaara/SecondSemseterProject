@@ -16,8 +16,8 @@ public enum PColors {
 			this.color = color;
 		}
 		
-		public static Color get(PColors name) {
-			return name.color;
+		public Color get() {
+			return color;
 		}
 	}
 
