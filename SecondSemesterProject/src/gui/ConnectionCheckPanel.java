@@ -19,7 +19,7 @@ public class ConnectionCheckPanel extends JPanel {
 	private static ConnectionCheckPanel instance;
 	private ConnectionCheckPanel(){
 		
-		this.setBackground(PColors.get(PColors.GREEN));
+		this.setBackground(PColors.GREEN.get());
 		
 		connLabel = new JLabel();
 		connLabel.setFont(new Font("Monaco", Font.BOLD, 12));

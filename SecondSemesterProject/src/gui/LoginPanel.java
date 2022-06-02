@@ -31,7 +31,7 @@ public class LoginPanel extends JPanel {
 		setVisible(true);
 		setPreferredSize(new Dimension(width, height));
 		setLayout(new GridBagLayout());
-		setBackground(PColors.get(PColors.GREY));
+		setBackground(PColors.GREY.get());
 		GridBagConstraints gbc = new GridBagConstraints();
 		gbc.weightx = 1;
 		gbc.weighty = 0.4;
@@ -42,13 +42,13 @@ public class LoginPanel extends JPanel {
 		
 		JLabel lbl = new JLabel("Café Peace");
 		lbl.setFont(new Font("Monaco", Font.PLAIN, 100));
-		lbl.setForeground(PColors.get(PColors.BLACK));
+		lbl.setForeground(PColors.BLACK.get());
 		this.add(lbl, gbc);
 		
 		inputPanel = new JPanel();
 		inputPanel.setVisible(true);
 		inputPanel.setPreferredSize(new Dimension(width/2,height/2));
-		inputPanel.setBackground(PColors.get(PColors.GREEN));
+		inputPanel.setBackground(PColors.GREEN.get());
 		gbc.anchor = GridBagConstraints.PAGE_START;
 		gbc.weighty = 0.7;
 		gbc.gridx = 0;
@@ -63,7 +63,7 @@ public class LoginPanel extends JPanel {
 		
 		JLabel passswordLabel = new JLabel("Password:");
 		passswordLabel.setFont(new Font("Monaco", Font.PLAIN, 25));
-		passswordLabel.setForeground(PColors.get(PColors.BLACK));
+		passswordLabel.setForeground(PColors.BLACK.get());
 		gbcIP.anchor = GridBagConstraints.LINE_END;
 		gbcIP.weightx = 0.1;
 		inputPanel.add(passswordLabel, gbcIP);
@@ -80,7 +80,7 @@ public class LoginPanel extends JPanel {
 		gbcIP.gridy = 0;
 		inputPanel.add(inputField, gbcIP);
 		
-		btn = new FancyButtonOneClick(PColors.get(PColors.BLACK), PColors.get(PColors.GREEN), PColors.get(PColors.RED));
+		btn = new FancyButtonOneClick(PColors.BLACK.get(), PColors.GREEN.get(), PColors.RED.get());
 		btn.setText("Login");
 		btn.setFont(new Font("Monaco", Font.PLAIN, 25));
 		btn.setPreferredSize(new Dimension((int)inputPanel.getPreferredSize().getWidth() /100 * 98, 

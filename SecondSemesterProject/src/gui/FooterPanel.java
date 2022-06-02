@@ -21,7 +21,7 @@ public class FooterPanel extends JPanel {
 		
 		
 		setPreferredSize(new Dimension(panelWidth, panelHeight));
-		setBackground(PColors.get(PColors.GREEN));
+		setBackground(PColors.GREEN.get());
 		setVisible(true);
 	}
 

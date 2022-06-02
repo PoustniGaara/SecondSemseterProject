@@ -21,7 +21,7 @@ public class MenuPanel extends JPanel{
 		
 		
 		setPreferredSize(new Dimension(panelWidth, panelHeight));
-		setBackground(PColors.get(PColors.YELLOW));
+		setBackground(PColors.YELLOW.get());
 		setVisible(true);		
 
 

@@ -33,7 +33,7 @@ public class HeaderPanel extends JPanel {
 		
 		//Panel functional setup
 		setPreferredSize(new Dimension(panelWidth, panelHeight));
-		setBackground(PColors.get(PColors.GREEN));
+		setBackground(PColors.GREEN.get());
 		setLayout(new GridBagLayout());
 		GridBagConstraints gbc = new GridBagConstraints();
 		gbc.weightx = 0.0;
@@ -45,8 +45,8 @@ public class HeaderPanel extends JPanel {
 		Font font2 = new Font("Monaco", Font.PLAIN, 20);
 		
 		//Panel buttons setup
-		overviewButton = new FancyButtonMoreClick(PColors.get(PColors.RED), PColors.get(PColors.GREEN),
-				PColors.get(PColors.RED), PColors.get(PColors.GREEN));
+		overviewButton = new FancyButtonMoreClick(PColors.RED.get(), PColors.GREEN.get(),
+				PColors.RED.get(), PColors.GREEN.get());
 		overviewButton.setText("Overview");
 		overviewButton.setFont(font1);
 		overviewButton.setPreferredSize(new Dimension((int) (mainWidth*0.2), panelHeight));
@@ -58,8 +58,8 @@ public class HeaderPanel extends JPanel {
 		gbc.gridy = 0;
 		add(overviewButton, gbc);
 		
-		reservationButton = new FancyButtonMoreClick(PColors.get(PColors.RED), PColors.get(PColors.GREEN),
-				PColors.get(PColors.RED), PColors.get(PColors.GREEN));
+		reservationButton = new FancyButtonMoreClick(PColors.RED.get(), PColors.GREEN.get(),
+				PColors.RED.get(), PColors.GREEN.get());
 		reservationButton.setText("Reservations");
 		reservationButton.setFont(font1);
 		reservationButton.setPreferredSize(new Dimension((int) (mainWidth*0.2), panelHeight));
@@ -67,8 +67,8 @@ public class HeaderPanel extends JPanel {
 		gbc.gridx = 1;
 		add(reservationButton, gbc);
 		
-		menuButton = new FancyButtonMoreClick(PColors.get(PColors.RED), PColors.get(PColors.GREEN),
-				PColors.get(PColors.RED), PColors.get(PColors.GREEN));
+		menuButton = new FancyButtonMoreClick(PColors.RED.get(), PColors.GREEN.get(),
+				PColors.RED.get(), PColors.GREEN.get());
 		menuButton.setText("Menu");
 		menuButton.setFont(font1);
 		menuButton.setPreferredSize(new Dimension((int) (mainWidth*0.2), panelHeight));
@@ -76,8 +76,8 @@ public class HeaderPanel extends JPanel {
 		gbc.gridx = 2;
 		add(menuButton, gbc);
 		
-		optionButton = new FancyButtonOneClick (PColors.get(PColors.RED),new Color(7, 100, 90),
-				PColors.get(PColors.GREEN));
+		optionButton = new FancyButtonOneClick (PColors.RED.get(),new Color(7, 100, 90),
+				PColors.GREEN.get());
 		optionButton.setState(true);
 		optionButton.addActionListener(e -> openOptionFrame());
 		FontIcon endIcon = FontIcon.of(CoreUiFree.COG);
