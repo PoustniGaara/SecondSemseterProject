@@ -10,7 +10,7 @@ import javax.swing.JPanel;
 
 import database.ConnectionCheck;
 import database.DBConnection;
-import gui.tools.PColors;
+import gui.tools.ProjectColors;
 
 public class ConnectionCheckPanel extends JPanel {
 	
@@ -19,7 +19,7 @@ public class ConnectionCheckPanel extends JPanel {
 	private static ConnectionCheckPanel instance;
 	private ConnectionCheckPanel(){
 		
-		this.setBackground(PColors.GREEN.get());
+		this.setBackground(ProjectColors.GREEN.get());
 		
 		connLabel = new JLabel();
 		connLabel.setFont(new Font("Monaco", Font.BOLD, 12));
@@ -32,6 +32,7 @@ public class ConnectionCheckPanel extends JPanel {
 			boolean running = true;
 			while(running) {
 				try {
+//					Thread.currentThread().setPriority(8);
 					checkConnection();
 					Thread.sleep(5*1000);
 				} catch (InterruptedException e) {

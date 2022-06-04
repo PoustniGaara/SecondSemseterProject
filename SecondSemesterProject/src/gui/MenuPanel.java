@@ -5,7 +5,7 @@ import java.awt.Dimension;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
-import gui.tools.PColors;
+import gui.tools.ProjectColors;
 
 public class MenuPanel extends JPanel{
 	
@@ -21,7 +21,7 @@ public class MenuPanel extends JPanel{
 		
 		
 		setPreferredSize(new Dimension(panelWidth, panelHeight));
-		setBackground(PColors.YELLOW.get());
+		setBackground(ProjectColors.YELLOW.get());
 		setVisible(true);		
 
 

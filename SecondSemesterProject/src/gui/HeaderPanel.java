@@ -11,7 +11,7 @@ import javax.swing.JPanel;
 
 import gui.tools.FancyButtonMoreClick;
 import gui.tools.FancyButtonOneClick;
-import gui.tools.PColors;
+import gui.tools.ProjectColors;
 
 import org.kordamp.ikonli.coreui.CoreUiFree;
 import org.kordamp.ikonli.swing.FontIcon;
@@ -33,7 +33,7 @@ public class HeaderPanel extends JPanel {
 		
 		//Panel functional setup
 		setPreferredSize(new Dimension(panelWidth, panelHeight));
-		setBackground(PColors.GREEN.get());
+		setBackground(ProjectColors.GREEN.get());
 		setLayout(new GridBagLayout());
 		GridBagConstraints gbc = new GridBagConstraints();
 		gbc.weightx = 0.0;
@@ -45,8 +45,8 @@ public class HeaderPanel extends JPanel {
 		Font font2 = new Font("Monaco", Font.PLAIN, 20);
 		
 		//Panel buttons setup
-		overviewButton = new FancyButtonMoreClick(PColors.RED.get(), PColors.GREEN.get(),
-				PColors.RED.get(), PColors.GREEN.get());
+		overviewButton = new FancyButtonMoreClick(ProjectColors.RED.get(), ProjectColors.GREEN.get(),
+				ProjectColors.RED.get(), ProjectColors.GREEN.get());
 		overviewButton.setText("Overview");
 		overviewButton.setFont(font1);
 		overviewButton.setPreferredSize(new Dimension((int) (mainWidth*0.2), panelHeight));
@@ -58,8 +58,8 @@ public class HeaderPanel extends JPanel {
 		gbc.gridy = 0;
 		add(overviewButton, gbc);
 		
-		reservationButton = new FancyButtonMoreClick(PColors.RED.get(), PColors.GREEN.get(),
-				PColors.RED.get(), PColors.GREEN.get());
+		reservationButton = new FancyButtonMoreClick(ProjectColors.RED.get(), ProjectColors.GREEN.get(),
+				ProjectColors.RED.get(), ProjectColors.GREEN.get());
 		reservationButton.setText("Reservations");
 		reservationButton.setFont(font1);
 		reservationButton.setPreferredSize(new Dimension((int) (mainWidth*0.2), panelHeight));
@@ -67,8 +67,8 @@ public class HeaderPanel extends JPanel {
 		gbc.gridx = 1;
 		add(reservationButton, gbc);
 		
-		menuButton = new FancyButtonMoreClick(PColors.RED.get(), PColors.GREEN.get(),
-				PColors.RED.get(), PColors.GREEN.get());
+		menuButton = new FancyButtonMoreClick(ProjectColors.RED.get(), ProjectColors.GREEN.get(),
+				ProjectColors.RED.get(), ProjectColors.GREEN.get());
 		menuButton.setText("Menu");
 		menuButton.setFont(font1);
 		menuButton.setPreferredSize(new Dimension((int) (mainWidth*0.2), panelHeight));
@@ -76,8 +76,8 @@ public class HeaderPanel extends JPanel {
 		gbc.gridx = 2;
 		add(menuButton, gbc);
 		
-		optionButton = new FancyButtonOneClick (PColors.RED.get(),new Color(7, 100, 90),
-				PColors.GREEN.get());
+		optionButton = new FancyButtonOneClick (ProjectColors.RED.get(),new Color(7, 100, 90),
+				ProjectColors.GREEN.get());
 		optionButton.setState(true);
 		optionButton.addActionListener(e -> openOptionFrame());
 		FontIcon endIcon = FontIcon.of(CoreUiFree.COG);

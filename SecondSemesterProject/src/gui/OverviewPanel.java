@@ -19,7 +19,7 @@ import org.kordamp.ikonli.swing.FontIcon;
 
 import gui.tools.FancyButtonMoreClick;
 import gui.tools.FancyButtonOneClick;
-import gui.tools.PColors;
+import gui.tools.ProjectColors;
 
 public class OverviewPanel extends JPanel {
 	
@@ -42,14 +42,14 @@ public class OverviewPanel extends JPanel {
 		
 		//Panel functional setup
 		setPreferredSize(new Dimension(panelWidth, panelHeight));
-		setBackground(PColors.GREY.get());
+		setBackground(ProjectColors.GREY.get());
 		setLayout(new BorderLayout());
 		setVisible(true);
 		
 		//Panel support classes
-		Border borderGreen = BorderFactory.createLineBorder(PColors.GREEN.get(), 1);
-		Border borderBlack = BorderFactory.createLineBorder(PColors.BLACK.get(), 2);
-		Border borderRed = BorderFactory.createLineBorder(PColors.RED.get(), 2);
+		Border borderGreen = BorderFactory.createLineBorder(ProjectColors.GREEN.get(), 1);
+		Border borderBlack = BorderFactory.createLineBorder(ProjectColors.BLACK.get(), 2);
+		Border borderRed = BorderFactory.createLineBorder(ProjectColors.RED.get(), 2);
 		Font font1 = new Font("Monaco", Font.BOLD, 20);
 	
 		//Tool Panel
@@ -77,8 +77,8 @@ public class OverviewPanel extends JPanel {
 		gbcTool.gridy = 1;
 		toolPanel.add(personCB,gbcTool);
 		
-		dayBackBtn = new FancyButtonMoreClick(PColors.BLACK.get(), PColors.GREEN.get(),
-				PColors.GREY.get(),PColors.GREY.get());
+		dayBackBtn = new FancyButtonMoreClick(ProjectColors.BLACK.get(), ProjectColors.GREEN.get(),
+				ProjectColors.GREY.get(),ProjectColors.GREY.get());
 		FontIcon leftArrowIcon = FontIcon.of(CoreUiFree.ARROW_LEFT);
 		leftArrowIcon.setIconSize(100);
 		dayBackBtn.setIcon(leftArrowIcon);
@@ -114,8 +114,8 @@ public class OverviewPanel extends JPanel {
 		gbcTool.anchor = GridBagConstraints.CENTER;
 		toolPanel.add(dateLbl,gbcTool);
 		
-		calendarBtn = new FancyButtonOneClick(PColors.BLACK.get(),PColors.GREY.get(),
-				PColors.GREY.get());
+		calendarBtn = new FancyButtonOneClick(ProjectColors.BLACK.get(),ProjectColors.GREY.get(),
+				ProjectColors.GREY.get());
 		FontIcon calendarIcon = FontIcon.of(CoreUiFree.CALENDAR);
 		calendarIcon.setIconSize(32);
 		calendarBtn.setIcon(calendarIcon);
@@ -124,7 +124,7 @@ public class OverviewPanel extends JPanel {
 		gbcTool.anchor = GridBagConstraints.LINE_START;
 		toolPanel.add(calendarBtn,gbcTool);
 		
-		nowBtn = new FancyButtonOneClick(PColors.BLACK.get(), PColors.RED.get(), PColors.RED.get());
+		nowBtn = new FancyButtonOneClick(ProjectColors.BLACK.get(), ProjectColors.RED.get(), ProjectColors.RED.get());
 		nowBtn.setFont(font1);
 		nowBtn.setBorderPainted(true);
 		nowBtn.setPreferredSize(new Dimension(panelWidth/12, ToolPanel.getPanelHeight()/2));
@@ -134,8 +134,8 @@ public class OverviewPanel extends JPanel {
 		gbcTool.gridx = 5;
 		toolPanel.add(nowBtn,gbcTool);
 		
-		dayForwardBtn = new FancyButtonMoreClick(PColors.BLACK.get(), PColors.GREEN.get(),
-				PColors.GREY.get(),PColors.GREY.get());
+		dayForwardBtn = new FancyButtonMoreClick(ProjectColors.BLACK.get(), ProjectColors.GREEN.get(),
+				ProjectColors.GREY.get(),ProjectColors.GREY.get());
 		FontIcon rightArrowIcon = FontIcon.of(CoreUiFree.ARROW_RIGHT);
 		rightArrowIcon.setIconSize(100);
 		dayForwardBtn.setIcon(rightArrowIcon);
@@ -171,8 +171,8 @@ public class OverviewPanel extends JPanel {
 		gbcFooter.gridy = 1;
 		footerPanel.add(layoutCB,gbcFooter);
 		
-		makeReservationBtn = new FancyButtonOneClick(PColors.BLACK.get(), PColors.RED.get(),
-				PColors.RED.get());
+		makeReservationBtn = new FancyButtonOneClick(ProjectColors.BLACK.get(), ProjectColors.RED.get(),
+				ProjectColors.RED.get());
 		makeReservationBtn.setPreferredSize(new Dimension(FooterPanel.panelWidth/6,(int) (FooterPanel.panelHeight*0.8)));
 		makeReservationBtn.setBorderPainted(true);
 		makeReservationBtn.setFont(font1);

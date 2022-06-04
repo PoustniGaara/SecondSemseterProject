@@ -2,7 +2,7 @@ package gui.tools;
 
 import java.awt.Color;
 
-public enum PColors {
+public enum ProjectColors {
 		
 		GREEN(new Color(15, 113, 115)),
 		RED(new Color(240, 93, 94)),
@@ -12,12 +12,12 @@ public enum PColors {
 		
 		java.awt.Color color;
 		
-		PColors(Color color){
+		ProjectColors(Color color){
 			this.color = color;
 		}
 		
 		public Color get() {
 			return color;
 		}
-	}
+}
 

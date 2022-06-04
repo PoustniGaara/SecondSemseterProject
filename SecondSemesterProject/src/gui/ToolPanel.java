@@ -6,7 +6,7 @@ import java.awt.GridBagLayout;
 import javax.swing.BorderFactory;
 import javax.swing.JPanel;
 
-import gui.tools.PColors;
+import gui.tools.ProjectColors;
 
 public class ToolPanel extends JPanel {
 	
@@ -21,10 +21,10 @@ public class ToolPanel extends JPanel {
 		toolPanelWidth = mainWidth;
 		toolPanelHeight = (int) (panelHeight*0.12);
 		
-		setBackground(PColors.GREY.get());
+		setBackground(ProjectColors.GREY.get());
 		setPreferredSize(new Dimension(toolPanelWidth, toolPanelHeight));
 		setLayout(new GridBagLayout());
-		setBorder(BorderFactory.createLineBorder(PColors.GREEN.get(), 1));
+		setBorder(BorderFactory.createLineBorder(ProjectColors.GREEN.get(), 1));
 	}
 	
 	public static int getPanelHeight() {

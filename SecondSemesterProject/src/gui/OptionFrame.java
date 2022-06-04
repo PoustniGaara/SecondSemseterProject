@@ -18,7 +18,7 @@ import javax.swing.border.Border;
 
 import gui.tools.FancyButtonMoreClick;
 import gui.tools.FancyButtonOneClick;
-import gui.tools.PColors;
+import gui.tools.ProjectColors;
 
 public class OptionFrame extends JFrame {
 	
@@ -46,18 +46,18 @@ public class OptionFrame extends JFrame {
 		
 		//Panel support classes
 		Font font1 = new Font("Monaco", Font.BOLD, 20);
-		Border borderBlack = BorderFactory.createLineBorder(PColors.BLACK.get(), 2);
+		Border borderBlack = BorderFactory.createLineBorder(ProjectColors.BLACK.get(), 2);
 		
 		//panel components
 		JPanel btnPanel = new JPanel();
 		btnPanel.setPreferredSize(new Dimension(width, (int) (height*0.05)));
 		btnPanel.setLayout(new GridBagLayout());
 		GridBagConstraints gbcBtn = new GridBagConstraints();
-		btnPanel.setBackground(PColors.GREEN.get());
+		btnPanel.setBackground(ProjectColors.GREEN.get());
 		mainPanel.add(btnPanel, BorderLayout.NORTH);
 		
-		layoutBtn = new FancyButtonMoreClick(PColors.RED.get(), PColors.GREEN.get(),
-				PColors.RED.get(), PColors.GREEN.get());
+		layoutBtn = new FancyButtonMoreClick(ProjectColors.RED.get(), ProjectColors.GREEN.get(),
+				ProjectColors.RED.get(), ProjectColors.GREEN.get());
 		layoutBtn.setText("Layout");
 		layoutBtn.setFont(font1);
 		layoutBtn.isClicked(true);
@@ -80,7 +80,7 @@ public class OptionFrame extends JFrame {
 		gbcLF.weighty = 0.4;
 		mainPanel.add(layoutPanel, BorderLayout.CENTER);
 		
-		editorBtn = new FancyButtonOneClick(PColors.BLACK.get(), PColors.RED.get(), PColors.RED.get());
+		editorBtn = new FancyButtonOneClick(ProjectColors.BLACK.get(), ProjectColors.RED.get(), ProjectColors.RED.get());
 		editorBtn.setFont(font1);
 		editorBtn.setBorderPainted(true);
 		editorBtn.setPreferredSize(new Dimension(width/4, height/20));
