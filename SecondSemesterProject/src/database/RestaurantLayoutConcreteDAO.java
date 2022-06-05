@@ -27,11 +27,10 @@ import model.RestaurantLayout;
 		){
 			ResultSet rs = st.executeQuery("select * from dbo.RestaurantLayouts");
 			while(rs.next()) {
-				System.out.println(rs.next());
 				HashMap<Point,LayoutItem> itemMap = 
 						(HashMap<Point, LayoutItem>) LayoutItemConcreteDAO.getInstance().getLayoutItems(rs.getLong("restaurantLayoutID"));
 				RestaurantLayout restaurantLayout = new RestaurantLayout(rs.getString("name"),
-						rs.getInt("locationX"), rs.getInt("locationY"),itemMap);
+						rs.getInt("sizeX"), rs.getInt("sizeY"),itemMap);
 				listOfRestaurantLayouts.add(restaurantLayout);
 			}
 			return listOfRestaurantLayouts;
