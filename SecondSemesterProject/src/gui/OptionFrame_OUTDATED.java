@@ -20,13 +20,13 @@ import gui.tools.FancyButtonMoreClick;
 import gui.tools.FancyButtonOneClick;
 import gui.tools.ProjectColors;
 
-public class OptionFrame extends JFrame {
+public class OptionFrame_OUTDATED extends JFrame {
 	
-	public static OptionFrame instance;
+	public static OptionFrame_OUTDATED instance;
 	private FancyButtonOneClick editorBtn;
 	private FancyButtonMoreClick layoutBtn;
 	
-	private OptionFrame () {
+	private OptionFrame_OUTDATED () {
 		
 		//frame settings
 		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
@@ -106,8 +106,8 @@ public class OptionFrame extends JFrame {
 		new LayoutEditorFrame();
 	}
 	
-	public static OptionFrame getInstance() {
-		if(instance == null) return new OptionFrame();
+	public static OptionFrame_OUTDATED getInstance() {
+		if(instance == null) return new OptionFrame_OUTDATED();
 		else return instance;
 	}
 	

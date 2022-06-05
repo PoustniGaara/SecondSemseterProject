@@ -79,11 +79,11 @@ public class HeaderPanel extends JPanel {
 		optionButton = new FancyButtonOneClick (ProjectColors.RED.get(),new Color(7, 100, 90),
 				ProjectColors.GREEN.get());
 		optionButton.setState(true);
-		optionButton.addActionListener(e -> openOptionFrame());
+		optionButton.addActionListener(e -> openLayoutEditor());
 		FontIcon endIcon = FontIcon.of(CoreUiFree.COG);
 		endIcon.setIconSize(30);
 		optionButton.setIcon(endIcon);
-		optionButton.setText("Options");
+		optionButton.setText("Layout editor");
 		optionButton.setFont(font2);
 		optionButton.setPreferredSize(new Dimension((int) (mainWidth*0.12), (int) (panelHeight*0.65)));
 		gbc.anchor = GridBagConstraints.LINE_END;
@@ -104,8 +104,8 @@ public class HeaderPanel extends JPanel {
 		
 	}//end of constructor
 	
-	private void openOptionFrame() {
-		OptionFrame.getInstance();
+	private void openLayoutEditor() {
+		new LayoutEditorFrame();
 	}
 	
 	private void showOverview() {
