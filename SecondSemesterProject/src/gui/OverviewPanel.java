@@ -5,6 +5,8 @@ import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.Calendar;
 
 import javax.swing.BorderFactory;
@@ -17,9 +19,11 @@ import javax.swing.border.Border;
 import org.kordamp.ikonli.coreui.CoreUiFree;
 import org.kordamp.ikonli.swing.FontIcon;
 
+import controller.RestaurantLayoutController;
 import gui.tools.FancyButtonMoreClick;
 import gui.tools.FancyButtonOneClick;
 import gui.tools.ProjectColors;
+import model.RestaurantLayout;
 
 public class OverviewPanel extends JPanel {
 	
@@ -30,8 +34,13 @@ public class OverviewPanel extends JPanel {
 	private FancyButtonOneClick nowBtn,calendarBtn,makeReservationBtn;
 	private Calendar calendar;
 	private JLabel dateLbl;
+	private ArrayList<RestaurantLayout> layoutList;	
+	private RestaurantLayoutController restaurantLayoutController;
 	
 	private OverviewPanel() {
+		
+		//control
+		restaurantLayoutController = new RestaurantLayoutController();
 		
 		//Panel dimensions setup
 		int mainHeight = (int)MainFrame.height;
@@ -46,12 +55,15 @@ public class OverviewPanel extends JPanel {
 		setLayout(new BorderLayout());
 		setVisible(true);
 		
+		//load layouts
+		loadLayouts();
+		
 		//Panel support classes
 		Border borderGreen = BorderFactory.createLineBorder(ProjectColors.GREEN.get(), 1);
 		Border borderBlack = BorderFactory.createLineBorder(ProjectColors.BLACK.get(), 2);
 		Border borderRed = BorderFactory.createLineBorder(ProjectColors.RED.get(), 2);
 		Font font1 = new Font("Monaco", Font.BOLD, 20);
-	
+		
 		//Tool Panel
 		ToolPanel toolPanel = new ToolPanel();
 //		toolPanel.setBorder(borderGreen);
@@ -185,6 +197,23 @@ public class OverviewPanel extends JPanel {
 		gbcFooter.weightx = 1;
 		footerPanel.add(makeReservationBtn,gbcFooter);
 
+		
+	}
+	
+	private void loadLayouts() {
+		try {
+			layoutList = (ArrayList<RestaurantLayout>) restaurantLayoutController.read();
+			if(layoutList.size() == 0) {
+				System.out.print("I am trying to display info panel");
+				this.add(new NoLayoutInfoPanel(), BorderLayout.CENTER);
+			}
+			else {
+				System.out.print("Im here");
+			}
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 	
 	private JComboBox getTimeCB() {

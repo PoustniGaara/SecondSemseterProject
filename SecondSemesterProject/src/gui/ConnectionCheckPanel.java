@@ -33,8 +33,6 @@ public class ConnectionCheckPanel extends JPanel {
 			while(running) {
 				try {
 					Thread.sleep(5*1000);
-					Thread.currentThread().setName("genopica");
-					System.out.print(Thread.currentThread().getName());
 					Thread.currentThread().setPriority(1);
 					checkConnection();
 				} catch (InterruptedException e) {

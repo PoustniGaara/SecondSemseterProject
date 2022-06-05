@@ -27,11 +27,13 @@ import model.RestaurantLayout;
 		){
 			ResultSet rs = st.executeQuery("select * from dbo.RestaurantLayouts");
 			while(rs.next()) {
-				HashMap<Point,LayoutItem> itemMap = 
-						(HashMap<Point, LayoutItem>) LayoutItemConcreteDAO.getInstance().getLayoutItems(rs.getLong("restaurantLayoutID"));
-				RestaurantLayout restaurantLayout = new RestaurantLayout(rs.getString("name"),
-						rs.getInt("sizeX"), rs.getInt("sizeY"),itemMap);
-				listOfRestaurantLayouts.add(restaurantLayout);
+				if(!rs.getString("name").equals("DATABASE CONN CHECK")) {
+					HashMap<Point,LayoutItem> itemMap = 
+							(HashMap<Point, LayoutItem>) LayoutItemConcreteDAO.getInstance().getLayoutItems(rs.getLong("restaurantLayoutID"));
+					RestaurantLayout restaurantLayout = new RestaurantLayout(rs.getString("name"),
+							rs.getInt("sizeX"), rs.getInt("sizeY"),itemMap);
+					listOfRestaurantLayouts.add(restaurantLayout);
+				}
 			}
 			return listOfRestaurantLayouts;
 		}

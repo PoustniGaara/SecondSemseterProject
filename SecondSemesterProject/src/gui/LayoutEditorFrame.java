@@ -13,6 +13,7 @@ import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JTextField;
 
 import controller.RestaurantLayoutController;
 import gui.tools.FancyButtonOneClick;
@@ -27,6 +28,7 @@ public class LayoutEditorFrame extends JFrame {
 	private RestaurantLayoutController rsController;
 	private FancyButtonOneClick createBtn, deleteBtn, saveBtn;
 	private JPanel mainPanel;
+	private JTextField nameTxtField, widthTxtField, heightTxtField;
 	
 	public LayoutEditorFrame() {
 		
@@ -57,6 +59,8 @@ public class LayoutEditorFrame extends JFrame {
 		
 		JLabel personLabel = new JLabel("layouts");
 		personLabel.setFont(Fonts.FONT20.get());
+		gbcTool.weightx = 0.5;
+		gbcTool.weighty = 0.5;
 		gbcTool.anchor = GridBagConstraints.LAST_LINE_START;
 		gbcTool.gridx = 0;
 		gbcTool.gridy = 0;
@@ -70,6 +74,48 @@ public class LayoutEditorFrame extends JFrame {
 		gbcTool.gridx = 0;
 		gbcTool.gridy = 1;
 		toolPanel.add(layoutsCB,gbcTool);
+		
+		JLabel nameLabel = new JLabel("name");
+		nameLabel.setFont(Fonts.FONT20.get());
+		gbcTool.anchor = GridBagConstraints.LAST_LINE_START;
+		gbcTool.gridx = 1;
+		gbcTool.gridy = 0;
+		toolPanel.add(nameLabel,gbcTool);
+		
+		nameTxtField = new JTextField(20);
+		nameTxtField.setFont(Fonts.FONT20.get());
+		gbcTool.anchor = GridBagConstraints.FIRST_LINE_START;
+		gbcTool.gridx = 1;
+		gbcTool.gridy = 1;
+		toolPanel.add(nameTxtField,gbcTool);
+		
+		JLabel widthLabel = new JLabel("width");
+		widthLabel.setFont(Fonts.FONT20.get());
+		gbcTool.anchor = GridBagConstraints.LAST_LINE_START;
+		gbcTool.gridx = 2;
+		gbcTool.gridy = 0;
+		toolPanel.add(widthLabel,gbcTool);
+		
+		widthTxtField = new JTextField(3);
+		widthTxtField.setFont(Fonts.FONT20.get());
+		gbcTool.anchor = GridBagConstraints.FIRST_LINE_START;
+		gbcTool.gridx = 2;
+		gbcTool.gridy = 1;
+		toolPanel.add(widthTxtField,gbcTool);
+		
+		JLabel heightLabel = new JLabel("height");
+		heightLabel.setFont(Fonts.FONT20.get());
+		gbcTool.anchor = GridBagConstraints.LAST_LINE_START;
+		gbcTool.gridx = 3;
+		gbcTool.gridy = 0;
+		toolPanel.add(heightLabel,gbcTool);
+		
+		heightTxtField = new JTextField(3);
+		heightTxtField.setFont(Fonts.FONT20.get());
+		gbcTool.anchor = GridBagConstraints.FIRST_LINE_START;
+		gbcTool.gridx = 3;
+		gbcTool.gridy = 1;
+		toolPanel.add(heightTxtField,gbcTool);
 		
 		//footer panel
 		FooterPanel footerPanel = new FooterPanel();
