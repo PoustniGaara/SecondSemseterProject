@@ -16,6 +16,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.border.Border;
 
+import gui.Layout.LayoutEditorFrame;
 import gui.tools.FancyButtonMoreClick;
 import gui.tools.FancyButtonOneClick;
 import gui.tools.ProjectColors;
@@ -103,7 +104,7 @@ public class OptionFrame_OUTDATED extends JFrame {
 	}
 	
 	private void openLayoutEditorFrame() {
-		new LayoutEditorFrame();
+//		new LayoutEditorFrame();
 	}
 	
 	public static OptionFrame_OUTDATED getInstance() {
