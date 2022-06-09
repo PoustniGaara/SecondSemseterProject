@@ -1,4 +1,4 @@
-package gui;
+package gui.Layout;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -7,6 +7,7 @@ import java.awt.Dimension;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
+import gui.MainFrame;
 import gui.tools.Fonts;
 import gui.tools.ProjectColors;
 
