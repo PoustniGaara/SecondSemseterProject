@@ -15,6 +15,7 @@ import controller.RestaurantLayoutController;
 import database.ConnectionCheck;
 import database.LayoutItemConcreteDAO;
 import database.TableConcreteDAO;
+import gui.reservation.ReservationsPanel;
 import model.LayoutItem;
 import model.RestaurantLayout;
 import model.Table;

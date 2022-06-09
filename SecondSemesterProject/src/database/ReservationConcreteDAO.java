@@ -76,7 +76,7 @@ public class ReservationConcreteDAO implements ReservationDAO {
 				String note = rs.getString("note");
 				String phone = rs.getString("customerPhone");
 
-				Calendar cal = new GregorianCalendar();
+				Calendar cal = (Calendar) Calendar.getInstance().clone();
 				cal.setTimeInMillis(timestamp.getTime());
 
 				Reservation reservation = new Reservation(cal,
