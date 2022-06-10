@@ -104,7 +104,7 @@ public class InputFrameCreateLayoutPanel extends JFrame {
 	private void loadInput() {
 		String name = nameTxtField.getText();
 		int sizeX = Integer.valueOf(widthTxtField.getText());
-		int sizeY = Integer.valueOf(widthTxtField.getText());
+		int sizeY = Integer.valueOf(heightTxtField.getText());
 		LayoutEditorFrame.getInstance().prepareNewLayoutInterface(name,sizeX, sizeY);
 		this.dispose();
 	}

@@ -96,6 +96,7 @@ public class LayoutEditorFrame extends JFrame {
 		
 		JLabel widthLabel = new JLabel("width");
 		widthLabel.setFont(Fonts.FONT20.get());
+		widthLabel.setEnabled(false);
 		gbcTool.anchor = GridBagConstraints.LAST_LINE_START;
 		gbcTool.gridx = 2;
 		gbcTool.gridy = 0;
@@ -110,6 +111,7 @@ public class LayoutEditorFrame extends JFrame {
 		
 		JLabel heightLabel = new JLabel("height");
 		heightLabel.setFont(Fonts.FONT20.get());
+		heightLabel.setEnabled(false);
 		gbcTool.anchor = GridBagConstraints.LAST_LINE_START;
 		gbcTool.gridx = 3;
 		gbcTool.gridy = 0;

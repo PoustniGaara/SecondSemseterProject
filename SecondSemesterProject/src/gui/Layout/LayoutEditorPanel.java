@@ -18,31 +18,39 @@ public class LayoutEditorPanel extends JPanel implements ComponentListener {
 	private JScrollPane scrollPane;
 	private GridBagConstraints gbc;
 	int widthOfMiniPanel,heightOfMiniPanel, sizeOfMiniPanel;
+	private JPanel contentPane;
 	
 	public LayoutEditorPanel(int sizeX, int sizeY) {
 		
 		//panel settings
 		int width = MainFrame.width;
 		int height = (int) (MainFrame.height*0.84);
-		setLayout(new GridBagLayout());
+		setLayout(new BorderLayout());
 		widthOfMiniPanel = Math.round(width/sizeX);
 		heightOfMiniPanel =  Math.round(height/sizeY);
-		sizeOfMiniPanel = widthOfMiniPanel-heightOfMiniPanel;
+//		sizeOfMiniPanel = widthOfMiniPanel-heightOfMiniPanel;
+		sizeOfMiniPanel = 60;
+		
+		contentPane = new JPanel();
+		contentPane.setLayout(new GridBagLayout());
 		
 		//gbc setup
 		gbc = new GridBagConstraints();
 		gbc.anchor = GridBagConstraints.CENTER;
-		gbc.fill = GridBagConstraints.BOTH;
+//		gbc.fill = GridBagConstraints.BOTH;
+		gbc.ipadx = sizeOfMiniPanel;
+		gbc.ipady = sizeOfMiniPanel;  //SKUSIT SA POHRAT SO SCROLL PANELOM ATD ... LEBO MOZNO SA NECHCE ZVACSIT A TYM PADOM NEPODPORI VACSIU HEIGHT OF MINI PANEL
 		gbc.weightx = 1;
 		gbc.weighty = 1;
 		
 		//scroll pane 
-		scrollPane = new JScrollPane(this);
+		scrollPane = new JScrollPane(contentPane);//this
 		scrollPane.addComponentListener(this);
 		scrollPane.setPreferredSize(new Dimension(width,height));
-		scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
-		scrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_ALWAYS);//AS_NEEDED
-		this.add(scrollPane);
+		scrollPane.setMaximumSize(new Dimension(3*width,3*height));
+		scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
+		scrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+		add(scrollPane, BorderLayout.CENTER);
 		
 		loadMiniPanels(sizeX, sizeY); 
 		
@@ -53,7 +61,9 @@ public class LayoutEditorPanel extends JPanel implements ComponentListener {
 			for(int j = 0; j != sizeX; j++) {
 				gbc.gridx = j;
 				gbc.gridy = i;
-				this.add(new LayoutMiniPanel(sizeOfMiniPanel), gbc);
+				LayoutMiniPanel miniPanel = new LayoutMiniPanel(sizeOfMiniPanel);
+				miniPanel.setLocation(sizeX, sizeY);
+				contentPane.add(miniPanel, gbc);
 				scrollPane.repaint();
 				scrollPane.revalidate();
 			}
@@ -62,12 +72,11 @@ public class LayoutEditorPanel extends JPanel implements ComponentListener {
 
 	@Override
 	public void componentResized(ComponentEvent e) {
-		setPreferredSize(new Dimension(scrollPane.getWidth(),scrollPane.getHeight()));
-		revalidate();
-		repaint();
+		contentPane.setPreferredSize(new Dimension(contentPane.getWidth(),contentPane.getHeight()));
+		contentPane.revalidate();
+		contentPane.repaint();
 		scrollPane.repaint();
 		scrollPane.revalidate();
-		
 	}
 
 	@Override

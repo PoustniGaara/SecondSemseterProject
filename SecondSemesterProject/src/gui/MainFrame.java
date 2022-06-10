@@ -53,7 +53,7 @@ public class MainFrame extends JFrame {
 		width = tk.getScreenSize().width;
 		height = tk.getScreenSize().height;
 		setBounds(0, 0, width, height);
-		setTitle("Cafe Friends");
+		setTitle("Cafe Peace");
 		setUndecorated(false);
 		
 		headerPanel = HeaderPanel.getInstance();
