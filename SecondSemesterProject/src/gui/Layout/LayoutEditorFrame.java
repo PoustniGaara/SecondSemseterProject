@@ -60,10 +60,6 @@ public class LayoutEditorFrame extends JFrame {
 		mainPanel.setLayout(new BorderLayout());
 		this.add(mainPanel);
 		
-		//load 
-		loadStartData();
-		itemMap = new HashMap<>();
-		
 		//tool panel
 		ToolPanel toolPanel = new ToolPanel();
 		toolPanel.setLayout(new GridBagLayout());
@@ -169,6 +165,10 @@ public class LayoutEditorFrame extends JFrame {
 //		saveBtn.setBorder(borderBlack);
 		gbcFooter.gridx = 4;
 		footerPanel.add(saveBtn, gbcFooter);
+		
+		//load 
+		loadStartData();
+		itemMap = new HashMap<>();
 		
 	} // end of constructor
 	
