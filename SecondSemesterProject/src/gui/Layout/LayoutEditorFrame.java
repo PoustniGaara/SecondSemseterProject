@@ -5,9 +5,11 @@ import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.awt.Point;
 import java.awt.Toolkit;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JComboBox;
@@ -22,18 +24,22 @@ import gui.ToolPanel;
 import gui.tools.FancyButtonOneClick;
 import gui.tools.Fonts;
 import gui.tools.ProjectColors;
+import model.LayoutItem;
 import model.RestaurantLayout;
 
 public class LayoutEditorFrame extends JFrame {
 	
 	private int width,height;
-	private JComboBox layoutsCB;
+	private JComboBox<String> layoutsCB;
 	private RestaurantLayoutController rsController;
 	private FancyButtonOneClick createBtn, deleteBtn, saveBtn;
 	private JPanel mainPanel;
 	private JTextField nameTxtField, widthTxtField, heightTxtField;
 	private static LayoutEditorFrame instance = null;
 	private Component currentComponent;
+	private HashMap<Point,LayoutItem> itemMap;
+	private LayoutEditorPanel currentEditorPanel;
+	private HashMap<String,LayoutEditorPanel> editorPanelMap;
 	
 	private LayoutEditorFrame() {
 		
@@ -54,7 +60,9 @@ public class LayoutEditorFrame extends JFrame {
 		mainPanel.setLayout(new BorderLayout());
 		this.add(mainPanel);
 		
+		//load 
 		loadStartData();
+		itemMap = new HashMap<>();
 		
 		//tool panel
 		ToolPanel toolPanel = new ToolPanel();
@@ -96,13 +104,13 @@ public class LayoutEditorFrame extends JFrame {
 		
 		JLabel widthLabel = new JLabel("width");
 		widthLabel.setFont(Fonts.FONT20.get());
-		widthLabel.setEnabled(false);
 		gbcTool.anchor = GridBagConstraints.LAST_LINE_START;
 		gbcTool.gridx = 2;
 		gbcTool.gridy = 0;
 		toolPanel.add(widthLabel,gbcTool);
 		
 		widthTxtField = new JTextField(3);
+		widthTxtField.setEnabled(false);
 		widthTxtField.setFont(Fonts.FONT20.get());
 		gbcTool.anchor = GridBagConstraints.FIRST_LINE_START;
 		gbcTool.gridx = 2;
@@ -111,13 +119,13 @@ public class LayoutEditorFrame extends JFrame {
 		
 		JLabel heightLabel = new JLabel("height");
 		heightLabel.setFont(Fonts.FONT20.get());
-		heightLabel.setEnabled(false);
 		gbcTool.anchor = GridBagConstraints.LAST_LINE_START;
 		gbcTool.gridx = 3;
 		gbcTool.gridy = 0;
 		toolPanel.add(heightLabel,gbcTool);
 		
 		heightTxtField = new JTextField(3);
+		heightTxtField.setEnabled(false);
 		heightTxtField.setFont(Fonts.FONT20.get());
 		gbcTool.anchor = GridBagConstraints.FIRST_LINE_START;
 		gbcTool.gridx = 3;
@@ -154,6 +162,7 @@ public class LayoutEditorFrame extends JFrame {
 		
 		saveBtn = new FancyButtonOneClick(ProjectColors.BLACK.get(), ProjectColors.RED.get(), ProjectColors.RED.get());
 		saveBtn.setFont(Fonts.FONT20.get());
+		saveBtn.addActionListener(e -> save());
 		saveBtn.setBorderPainted(true);
 		saveBtn.setPreferredSize(new Dimension(width/8, ToolPanel.getPanelHeight()/2));
 		saveBtn.setText("save");
@@ -162,6 +171,22 @@ public class LayoutEditorFrame extends JFrame {
 		footerPanel.add(saveBtn, gbcFooter);
 		
 	} // end of constructor
+	
+	public void save() {
+		try {
+			rsController.save(nameTxtField.getText(), width, height, itemMap);
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
+	public void putLayoutItemToItemMap(Point point, LayoutItem layoutItem) {
+		itemMap.put(point, layoutItem);
+	}
 	
 	public void maximize() {
 		setState(java.awt.Frame.NORMAL);
@@ -173,8 +198,9 @@ public class LayoutEditorFrame extends JFrame {
 		heightTxtField.setText(String.valueOf(sizeY));
 		if(currentComponent != null)
 		mainPanel.remove(currentComponent);
-		LayoutEditorPanel panelToDisplay = new LayoutEditorPanel(sizeX,sizeY);
-		currentComponent = panelToDisplay;
+		LayoutEditorPanel emptyPanelToDisplay = new LayoutEditorPanel();//sizeX,sizeY
+		emptyPanelToDisplay.loadEmptyMiniPanels(sizeX, sizeY);
+		currentComponent = emptyPanelToDisplay;
 		mainPanel.add(currentComponent, BorderLayout.CENTER);
 		mainPanel.repaint();
 		mainPanel.revalidate();
@@ -188,14 +214,33 @@ public class LayoutEditorFrame extends JFrame {
 	private void loadStartData() {
 		try {
 			ArrayList<RestaurantLayout> rlList = (ArrayList<RestaurantLayout>) rsController.read();
-			if(rlList.size() == 0) {
-//				currentComponent = new NoLayoutInfoPanel();
-//				mainPanel.add(currentComponent , BorderLayout.CENTER);
+			if(rlList.size() != 0) {
+				editorPanelMap = new HashMap<>();
+				// create panels and save them in map 
+				for(RestaurantLayout rl : rlList) { 
+					layoutsCB.addItem(rl.getName()); // populate layoutsCB
+					LayoutEditorPanel layoutEditorPanel = new LayoutEditorPanel();
+					layoutEditorPanel.loadExistingMiniPanels(rl);
+//					editorPanelMap.put(rl.getName(), );
+				} 
+				// prepare current panel and setup
+				currentEditorPanel = editorPanelMap.get(rlList.get(0).getName());
+//				layoutsCB.setSelectedItem(rlList.get(0).getName());
+				loadCurrentLayoutEditorPanel(currentEditorPanel);
 			}
+			else {
+				currentComponent = new NoLayoutInfoPanel();
+				mainPanel.add(currentComponent , BorderLayout.CENTER);
+			}
+			
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+	}
+	
+	private void loadCurrentLayoutEditorPanel(LayoutEditorPanel layoutEditorPanel) {
+		
 	}
 	
 	public void populateLayoutCB() {

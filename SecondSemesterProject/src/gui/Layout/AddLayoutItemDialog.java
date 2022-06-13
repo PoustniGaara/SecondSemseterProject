@@ -1,25 +1,29 @@
 package gui.Layout;
 
 import java.awt.BorderLayout;
-import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.awt.Point;
 
 import javax.swing.BorderFactory;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JComboBox;
-import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.border.EmptyBorder;
 
+import org.kordamp.ikonli.coreui.CoreUiFree;
+import org.kordamp.ikonli.icomoon.Icomoon;
+import org.kordamp.ikonli.swing.FontIcon;
+
 import gui.tools.FancyButtonOneClick;
 import gui.tools.Fonts;
 import gui.tools.ProjectColors;
 import model.LayoutItem;
+import model.Table;
 
 public class AddLayoutItemDialog extends JFrame  {
 	
@@ -27,8 +31,12 @@ public class AddLayoutItemDialog extends JFrame  {
 	private FancyButtonOneClick okBtn, cancelBtn;
 	private JComboBox<String> typeComboBox;
 	private JComboBox<Integer> capacityComboBox;
+	private LayoutMiniPanel parentMiniPanel;
+	private FontIcon tableIcon, barIcon, entranceIcon;
+	private GridBagConstraints gbc;
+	private JLabel iconLabel;
 	
-	public AddLayoutItemDialog(JPanel parent){
+	public AddLayoutItemDialog(LayoutMiniPanel parentMiniPanel){
 		
 			//frame setup
 			setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
@@ -37,19 +45,30 @@ public class AddLayoutItemDialog extends JFrame  {
 			setBounds(100, 100, 450, 300);
 			setVisible(true);
 			
+			//mini panel setup
+			this.parentMiniPanel = parentMiniPanel;
+			
 			//main panel setup
 			JPanel mainPanel = new JPanel();
 			mainPanel.setLayout(new BorderLayout());
 			mainPanel.setBorder(new EmptyBorder(5, 5, 5, 5));
 			add(mainPanel);
 			
+			//icons setup
+			tableIcon = FontIcon.of(Icomoon.ICM_SPOON_KNIFE);
+			tableIcon.setIconSize(30);
+			barIcon = FontIcon.of(Icomoon.ICM_GLASS2);
+			barIcon.setIconSize(30);
+			entranceIcon = FontIcon.of(Icomoon.ICM_ENTER);
+			entranceIcon.setIconSize(30);
+			
 			//content pane setup
 			JPanel contentPane = new JPanel();
 			contentPane.setLayout(new GridBagLayout());
-			GridBagConstraints gbc = new GridBagConstraints();
+			gbc = new GridBagConstraints();
 			mainPanel.add(contentPane, BorderLayout.CENTER);
 			
-			JLabel nameLabel = new JLabel("name");
+			JLabel nameLabel = new JLabel("Name");
 			nameLabel.setFont(Fonts.FONT20.get());
 			gbc.anchor = GridBagConstraints.LAST_LINE_START;
 			gbc.weightx = 1;
@@ -66,8 +85,16 @@ public class AddLayoutItemDialog extends JFrame  {
 			gbc.gridy = 1;
 			contentPane.add(nameTxtField,gbc);
 			
-			JLabel typeLabel = new JLabel("type");
+			iconLabel = new JLabel();
+			gbc.weightx = 0;
+			gbc.anchor = GridBagConstraints.FIRST_LINE_START;
+			gbc.gridx = 1;
+			gbc.gridy = 3;
+			contentPane.add(iconLabel,gbc);
+			
+			JLabel typeLabel = new JLabel("Type");
 			typeLabel.setFont(Fonts.FONT20.get());
+			gbc.weightx = 1;
 			gbc.anchor = GridBagConstraints.LAST_LINE_START;
 			gbc.gridx = 0;
 			gbc.gridy = 2;
@@ -84,7 +111,9 @@ public class AddLayoutItemDialog extends JFrame  {
 			gbc.gridy = 3;
 			contentPane.add(typeComboBox,gbc);
 			
-			JLabel capacityLabel = new JLabel("capacity");
+			setIcon();
+			
+			JLabel capacityLabel = new JLabel("Capacity");
 			capacityLabel.setFont(Fonts.FONT20.get());
 			gbc.anchor = GridBagConstraints.LAST_LINE_START;
 			gbc.gridx = 0;
@@ -100,7 +129,6 @@ public class AddLayoutItemDialog extends JFrame  {
 			gbc.gridx = 0;
 			gbc.gridy = 5;
 			contentPane.add(capacityComboBox,gbc);
-			
 			
 			okBtn = new FancyButtonOneClick(ProjectColors.BLACK.get(), ProjectColors.RED.get(), ProjectColors.RED.get());
 			okBtn.setFont(Fonts.FONT20.get());
@@ -128,16 +156,60 @@ public class AddLayoutItemDialog extends JFrame  {
 			
 	}
 	
+	private void setIcon() {
+		switch(typeComboBox.getSelectedItem().toString()) {
+		case "Table": 
+			iconLabel.setIcon(tableIcon);
+			break;
+		case "Bar": 
+			iconLabel.setIcon(barIcon);
+			break;
+		case "Entrance": 
+			iconLabel.setIcon(entranceIcon);
+			break;
+		}
+	}
+	
 	private void enterLayoutItem() {
-		
+		addLayoutItemToGUI();
+		putLayoutItemToItemMap();
+	}
+	
+	private void putLayoutItemToItemMap() {
+		LayoutItem layoutItem;
+		Point point = new Point(parentMiniPanel.getLocationX(), parentMiniPanel.getLocationY());
+		switch(typeComboBox.getSelectedItem().toString()) {
+		case "Table":
+			layoutItem = new Table(nameTxtField.getName(), "table", (int) capacityComboBox.getSelectedItem());
+			LayoutEditorFrame.getInstance().putLayoutItemToItemMap(point, layoutItem);
+			break;
+		case "Bar":
+			layoutItem = new LayoutItem(nameTxtField.getName(), "bar");
+			LayoutEditorFrame.getInstance().putLayoutItemToItemMap(point, layoutItem);
+			break;
+		case "Entrance":
+			layoutItem = new LayoutItem(nameTxtField.getName(), "entrance");
+			LayoutEditorFrame.getInstance().putLayoutItemToItemMap(point, layoutItem);
+			break;
+		}
+	}
+	
+	private void addLayoutItemToGUI() {
+		parentMiniPanel.setNameLabel(nameTxtField.getText());
+		parentMiniPanel.setIcon((FontIcon) iconLabel.getIcon());
+		if(capacityComboBox.isEnabled())
+			parentMiniPanel.setCapacityLabel(capacityComboBox.getSelectedItem().toString());
+		else
+			parentMiniPanel.setCapacityLabel("");
+		dispose();
 	}
 	
 	private void checkTypeInput() {
-		if(!typeComboBox.getSelectedItem().equals("table"))  // if there is not table
+		setIcon();
+		if(!typeComboBox.getSelectedItem().equals("Table"))  // if there is not table
 			capacityComboBox.setEnabled(false);
 		else 
 			capacityComboBox.setEnabled(true);
-
 	}
 	
 	private void populatecapacityLabel() {
@@ -147,9 +219,9 @@ public class AddLayoutItemDialog extends JFrame  {
 	}
 	
 	private void populateTypeComboBox() {
-		typeComboBox.addItem("table");
-		typeComboBox.addItem("bar");
-		typeComboBox.addItem("entrance");
+		typeComboBox.addItem("Table");
+		typeComboBox.addItem("Bar");
+		typeComboBox.addItem("Entrance");
 		
 	}
 	

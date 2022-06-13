@@ -22,7 +22,6 @@ public class InputFrameCreateLayoutPanel extends JFrame {
 	private static InputFrameCreateLayoutPanel instance;
 	private JTextField nameTxtField, widthTxtField, heightTxtField;
 	private FancyButtonOneClick createBtn;
-
 	
 	private InputFrameCreateLayoutPanel() {
 		
