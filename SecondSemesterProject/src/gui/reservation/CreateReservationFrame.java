@@ -42,10 +42,12 @@ import javax.swing.text.DateFormatter;
 import controller.CustomerController;
 import controller.ReservationController;
 import database.MenuConcreteDAO;
+import database.ReservationConcreteDAO;
 import database.TableConcreteDAO;
 import gui.tools.Validator;
 import model.Customer;
 import model.Menu;
+import model.Reservation;
 import model.Table;
 
 @SuppressWarnings("serial")
@@ -70,7 +72,11 @@ public class CreateReservationFrame extends JFrame {
 	private JTextField phoneField;
 	private JTextField noteField;
 	private JComboBox<String> tables;
-	private ArrayList<Table> tableList;
+
+	private static ArrayList<Table> dbTables;
+	private static ArrayList<Reservation> dbReservations;
+	private static ArrayList<Menu> dbMenus;
+	private static boolean resourcesLoaded = false;
 
 	private Calendar reservationTimeDate;
 	private int guests;
@@ -94,17 +100,24 @@ public class CreateReservationFrame extends JFrame {
 				frame.setVisible(true);
 			}
 		});
+		new Thread(() -> loadResources()).start();
+	}
+
+	private static void loadResources() {
+		try {
+			dbReservations = ReservationConcreteDAO.getInstance().read();
+			dbTables = TableConcreteDAO.getInstance().read();
+			dbMenus = MenuConcreteDAO.getInstance().read();
+			resourcesLoaded = true;
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 
 	public CreateReservationFrame() {
 		reservationController = new ReservationController();
 		customerController = new CustomerController();
 		currentCard = 1;
-		try {
-			tableList = TableConcreteDAO.getInstance().read();
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
 
 		setTitle("New Reservation");
 		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
@@ -269,22 +282,36 @@ public class CreateReservationFrame extends JFrame {
 				return;
 			}
 
-			Calendar date = (Calendar) Calendar.getInstance().clone();
+			Calendar date = Calendar.getInstance();
 			date.setTime((Date) dateField.getValue());
 			int year = date.get(Calendar.YEAR);
-			int month = date.get(Calendar.MONTH);
+			int month = date.get(Calendar.MONTH) + 1;
 			int day = date.get(Calendar.DAY_OF_MONTH);
 			date.setTime((Date) spinnerH.getValue());
 			int hour = date.get(Calendar.HOUR_OF_DAY);
 			date.setTime((Date) spinnerM.getValue());
 			int minute = date.get(Calendar.MINUTE);
 
-			reservationTimeDate = (Calendar) Calendar.getInstance().clone();
+			reservationTimeDate = (Calendar) Calendar.getInstance();
 			reservationTimeDate.set(year, month, day, hour, minute, 0);
 			reservationTimeDate.set(Calendar.MILLISECOND, 0);
-			createSecondCard();
-			populateTables();
-			next();
+
+			if (reservationTimeDate.before(Calendar.getInstance())) {
+				JOptionPane.showConfirmDialog(null,
+						"The date of reservation is in the past!\nPlease, select correct date, we don't have a time machine ;)",
+						"Wrong date", JOptionPane.OK_OPTION, JOptionPane.WARNING_MESSAGE);
+				return;
+			}
+
+			if (resourcesLoaded) {
+				createSecondCard();
+				populateTables();
+				next();
+			} else {
+				JOptionPane.showConfirmDialog(null,
+						"The resources needed for cration of reservtaion hasn't been loaded!\nPlease, wait a bit and try again.",
+						"Resources not loaded", JOptionPane.OK_CANCEL_OPTION, JOptionPane.WARNING_MESSAGE);
+			}
 		});
 		gbc1.gridx = 2;
 		firstCard.add(nextButton, gbc1);
@@ -390,7 +417,7 @@ public class CreateReservationFrame extends JFrame {
 		nextButton.setFont(font);
 		nextButton.setBackground(new Color(242, 233, 228));
 		nextButton.addActionListener(e -> {
-			for (Table t : tableList) {
+			for (Table t : dbTables) {
 				if (tables.getSelectedItem().equals(t.getName())) {
 					reservedTable = t;
 				}
@@ -688,7 +715,7 @@ public class CreateReservationFrame extends JFrame {
 		fourthCard.add(titleLabel, gbc);
 
 		JLabel reservationLabel = new JLabel("For " + guests + " guest" + (guests > 1 ? "s" : "") + " on "
-				+ reservationTimeDate.get(Calendar.DATE) + ". " + reservationTimeDate.get(Calendar.MONTH) + 1 + ". "
+				+ reservationTimeDate.get(Calendar.DATE) + ". " + reservationTimeDate.get(Calendar.MONTH) + ". "
 				+ reservationTimeDate.get(Calendar.YEAR) + " at " + reservationTimeDate.get(Calendar.HOUR_OF_DAY) + ":"
 				+ (reservationTimeDate.get(Calendar.MINUTE) < 10 ? "0" + reservationTimeDate.get(Calendar.MINUTE)
 						: reservationTimeDate.get(Calendar.MINUTE)));
@@ -728,14 +755,6 @@ public class CreateReservationFrame extends JFrame {
 		menuPanel.setBackground(Color.WHITE);
 		scrollPane.setViewportView(menuPanel);
 
-		ArrayList<Menu> menu = null;
-		try {
-			menu = MenuConcreteDAO.getInstance().read();
-		} catch (SQLException e) {
-		}
-
-		final ArrayList<Menu> finalMenu = menu;
-
 		GridBagConstraints gbcM = new GridBagConstraints();
 		gbcM.anchor = GridBagConstraints.NORTH;
 		gbcM.fill = GridBagConstraints.HORIZONTAL;
@@ -743,10 +762,12 @@ public class CreateReservationFrame extends JFrame {
 		gbcM.gridx = 0;
 		gbcM.insets = new Insets(10, 10, 10, 10);
 
-		String[] menus = new String[menu.size()];
-		for (int x = 0; x < menu.size(); x++) {
-			menus[x] = menu.get(x).getName();
+		String[] menus = new String[dbMenus.size()];
+		for (int x = 0; x < dbMenus.size(); x++) {
+			menus[x] = dbMenus.get(x).getName();
 		}
+
+		ArrayList<JComboBox<String>> menuComboBoxes = new ArrayList<>();
 
 		for (int i = 1; i <= guests; i++) {
 			JLabel label = new JLabel("Menu for person " + i + ":");
@@ -763,6 +784,7 @@ public class CreateReservationFrame extends JFrame {
 			menuBox.setBorder(new CompoundBorder(new LineBorder(darkGray, 1), new EmptyBorder(0, 10, 0, 0)));
 			menuBox.setBackground(Color.WHITE);
 			menuBox.addItem("No menu");
+			menuComboBoxes.add(menuBox);
 
 			gbcM.insets = new Insets(10, 10, 20, 10);
 			gbcM.gridx = 1;
@@ -794,18 +816,18 @@ public class CreateReservationFrame extends JFrame {
 		nextButton.setFont(font);
 		nextButton.setBackground(new Color(242, 233, 228));
 		nextButton.addActionListener(e -> {
-			for (Component c : scrollPane.getComponents()) {
-				if (c instanceof JComboBox<?>) {
-					String ms = ((JComboBox) c).getSelectedItem().toString();
-					if (!ms.equalsIgnoreCase("No menu")) {
-						for (Menu m : finalMenu) {
-							if (m.getName().equalsIgnoreCase(ms)) {
-								reservedMenus.add(m);
-							}
+			for (JComboBox<String> j : menuComboBoxes) {
+				String selMenu = j.getSelectedItem().toString();
+				System.out.println("selMenu");
+				if (!selMenu.equalsIgnoreCase("No menu")) {
+					for (Menu m : dbMenus) {
+						if (m.getName().equalsIgnoreCase(selMenu)) {
+							reservedMenus.add(m);
 						}
 					}
 				}
 			}
+
 			createFinalCard();
 			next();
 		});
@@ -834,7 +856,7 @@ public class CreateReservationFrame extends JFrame {
 		finalCard.add(titleLabel, gbc);
 
 		JTextArea reservationLabel = new JTextArea("Guest" + (guests > 1 ? "s" : "") + ": " + guests + "\nDate: "
-				+ reservationTimeDate.get(Calendar.DATE) + ". " + (reservationTimeDate.get(Calendar.MONTH) + 1) + "."
+				+ reservationTimeDate.get(Calendar.DATE) + ". " + reservationTimeDate.get(Calendar.MONTH) + "."
 				+ reservationTimeDate.get(Calendar.YEAR) + "\nTime: " + reservationTimeDate.get(Calendar.HOUR_OF_DAY)
 				+ ":"
 				+ (reservationTimeDate.get(Calendar.MINUTE) < 10 ? "0" + reservationTimeDate.get(Calendar.MINUTE)
@@ -871,21 +893,21 @@ public class CreateReservationFrame extends JFrame {
 		createButton.setFont(font);
 		createButton.setBackground(new Color(242, 233, 228));
 		createButton.addActionListener(e -> {
-			try {
-				reservationController.confirmReservation(customer, guests, reservedMenus, note);
-			} catch (SQLException e1) {
-				JOptionPane.showConfirmDialog(null,
-						"An error eccured while creating the reservation.\nPlease try again.", "Error",
-						JOptionPane.OK_CANCEL_OPTION, JOptionPane.WARNING_MESSAGE);
-				e1.printStackTrace();
-				cancel();
-				return;
-			}
-			JOptionPane.showConfirmDialog(null, "New reservation was created successfully", "New reservtaion",
-					JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE);
-			ReservationsPanel.repopulateTable();
-			cancel();
 
+			new Thread(() -> {
+				try {
+					reservationController.confirmReservation(customer, guests, reservedMenus, note);
+					JOptionPane.showConfirmDialog(null, "New reservation was created successfully", "New reservtaion",
+							JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE);
+					ReservationsPanel.repopulateTable();
+				} catch (SQLException e1) {
+					JOptionPane.showConfirmDialog(null,
+							"An error eccured while creating the reservation.\nPlease try again.", "Error",
+							JOptionPane.OK_CANCEL_OPTION, JOptionPane.WARNING_MESSAGE);
+					return;
+				}
+			}).start();
+			cancel();
 		});
 		gbc.gridx = 2;
 		gbc.insets = new Insets(20, 20, 30, 20);
@@ -893,7 +915,18 @@ public class CreateReservationFrame extends JFrame {
 	}
 
 	private void populateTables() {
-		ArrayList<Table> availableTables = reservationController.getAvailableTables(reservationTimeDate);
+		ArrayList<Table> availableTables = dbTables;
+		if (!dbReservations.isEmpty()) {
+			for (Reservation r : dbReservations) {
+				if (Math.abs(r.getTimestamp().getTimeInMillis() - reservationTimeDate.getTimeInMillis()) > r
+						.getDuration() * 3600000) {
+					for (Table t : r.getTables()) {
+						availableTables.remove(t);
+					}
+				}
+			}
+		}
+
 		tables.removeAllItems();
 		if (availableTables.isEmpty()) {
 			tables.setEnabled(false);

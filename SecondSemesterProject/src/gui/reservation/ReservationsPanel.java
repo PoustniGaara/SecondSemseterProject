@@ -1,6 +1,7 @@
 package gui.reservation;
 
 import java.awt.*;
+import java.awt.event.ActionListener;
 import java.sql.SQLException;
 import java.time.Instant;
 import java.time.LocalDate;
@@ -103,13 +104,18 @@ public class ReservationsPanel extends JPanel {
 		toolPanel.add(searchButton, gbcTool);
 
 		// show all button
-		JButton showButton = new JButton("Show all");
+		JButton showButton = new JButton("Refresh");
 		showButton.setFont(new Font("Segoe UI Semibold", Font.PLAIN, 16));
 		showButton.setBackground(new Color(242, 233, 228));
 		showButton.setPreferredSize(new Dimension((int) (getWidth() * 0.15), 40));
 		showButton.setFocusable(false);
-		// showButton.addActionListener(e ->
-		// populateTable(productController.showAllProducts()));
+		showButton.addActionListener(e -> new Thread(() -> {
+			try {
+				populateTable(reservationController.getAllReservations());
+			} catch (SQLException e1) {
+				e1.printStackTrace();
+			}
+		}).start());
 		gbcTool.gridx = 3;
 		gbcTool.anchor = GridBagConstraints.CENTER;
 		toolPanel.add(showButton, gbcTool);
@@ -196,12 +202,12 @@ public class ReservationsPanel extends JPanel {
 		gbcFooter.gridy = 0;
 
 		// modify button
-		JButton modifyButton = new JButton("Modify");
+		JButton modifyButton = new JButton("Change");
 		modifyButton.setFont(new Font("Segoe UI Semibold", Font.PLAIN, 16));
 		modifyButton.setBackground(new Color(242, 233, 228));
 		modifyButton.setPreferredSize(new Dimension((int) (getWidth() * 0.15), 40));
 		modifyButton.setFocusable(false);
-		// modifyButton.addActionListener(e -> modify());
+		// modifyButton.addActionListener(change());
 		footerPanel.add(modifyButton, gbcFooter);
 
 		// delete button
@@ -210,7 +216,9 @@ public class ReservationsPanel extends JPanel {
 		deleteButton.setBackground(new Color(242, 233, 228));
 		deleteButton.setPreferredSize(new Dimension((int) (getWidth() * 0.15), 40));
 		deleteButton.setFocusable(false);
-		deleteButton.addActionListener(e -> delete());
+		deleteButton.addActionListener(e -> new Thread(() -> {
+			delete();
+		}).start());
 		gbcFooter.gridx = 1;
 		gbcFooter.anchor = GridBagConstraints.WEST;
 		footerPanel.add(deleteButton, gbcFooter);
@@ -228,14 +236,35 @@ public class ReservationsPanel extends JPanel {
 
 	}
 
+	private void change() {
+		try {
+			if (table.getSelectedRow() != -1) {
+				if (!reservationController.getAllReservations().isEmpty()) {
+					int id = Integer.parseInt(table.getValueAt(table.getSelectedRow(), 3).toString());
+					if (reservationController.getReservationById(id) != null) {
+						Reservation r = reservationController.getReservationById(id);
+						if (JOptionPane.showConfirmDialog(null,
+								"Are you sure you want to delete this reservation?\nThis action is permanent!",
+								"Reservation deletion", JOptionPane.YES_NO_OPTION,
+								JOptionPane.WARNING_MESSAGE) == JOptionPane.YES_OPTION) {
+							reservationController.deleteReservation(r);
+							populateTable(reservationController.getAllReservations());
+						}
+					}
+				}
+			} else {
+				JOptionPane.showMessageDialog(null, "You must select a reservation in the list you want to delete!",
+						"Error", JOptionPane.WARNING_MESSAGE);
+			}
+		} catch (SQLException e) {
+			JOptionPane.showMessageDialog(null,
+					"An error occured, while getting reservation information! \nTry refreshing the table", "Error",
+					JOptionPane.WARNING_MESSAGE);
+		}
+	}
+
 	private void add() {
 		CreateReservationFrame.open();
-		try {
-			populateTable(reservationController.getAllReservations());
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
 
 //		try {
 //			Calendar calendar = new GregorianCalendar();
@@ -270,17 +299,15 @@ public class ReservationsPanel extends JPanel {
 	private void delete() {
 		try {
 			if (table.getSelectedRow() != -1) {
-				if (!reservationController.getAllReservations().isEmpty()) {
+				if (JOptionPane.showConfirmDialog(null,
+						"Are you sure you want to delete the reservation?\nThis action is permanent!",
+						"Reservation deletion", JOptionPane.YES_NO_OPTION,
+						JOptionPane.WARNING_MESSAGE) == JOptionPane.YES_OPTION) {
 					int id = Integer.parseInt(table.getValueAt(table.getSelectedRow(), 3).toString());
+					tableModel.removeRow(table.getSelectedRow());
 					if (reservationController.getReservationById(id) != null) {
 						Reservation r = reservationController.getReservationById(id);
-						if (JOptionPane.showConfirmDialog(null,
-								"Are you sure you want to delete this reservation?\nThis action is permanent!",
-								"Reservation deletion", JOptionPane.YES_NO_OPTION,
-								JOptionPane.WARNING_MESSAGE) == JOptionPane.YES_OPTION) {
-							reservationController.deleteReservation(r);
-							populateTable(reservationController.getAllReservations());
-						}
+						reservationController.deleteReservation(r);
 					}
 				}
 			} else {
@@ -311,8 +338,10 @@ public class ReservationsPanel extends JPanel {
 						reservation.getCustomer().getSurname().toUpperCase() + " "
 								+ reservation.getCustomer().getName(),
 						reservation.getGuests(), tableNames(reservation), menuNames(reservation),
-						reservation.getNote() });
+						reservation.getNote().length() > 50 ? reservation.getNote().substring(0, 50).concat("...")
+								: reservation.getNote() });
 			}
+			tableModel.fireTableDataChanged();
 		}
 	}
 
@@ -356,7 +385,7 @@ public class ReservationsPanel extends JPanel {
 		LocalTime time = Instant.ofEpochMilli(timestamp).atZone(ZoneId.systemDefault()).toLocalTime();
 		return time.format(DateTimeFormatter.ofPattern("HH:mm"));
 	}
-	
+
 	public static void repopulateTable() {
 		try {
 			ReservationsPanel.getInstance().populateTable(ReservationConcreteDAO.getInstance().read());

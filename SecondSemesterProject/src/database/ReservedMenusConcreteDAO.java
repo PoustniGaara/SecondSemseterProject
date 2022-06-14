@@ -32,6 +32,7 @@ public class ReservedMenusConcreteDAO implements ReservedMenusDAO {
 			HashMap<Menu, Integer> groupedMenus = groupMenus(reservation.getMenus());
 			con.setAutoCommit(false);
 			for (Menu m : groupedMenus.keySet()) {
+				System.out.println("menu id: "+ m.getID() + ", amount: " + groupedMenus.get(m));
 				ps.setLong(1, reservation.getId());
 				ps.setInt(2, m.getID());
 				ps.setInt(3, groupedMenus.get(m));
@@ -66,9 +67,11 @@ public class ReservedMenusConcreteDAO implements ReservedMenusDAO {
 			while (menusResultSet.next()) {
 				String name = menusResultSet.getString("name");
 				int menuid = menusResultSet.getInt("menuID");
+				int amount = menusResultSet.getInt("amount");
 				Menu menu = new Menu(name, MenuMealsConcreteDAO.getInstance().getMenuMeals(menuid));
 				menu.setID(menuid);
-				menus.add(menu);
+				for(int i = 0; i <= amount; i++)
+					menus.add(menu);
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
