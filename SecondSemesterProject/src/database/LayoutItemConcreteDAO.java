@@ -57,6 +57,11 @@ public class LayoutItemConcreteDAO implements LayoutItemDAO {
         		ps.setInt(3, (int) entry.getKey().getX());
         		ps.setInt(4, (int) entry.getKey().getY());
         		ps.setLong(5, restaurantLayoutID);
+    			System.out.println("NAME "+ entry.getValue().getName());
+    			System.out.println("TYPE "+ entry.getValue().getType());
+    			System.out.println("X "+ entry.getKey().getX());
+    			System.out.println("Y "+ entry.getKey().getY());
+    			System.out.println("ID "+ restaurantLayoutID);
         		ps.addBatch();
         		}
     		try {

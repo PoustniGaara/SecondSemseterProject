@@ -73,10 +73,10 @@ import model.RestaurantLayout;
 			PreparedStatement ps = con.prepareStatement("DELETE FROM dbo.RestaurantLayouts WHERE name = ?")
 			){
 			ps.setString(1, restaurantLayoutName);
+			ps.execute();
 		}
 		catch(SQLException e){
 			e.printStackTrace();
-			con.rollback();
 			throw new SQLException("Error in deleting RestaurantLayout:"+ e.getMessage());
 		}
 	}
