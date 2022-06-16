@@ -9,7 +9,7 @@ import java.awt.GridBagLayout;
 import javax.swing.JButton;
 import javax.swing.JPanel;
 
-import gui.Layout.LayoutEditorFrame;
+import gui.layout.LayoutEditorFrame;
 import gui.tools.FancyButtonMoreClick;
 import gui.tools.FancyButtonOneClick;
 import gui.tools.ProjectColors;
