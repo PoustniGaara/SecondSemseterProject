@@ -24,7 +24,7 @@ public class ReservedMenusConcreteDAO implements ReservedMenusDAO {
 	}
 
 	@Override
-	public void create(Reservation reservation) throws SQLException, BatchUpdateException{
+	public void create(Reservation reservation) throws SQLException, BatchUpdateException {
 		Connection con = DBConnection.getInstance().getDBcon();
 		try {
 			PreparedStatement ps = con
@@ -32,31 +32,28 @@ public class ReservedMenusConcreteDAO implements ReservedMenusDAO {
 			HashMap<Menu, Integer> groupedMenus = groupMenus(reservation.getMenus());
 			con.setAutoCommit(false);
 			for (Menu m : groupedMenus.keySet()) {
-				System.out.println("menu id: "+ m.getID() + ", amount: " + groupedMenus.get(m));
 				ps.setLong(1, reservation.getId());
 				ps.setInt(2, m.getID());
 				ps.setInt(3, groupedMenus.get(m));
 				ps.addBatch();
 			}
-    		try {
-    			ps.executeBatch();
-    			con.commit();
-    			}
-    		 catch(BatchUpdateException e){
-    		    con.rollback();
-    		    throw new BatchUpdateException("Error in batching", e.getUpdateCounts());
-    		    }
+			try {
+				ps.executeBatch();
+				con.commit();
+			} catch (BatchUpdateException e) {
+				con.rollback();
+				throw new BatchUpdateException("Error in batching", e.getUpdateCounts());
+			}
 		} catch (SQLException e) {
 			e.printStackTrace();
 			throw new SQLException("Error in getting RestaurantLayouts from DB:" + e.getMessage());
-		}
-		finally {
+		} finally {
 			con.setAutoCommit(true);
 		}
 	}
-	
+
 	@Override
-	public ArrayList<Menu> getReservationMenus(int reservationId) throws SQLException {
+	public ArrayList<Menu> getReservationMenus(long reservationId) throws SQLException {
 		Connection con = DBConnection.getInstance().getDBcon();
 		ArrayList<Menu> menus = new ArrayList<>();
 		try {
@@ -70,7 +67,7 @@ public class ReservedMenusConcreteDAO implements ReservedMenusDAO {
 				int amount = menusResultSet.getInt("amount");
 				Menu menu = new Menu(name, MenuMealsConcreteDAO.getInstance().getMenuMeals(menuid));
 				menu.setID(menuid);
-				for(int i = 0; i <= amount; i++)
+				for (int i = 0; i <= amount; i++)
 					menus.add(menu);
 			}
 		} catch (SQLException e) {

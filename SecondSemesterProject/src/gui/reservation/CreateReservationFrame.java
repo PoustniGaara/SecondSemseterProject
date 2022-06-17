@@ -818,7 +818,6 @@ public class CreateReservationFrame extends JFrame {
 		nextButton.addActionListener(e -> {
 			for (JComboBox<String> j : menuComboBoxes) {
 				String selMenu = j.getSelectedItem().toString();
-				System.out.println("selMenu");
 				if (!selMenu.equalsIgnoreCase("No menu")) {
 					for (Menu m : dbMenus) {
 						if (m.getName().equalsIgnoreCase(selMenu)) {

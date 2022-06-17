@@ -97,7 +97,7 @@ public class ReservationsPanel extends JPanel {
 		searchButton.setBackground(new Color(242, 233, 228));
 		searchButton.setPreferredSize(new Dimension((int) (getWidth() * 0.15), 40));
 		searchButton.setFocusable(false);
-		// searchButton.addActionListener(e -> search());
+		searchButton.addActionListener(e -> search());
 		gbcTool.gridx = 2;
 		gbcTool.gridwidth = 1;
 		gbcTool.anchor = GridBagConstraints.WEST;
@@ -236,6 +236,27 @@ public class ReservationsPanel extends JPanel {
 
 	}
 
+	private void search() {
+		String search = searchBar.getText();
+		if (search.isEmpty() || search.isBlank())
+			return;
+
+		ArrayList<Reservation> reservations = new ArrayList<>();
+		try {
+			reservations = reservationController.getReservationByCustomer(search);
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+
+		if (reservations.isEmpty()) {
+			JOptionPane.showMessageDialog(null, "There are no reservations associated with the search enty!", "Error",
+					JOptionPane.WARNING_MESSAGE);
+			searchBar.setText("");
+		} else {
+			populateTable(reservations);
+		}
+	}
+
 	private void change() {
 		try {
 			if (table.getSelectedRow() != -1) {
@@ -358,9 +379,11 @@ public class ReservationsPanel extends JPanel {
 	}
 
 	private String menuNames(Reservation reservation) {
-		if (reservation.getMenus().isEmpty()) {
-			return "no menu :/";
-		}
+		if (reservation.getMenus() == null)
+			return "no menus";
+
+		if (reservation.getMenus().isEmpty())
+			return "no menus";
 
 		String s = "";
 		for (Menu m : reservation.getMenus()) {

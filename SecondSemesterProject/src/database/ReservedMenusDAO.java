@@ -14,6 +14,6 @@ public interface ReservedMenusDAO {
 
 	void delete(Reservation reservation);
 	
-	ArrayList<Menu> getReservationMenus(int reservationId) throws SQLException;
+	ArrayList<Menu> getReservationMenus(long reservationId) throws SQLException;
 
 }

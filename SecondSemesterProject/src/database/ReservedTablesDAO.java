@@ -14,6 +14,6 @@ public interface ReservedTablesDAO {
 
 	void delete(Reservation reservation) throws SQLException;
 	
-	ArrayList<Table> getReservationTables(int reservationid) throws SQLException;
+	ArrayList<Table> getReservationTables(long reservationid) throws SQLException;
 
 }
