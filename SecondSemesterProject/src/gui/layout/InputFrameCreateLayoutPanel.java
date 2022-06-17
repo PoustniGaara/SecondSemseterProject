@@ -1,4 +1,4 @@
-package gui.Layout;
+package gui.layout;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
@@ -22,8 +22,9 @@ public class InputFrameCreateLayoutPanel extends JFrame {
 	private static InputFrameCreateLayoutPanel instance;
 	private JTextField nameTxtField, widthTxtField, heightTxtField;
 	private FancyButtonOneClick createBtn;
+	private LayoutEditorFrame layoutEditorFrame;
 	
-	private InputFrameCreateLayoutPanel() {
+	InputFrameCreateLayoutPanel(LayoutEditorFrame layoutEditorFrame) {
 		
 		//frame setup
 		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
@@ -31,6 +32,9 @@ public class InputFrameCreateLayoutPanel extends JFrame {
 		setResizable(false);
 		setBounds(100, 100, 450, 300);
 		setVisible(true);
+		
+		//LayoutEditorPanel setup
+		this.layoutEditorFrame = layoutEditorFrame;
 		
 		//main panel setup
 		JPanel mainPanel = new JPanel();
@@ -104,13 +108,13 @@ public class InputFrameCreateLayoutPanel extends JFrame {
 		String name = nameTxtField.getText();
 		int sizeX = Integer.valueOf(widthTxtField.getText());
 		int sizeY = Integer.valueOf(heightTxtField.getText());
-		LayoutEditorFrame.getInstance().prepareNewLayoutInterface(name,sizeX, sizeY);
+		layoutEditorFrame.prepareNewLayoutInterface(name,sizeX, sizeY);
 		this.dispose();
 	}
 	
-	public static InputFrameCreateLayoutPanel getInstance() {
-		if(instance == null) return new InputFrameCreateLayoutPanel();
-		else return instance;
-	}
+//	public static InputFrameCreateLayoutPanel getInstance() {
+//		if(instance == null) return new InputFrameCreateLayoutPanel();
+//		else return instance;
+//	}
 
 }

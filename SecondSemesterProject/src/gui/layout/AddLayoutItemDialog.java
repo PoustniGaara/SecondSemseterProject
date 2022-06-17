@@ -1,4 +1,4 @@
-package gui.Layout;
+package gui.layout;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
@@ -19,6 +19,7 @@ import org.kordamp.ikonli.coreui.CoreUiFree;
 import org.kordamp.ikonli.icomoon.Icomoon;
 import org.kordamp.ikonli.swing.FontIcon;
 
+import gui.HeaderPanel;
 import gui.tools.FancyButtonOneClick;
 import gui.tools.Fonts;
 import gui.tools.ProjectColors;
@@ -32,7 +33,7 @@ public class AddLayoutItemDialog extends JFrame  {
 	private JComboBox<String> typeComboBox;
 	private JComboBox<Integer> capacityComboBox;
 	private LayoutMiniPanel parentMiniPanel;
-	private FontIcon tableIcon, barIcon, entranceIcon;
+	private FontIcon tableIcon, barIcon, entranceIcon, plusIcon;
 	private GridBagConstraints gbc;
 	private JLabel iconLabel;
 	
@@ -61,6 +62,8 @@ public class AddLayoutItemDialog extends JFrame  {
 			barIcon.setIconSize(30);
 			entranceIcon = FontIcon.of(Icomoon.ICM_ENTER);
 			entranceIcon.setIconSize(30);
+			plusIcon = FontIcon.of(CoreUiFree.POOL);
+			plusIcon.setIconSize(30);
 			
 			//content pane setup
 			JPanel contentPane = new JPanel();
@@ -167,6 +170,8 @@ public class AddLayoutItemDialog extends JFrame  {
 		case "Entrance": 
 			iconLabel.setIcon(entranceIcon);
 			break;
+		case "None":
+			iconLabel.setIcon(plusIcon);
 		}
 	}
 	
@@ -180,21 +185,30 @@ public class AddLayoutItemDialog extends JFrame  {
 		Point point = new Point(parentMiniPanel.getLocationX(), parentMiniPanel.getLocationY());
 		switch(typeComboBox.getSelectedItem().toString()) {
 		case "Table":
-			layoutItem = new Table(nameTxtField.getName(), "table", (int) capacityComboBox.getSelectedItem());
-			LayoutEditorFrame.getInstance().putLayoutItemToItemMap(point, layoutItem);
+			layoutItem = new Table(nameTxtField.getText(), "table", Integer.valueOf(capacityComboBox.getSelectedItem().toString()) );
+			HeaderPanel.getInstance().getLayoutEditorFrame().addItemToCurrentLayoutItemMap(
+					point, layoutItem);
 			break;
 		case "Bar":
-			layoutItem = new LayoutItem(nameTxtField.getName(), "bar");
-			LayoutEditorFrame.getInstance().putLayoutItemToItemMap(point, layoutItem);
+			layoutItem = new LayoutItem(nameTxtField.getText(), "bar");
+			HeaderPanel.getInstance().getLayoutEditorFrame().addItemToCurrentLayoutItemMap(
+					point, layoutItem);
 			break;
 		case "Entrance":
-			layoutItem = new LayoutItem(nameTxtField.getName(), "entrance");
-			LayoutEditorFrame.getInstance().putLayoutItemToItemMap(point, layoutItem);
+			layoutItem = new LayoutItem(nameTxtField.getText(), "entrance");
+			HeaderPanel.getInstance().getLayoutEditorFrame().addItemToCurrentLayoutItemMap(
+					point, layoutItem);
 			break;
+		default:
+			HeaderPanel.getInstance().getLayoutEditorFrame().deleteItemFromCurrentLayoutItemMap(point);
 		}
 	}
 	
 	private void addLayoutItemToGUI() {
+		if(typeComboBox.getSelectedItem().toString().equals("None")) {
+			parentMiniPanel.setName("");
+			parentMiniPanel.setIcon((FontIcon) iconLabel.getIcon());
+		}
 		parentMiniPanel.setNameLabel(nameTxtField.getText());
 		parentMiniPanel.setIcon((FontIcon) iconLabel.getIcon());
 		if(capacityComboBox.isEnabled())
@@ -222,6 +236,7 @@ public class AddLayoutItemDialog extends JFrame  {
 		typeComboBox.addItem("Table");
 		typeComboBox.addItem("Bar");
 		typeComboBox.addItem("Entrance");
+		typeComboBox.addItem("None");
 		
 	}
 	

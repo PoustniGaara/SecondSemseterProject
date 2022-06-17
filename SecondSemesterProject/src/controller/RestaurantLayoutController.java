@@ -29,7 +29,11 @@ public class RestaurantLayoutController {
 	}
 	
 	public void deleteRestaurantLayout(String restaurantLayoutName) throws SQLException {
-		restaurantLayoutDAO.delete(restaurantLayoutName);
+		try {
+			restaurantLayoutDAO.delete(restaurantLayoutName);
+		} catch (SQLException e) {
+			throw new SQLException("Error in deleting RestaurantLayout:"+ e.getMessage());
+		}
 	}
 	
 	public List<RestaurantLayout> read() throws SQLException{

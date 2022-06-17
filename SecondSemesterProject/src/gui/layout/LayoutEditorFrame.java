@@ -1,4 +1,4 @@
-package gui.Layout;
+package gui.layout;
 
 import java.awt.BorderLayout;
 import java.awt.Component;
@@ -35,13 +35,13 @@ public class LayoutEditorFrame extends JFrame {
 	private FancyButtonOneClick createBtn, deleteBtn, saveBtn;
 	private JPanel mainPanel;
 	private JTextField nameTxtField, widthTxtField, heightTxtField;
-	private static LayoutEditorFrame instance = null;
 	private Component currentComponent;
-	private HashMap<Point,LayoutItem> itemMap;
-	private LayoutEditorPanel currentEditorPanel;
+	private RestaurantLayout currentRestaurantLayout;
 	private HashMap<String,LayoutEditorPanel> editorPanelMap;
+	private HashMap<String, RestaurantLayout> restaurantLayoutMap;
+	private ArrayList<RestaurantLayout> rlList;
 	
-	private LayoutEditorFrame() {
+	public LayoutEditorFrame() {
 		
 		//controls
 		rsController = new RestaurantLayoutController();
@@ -78,6 +78,7 @@ public class LayoutEditorFrame extends JFrame {
 		layoutsCB = new JComboBox(new DefaultComboBoxModel());
 		layoutsCB.setMaximumRowCount(5);
 		layoutsCB.setFont(Fonts.FONT20.get());
+		layoutsCB.addActionListener(e -> switchLayout());
 		layoutsCB.setPreferredSize(new Dimension(width/8, ToolPanel.getPanelHeight()/3));
 		gbcTool.anchor = GridBagConstraints.FIRST_LINE_START;
 		gbcTool.gridx = 0;
@@ -93,6 +94,7 @@ public class LayoutEditorFrame extends JFrame {
 		
 		nameTxtField = new JTextField(20);
 		nameTxtField.setFont(Fonts.FONT20.get());
+		nameTxtField.setEnabled(false);
 		gbcTool.anchor = GridBagConstraints.FIRST_LINE_START;
 		gbcTool.gridx = 1;
 		gbcTool.gridy = 1;
@@ -149,6 +151,7 @@ public class LayoutEditorFrame extends JFrame {
 		
 		deleteBtn = new FancyButtonOneClick(ProjectColors.BLACK.get(), ProjectColors.RED.get(), ProjectColors.RED.get());
 		deleteBtn.setFont(Fonts.FONT20.get());
+		deleteBtn.addActionListener(e -> delete());
 		deleteBtn.setBorderPainted(true);
 		deleteBtn.setPreferredSize(new Dimension(width/8, ToolPanel.getPanelHeight()/2));
 		deleteBtn.setText("delete");
@@ -167,14 +170,44 @@ public class LayoutEditorFrame extends JFrame {
 		footerPanel.add(saveBtn, gbcFooter);
 		
 		//load 
+		editorPanelMap = new HashMap<>();
+		restaurantLayoutMap = new HashMap<>();
 		loadStartData();
-		itemMap = new HashMap<>();
 		
 	} // end of constructor
 	
-	public void save() {
+	//add are you sure? * 
+	private void delete() {// if it is layout in database
+		if(rlList.contains(currentRestaurantLayout)) {
+			try {
+				//SYSTEM
+				rsController.deleteRestaurantLayout(currentRestaurantLayout.getName());
+				rlList.remove(currentRestaurantLayout);
+				restaurantLayoutMap.remove(currentRestaurantLayout.getName());
+				editorPanelMap.remove(currentRestaurantLayout.getName());
+				//GUI
+				layoutsCB.removeItem(currentRestaurantLayout.getName());
+				displayNextLayout();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+		else { // if it is only demo layout
+			//SYSTEM
+			restaurantLayoutMap.remove(currentRestaurantLayout.getName());
+			editorPanelMap.remove(currentRestaurantLayout.getName());
+			//GUI
+			layoutsCB.removeItem(currentRestaurantLayout.getName());
+			displayNextLayout();
+		}
+	}
+	
+	private void save() {
 		try {
-			rsController.save(nameTxtField.getText(), width, height, itemMap);
+			//SYSTEM
+			rsController.save(currentRestaurantLayout.getName(),
+					currentRestaurantLayout.getSizeX(),currentRestaurantLayout.getSizeY()
+					, currentRestaurantLayout.getItemMap());
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -184,8 +217,45 @@ public class LayoutEditorFrame extends JFrame {
 		}
 	}
 	
-	public void putLayoutItemToItemMap(Point point, LayoutItem layoutItem) {
-		itemMap.put(point, layoutItem);
+	private void displayNextLayout() {
+		if(restaurantLayoutMap.keySet() != null) {// If there is still some layouts to display
+			for(String name : restaurantLayoutMap.keySet()) {
+				//SYSTEM
+				currentRestaurantLayout = restaurantLayoutMap.get(name);
+				//GUI
+				currentComponent = editorPanelMap.get(name);
+				mainPanel.add(currentComponent, BorderLayout.CENTER); //add editor panel
+				mainPanel.repaint();
+				mainPanel.revalidate();
+				setTextFields(currentRestaurantLayout.getName(), 
+						currentRestaurantLayout.getSizeX(), currentRestaurantLayout.getSizeY()); 
+				setComboBox(currentRestaurantLayout.getName());
+				return;
+			}
+		}
+		else { // if there is no panel to display
+			currentComponent = new NoLayoutInfoPanel();
+			mainPanel.add(currentComponent , BorderLayout.CENTER);
+			setTextFields("",0,0);
+			layoutsCB.setSelectedItem(null);
+		}
+	}
+	
+	private void switchLayout() {
+		//SYSTEM
+		RestaurantLayout rl = restaurantLayoutMap.get(layoutsCB.getSelectedItem().toString());
+		currentRestaurantLayout = rl;
+		//GUI
+		if(currentComponent != null) {
+		mainPanel.remove(currentComponent);
+		currentComponent = editorPanelMap.get(layoutsCB.getSelectedItem().toString());
+		System.out.println(editorPanelMap.get(layoutsCB.getSelectedItem().toString()));
+		mainPanel.add(currentComponent, BorderLayout.CENTER); //add editor panel
+		mainPanel.repaint();
+		mainPanel.revalidate();
+		setTextFields(rl.getName(), rl.getSizeX(), rl.getSizeY()); // change header
+		setComboBox(rl.getName());
+		}
 	}
 	
 	public void maximize() {
@@ -193,42 +263,52 @@ public class LayoutEditorFrame extends JFrame {
 	}
 	
 	public void prepareNewLayoutInterface(String name, int sizeX, int sizeY) {
-		nameTxtField.setText(name);
-		widthTxtField.setText(String.valueOf(sizeX));
-		heightTxtField.setText(String.valueOf(sizeY));
-		if(currentComponent != null)
-		mainPanel.remove(currentComponent);
-		LayoutEditorPanel emptyPanelToDisplay = new LayoutEditorPanel();//sizeX,sizeY
-		emptyPanelToDisplay.loadEmptyMiniPanels(sizeX, sizeY);
-		currentComponent = emptyPanelToDisplay;
+		if(currentComponent != null) { // protect from null pointer
+		mainPanel.remove(currentComponent); 
+		}
+		//SYSTEM PART
+		currentRestaurantLayout = new RestaurantLayout(name, sizeX, sizeY, new HashMap<Point,LayoutItem>());
+		restaurantLayoutMap.put(name, currentRestaurantLayout);
+		//GUI PART
+		LayoutEditorPanel newLayoutEditorPanel = new LayoutEditorPanel();
+		newLayoutEditorPanel.loadEmptyMiniPanels(sizeX, sizeY);
+		editorPanelMap.put(name, newLayoutEditorPanel);
+		setTextFields(name, sizeX, sizeY);
+		setComboBox(name);
+		currentComponent = newLayoutEditorPanel;
 		mainPanel.add(currentComponent, BorderLayout.CENTER);
 		mainPanel.repaint();
 		mainPanel.revalidate();
-		
 	}
 	
 	private void openInputFrame() {
-		InputFrameCreateLayoutPanel.getInstance();
+		new InputFrameCreateLayoutPanel(this);
 	}
 	
 	private void loadStartData() {
 		try {
-			ArrayList<RestaurantLayout> rlList = (ArrayList<RestaurantLayout>) rsController.read();
+			rlList = (ArrayList<RestaurantLayout>) rsController.read();
 			if(rlList.size() != 0) {
-				editorPanelMap = new HashMap<>();
 				// create panels and save them in map 
 				for(RestaurantLayout rl : rlList) { 
+					restaurantLayoutMap.put(rl.getName(), rl);
 					layoutsCB.addItem(rl.getName()); // populate layoutsCB
 					LayoutEditorPanel layoutEditorPanel = new LayoutEditorPanel();
 					layoutEditorPanel.loadExistingMiniPanels(rl);
-//					editorPanelMap.put(rl.getName(), );
+					editorPanelMap.put(rl.getName(), layoutEditorPanel);
 				} 
 				// prepare current panel and setup
-				currentEditorPanel = editorPanelMap.get(rlList.get(0).getName());
-//				layoutsCB.setSelectedItem(rlList.get(0).getName());
-				loadCurrentLayoutEditorPanel(currentEditorPanel);
+				//SYSTEM
+				currentRestaurantLayout = restaurantLayoutMap.get(rlList.get(0).getName());
+				//GUI
+				setTextFields(currentRestaurantLayout.getName(), currentRestaurantLayout.getSizeX(), 
+						currentRestaurantLayout.getSizeY());
+				setComboBox(currentRestaurantLayout.getName());
+				currentComponent = editorPanelMap.get(rlList.get(0).getName());
+				mainPanel.add(editorPanelMap.get(rlList.get(0).getName()), BorderLayout.CENTER);
+
 			}
-			else {
+			else { // if there is no layout in the database
 				currentComponent = new NoLayoutInfoPanel();
 				mainPanel.add(currentComponent , BorderLayout.CENTER);
 			}
@@ -239,26 +319,30 @@ public class LayoutEditorFrame extends JFrame {
 		}
 	}
 	
-	private void loadCurrentLayoutEditorPanel(LayoutEditorPanel layoutEditorPanel) {
-		
-	}
-	
-	public void populateLayoutCB() {
-		try {
-			ArrayList<RestaurantLayout> rlList = (ArrayList<RestaurantLayout>) rsController.read();
-			for(RestaurantLayout rl : rlList) {
-				layoutsCB.addItem(rl.getName());
+	private void setComboBox(String name) {
+		int count = layoutsCB.getItemCount();
+		for(int i = 0; i < count; i++) {
+			if(layoutsCB.getItemAt(i).toString().equals(name)) {
+				layoutsCB.setSelectedItem(name);
+				return;
 			}
-		} catch (SQLException e) {
-			//IMPLEMENT
-			e.printStackTrace();
 		}
+		layoutsCB.addItem(name);
+		layoutsCB.setSelectedItem(name);
 	}
 	
-	public static LayoutEditorFrame getInstance() {
-		if(instance == null) {instance =  new LayoutEditorFrame(); }
-		if(instance.isVisible() == false) {instance.setVisible(true); }
-		return instance;
+	private void setTextFields(String name, int sizeX, int sizeY) {
+		nameTxtField.setText(name);
+		widthTxtField.setText(String.valueOf(sizeX));
+		heightTxtField.setText(String.valueOf(sizeY));
+	}
+	
+	public void addItemToCurrentLayoutItemMap(Point point, LayoutItem layoutItem) {
+		currentRestaurantLayout.getItemMap().put(point, layoutItem);
+	}
+	
+	public void deleteItemFromCurrentLayoutItemMap(Point point) {
+		currentRestaurantLayout.getItemMap().remove(point);
 	}
 
 }

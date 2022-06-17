@@ -71,7 +71,6 @@ public class MenuConcreteDAO implements MenuDAO {
 	@Override
 	public void create(Menu menu) throws SQLException {
 		Connection con = DBConnection.getInstance().getDBcon();
-
 		try {
 			con.setAutoCommit(false);
 			int id = createMenu(menu);
@@ -92,7 +91,6 @@ public class MenuConcreteDAO implements MenuDAO {
 
 	private int createMenu(Menu menu) throws SQLException {
 		Connection con = DBConnection.getInstance().getDBcon();
-
 		try {
 			PreparedStatement ps = con.prepareStatement("INSERT INTO dbo.Menus (name) VALUES (?)",
 					Statement.RETURN_GENERATED_KEYS);

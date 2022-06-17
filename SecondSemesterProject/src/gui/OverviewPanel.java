@@ -20,7 +20,7 @@ import org.kordamp.ikonli.coreui.CoreUiFree;
 import org.kordamp.ikonli.swing.FontIcon;
 
 import controller.RestaurantLayoutController;
-import gui.Layout.NoLayoutInfoPanel;
+import gui.layout.NoLayoutInfoPanel;
 import gui.tools.FancyButtonMoreClick;
 import gui.tools.FancyButtonOneClick;
 import gui.tools.ProjectColors;

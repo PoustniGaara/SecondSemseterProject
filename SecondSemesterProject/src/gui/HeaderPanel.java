@@ -9,7 +9,7 @@ import java.awt.GridBagLayout;
 import javax.swing.JButton;
 import javax.swing.JPanel;
 
-import gui.Layout.LayoutEditorFrame;
+import gui.layout.LayoutEditorFrame;
 import gui.tools.FancyButtonMoreClick;
 import gui.tools.FancyButtonOneClick;
 import gui.tools.ProjectColors;
@@ -23,6 +23,7 @@ public class HeaderPanel extends JPanel {
 	private ConnectionCheckPanel conPanel;
 	private FancyButtonMoreClick overviewButton, reservationButton, menuButton, currentButton;
 	private FancyButtonOneClick optionButton;
+	private LayoutEditorFrame layoutEditorFrame;
 	
 	private HeaderPanel() {
 		
@@ -105,8 +106,13 @@ public class HeaderPanel extends JPanel {
 		
 	}//end of constructor
 	
+	public LayoutEditorFrame getLayoutEditorFrame() {
+		return layoutEditorFrame;
+	}
+	
 	private void openLayoutEditor() {
-		LayoutEditorFrame.getInstance().maximize();
+//		LayoutEditorFrame.getInstance().maximize();
+		layoutEditorFrame = new LayoutEditorFrame();
 	}
 	
 	private void showOverview() {
@@ -131,7 +137,7 @@ public class HeaderPanel extends JPanel {
 	}
 	
 	public static HeaderPanel getInstance() {
-		if(instance == null) return new HeaderPanel();
+		if(instance == null) return instance = new HeaderPanel();
 		else return instance;
 	}
 }

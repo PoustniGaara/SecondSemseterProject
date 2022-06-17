@@ -29,13 +29,14 @@ public class MealConcreteDAO implements MealDAO {
 		ArrayList<Meal> meals = new ArrayList<Meal>();
 
 		try {
-			Statement menusStatement = con.createStatement();
-			ResultSet menusResultSet = menusStatement.executeQuery("SELECT * FROM Meals");
-			while (menusResultSet.next()) {
-				String name = menusResultSet.getString("name");
-				String description = menusResultSet.getString("description");
-				float price = menusResultSet.getFloat("price");
+			Statement statement = con.createStatement();
+			ResultSet rs = statement.executeQuery("SELECT * FROM Meals");
+			while (rs.next()) {
+				String name = rs.getString("name");
+				String description = rs.getString("description");
+				float price = rs.getFloat("price");
 				Meal meal = new Meal(name, description, price);
+				meal.setId(rs.getInt("mealID"));
 				meals.add(meal);
 			}
 		} catch (SQLException e) {
@@ -48,15 +49,15 @@ public class MealConcreteDAO implements MealDAO {
 	@Override
 	public Meal read(int id) throws SQLException {
 		Connection con = DBConnection.getInstance().getDBcon();
-
 		try {
-			Statement menusStatement = con.createStatement();
-			ResultSet menusResultSet = menusStatement.executeQuery("SELECT * FROM Meals WHERE menuID = " + id);
-			while (menusResultSet.next()) {
-				String name = menusResultSet.getString("name");
-				String description = menusResultSet.getString("description");
-				float price = menusResultSet.getFloat("price");
+			Statement statement = con.createStatement();
+			ResultSet rs = statement.executeQuery("SELECT * FROM Meals WHERE menuID = " + id);
+			while (rs.next()) {
+				String name = rs.getString("name");
+				String description = rs.getString("description");
+				float price = rs.getFloat("price");
 				Meal meal = new Meal(name, description, price);
+				meal.setId(rs.getInt("mealID"));
 				return meal;
 			}
 		} catch (SQLException e) {

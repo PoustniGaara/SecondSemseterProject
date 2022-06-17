@@ -1,10 +1,11 @@
-package gui.Layout;
+package gui.layout;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.awt.Point;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 
@@ -18,6 +19,7 @@ import org.kordamp.ikonli.coreui.CoreUiFree;
 import org.kordamp.ikonli.icomoon.Icomoon;
 import org.kordamp.ikonli.swing.FontIcon;
 
+import gui.HeaderPanel;
 import gui.MainFrame;
 import gui.tools.Fonts;
 import gui.tools.ProjectColors;
@@ -61,7 +63,7 @@ public class LayoutMiniPanel extends JPanel implements MouseListener {
 		
 		//icon setup
 		FontIcon plusIcon = FontIcon.of(CoreUiFree.POOL);
-		plusIcon.setIconSize(Math.round(sizeOfMiniPanel/2));
+		plusIcon.setIconSize(Math.round(30));
 		currentIcon  = plusIcon;
 		
 		iconLabel = new JLabel();
@@ -100,6 +102,10 @@ public class LayoutMiniPanel extends JPanel implements MouseListener {
 			FontIcon entranceIcon = FontIcon.of(Icomoon.ICM_ENTER);
 			entranceIcon.setIconSize(30);
 			setIcon(entranceIcon);
+		}
+		if(layoutItem.equals(null)) {
+			setIcon(null);
+			setCapacityLabel("");
 		}
 	}
 	

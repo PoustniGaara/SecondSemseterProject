@@ -49,6 +49,8 @@ public class MenuMealsConcreteDAO implements MenuMealsDAO {
 			ResultSet menusResultSet = menusStatement.executeQuery(
 					"SELECT * FROM MenuMeals JOIN Meals ON MenuMeals.mealID = Meals.mealID WHERE MenuMeals.menuID = "
 							+ menuId);
+			System.out.print("RESULT SELT:" + menusResultSet.next());
+			System.out.print("MENU ID :"+menuId);
 			while (menusResultSet.next()) {
 				String name = menusResultSet.getString("name");
 				String description = menusResultSet.getString("description");
