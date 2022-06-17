@@ -30,6 +30,9 @@ import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableColumn;
 
 import controller.MenuController;
+import database.ReservationConcreteDAO;
+import gui.menu.AddMenuInputFrame;
+import gui.reservation.ReservationsPanel;
 import gui.tools.Fonts;
 import gui.tools.ProjectColors;
 import model.Meal;
@@ -45,6 +48,8 @@ public class MenuPanel extends JPanel{
 	private MenuController menuController;
 	private JPanel currentPanel, menuPanel, mealPanel;
 	private JButton switchButton;
+	private ArrayList<Menu> menuList;
+	private ArrayList<Meal> mealList;
 	
 	private MenuPanel() {
 		
@@ -150,7 +155,8 @@ public class MenuPanel extends JPanel{
 		menuTable.setTableHeader(menuTableHeader);
 		createMenuTableColumns();
 		try {
-			populateMenuTable(menuController.getMenuList());
+			menuList = menuController.getMenuList();
+			populateMenuTable(menuList);
 		} catch (SQLException e) {
 			JOptionPane.showMessageDialog(null,
 					"An error occured, while getting reservation information! \nTry refreshing the table", "Error",
@@ -208,7 +214,8 @@ public class MenuPanel extends JPanel{
 		mealTable.setTableHeader(mealTableHeader);
 		createMealTableColumns();
 		try {
-			populateMealTable(menuController.getMealList());
+			mealList = menuController.getMealList();
+			populateMealTable(mealList);
 		} catch (SQLException e) {
 			JOptionPane.showMessageDialog(null,
 					"An error occured, while getting reservation information! \nTry refreshing the table", "Error",
@@ -238,24 +245,14 @@ public class MenuPanel extends JPanel{
 		gbcFooter.weightx = 1;
 		gbcFooter.weighty = 1;
 
-		// modify button
-		JButton modifyButton = new JButton("Change");
-		modifyButton.setFont(Fonts.FONT20.get());
-		modifyButton.setBackground(ProjectColors.RED.get());
-		gbcFooter.gridx = 0;
-		gbcFooter.gridy = 0;
-		modifyButton.setPreferredSize(new Dimension(FooterPanel.panelWidth/8, FooterPanel.panelHeight/2));
-		modifyButton.setFocusable(false);
-		// modifyButton.addActionListener(change());
-		footerPanel.add(modifyButton, gbcFooter);
-
 		// delete button
 		JButton deleteButton = new JButton("Delete");
+		deleteButton.addActionListener(e -> delete());
 		deleteButton.setFont(Fonts.FONT20.get());
 		deleteButton.setBackground(ProjectColors.RED.get());
 		deleteButton.setPreferredSize(new Dimension(FooterPanel.panelWidth/8, FooterPanel.panelHeight/2));
 		deleteButton.setFocusable(false);
-		gbcFooter.gridx = 1;
+		gbcFooter.gridx = 0;
 		gbcFooter.anchor = GridBagConstraints.WEST;
 		footerPanel.add(deleteButton, gbcFooter);
 
@@ -263,19 +260,58 @@ public class MenuPanel extends JPanel{
 		JButton addButton = new JButton("Add");
 		addButton.setFont(Fonts.FONT20.get());
 		addButton.setBackground(ProjectColors.RED.get());
-		addButton.addActionListener(e -> add());
+		addButton.addActionListener(e -> create());
 		addButton.setPreferredSize(new Dimension(FooterPanel.panelWidth/8, FooterPanel.panelHeight/2));
 		addButton.setFocusable(false);
-		gbcFooter.gridx = 4;
-		gbcFooter.anchor = GridBagConstraints.EAST;
+		gbcFooter.gridx = 1;
+		gbcFooter.anchor = GridBagConstraints.WEST;
 		footerPanel.add(addButton, gbcFooter);
 
 
 	}// End of constructor
 	
-	private void add() {
+	private void delete() {
 		if(currentPanel.equals(menuPanel)) {
-			new AddMenuInputFrame(this);
+			try {
+				if (menuTable.getSelectedRow() != -1) {
+					if (JOptionPane.showConfirmDialog(null,
+							"Are you sure you want to delete the menu?\nThis action is permanent!",
+							"Menu deletion", JOptionPane.YES_NO_OPTION,
+							JOptionPane.WARNING_MESSAGE) == JOptionPane.YES_OPTION) {
+						int id = Integer.parseInt(menuTable.getValueAt(menuTable.getSelectedRow(), 3).toString());
+						menuTableModel.removeRow(menuTable.getSelectedRow());
+						if (menuController.getMenuById(id) != null) {
+							Menu menu = menuController.getMenuById(id);
+							menuController.deleteMenu(menu);
+						}
+					}
+				} else {
+					JOptionPane.showMessageDialog(null, "You must select a menu in the list you want to delete!",
+							"Error", JOptionPane.WARNING_MESSAGE);
+				}
+			} catch (SQLException e) {
+				JOptionPane.showMessageDialog(null,
+						"An error occured, while getting menu information! \nTry refreshing the table", "Error",
+						JOptionPane.WARNING_MESSAGE);
+			}
+		}
+	}
+	
+	// here should be passed menu without problems!
+	public void createMenu(Menu menu) {
+		try {
+			menuController.createMenu(menu);
+			menuList.clear();
+			menuList.addAll(menuController.getMenuList());
+			populateMenuTable(menuList);
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block ****
+		}
+	}
+	
+	private void create() {
+		if(currentPanel.equals(menuPanel)) {
+			new AddMenuInputFrame();
 		}
 	}
 	
@@ -306,9 +342,15 @@ public class MenuPanel extends JPanel{
 	
 	private void populateMenuTable(ArrayList<Menu> menus) {
 		menuTableModel.setRowCount(0);
+		String string = new String("");
 		if (!menus.isEmpty()) {
 			for (Menu menu : menus) {
-				menuTableModel.addRow(new Object[] {menu.getID(), menu.getName(), menu.getMeals().toString() });
+				System.out.print(menu.getMeals());
+				for(Meal meal : menu.getMeals()) {
+					string += (meal.getName()+ " ");
+				}
+				System.out.print(string);
+				menuTableModel.addRow(new Object[] {menu.getID(), menu.getName(), string });
 			}
 			menuTableModel.fireTableDataChanged();
 		}
@@ -327,6 +369,14 @@ public class MenuPanel extends JPanel{
 			add(currentPanel, BorderLayout.CENTER);
 			switchButton.setText("Go to Meals");
 		}
+	}
+	
+	public ArrayList<Meal> getMealList(){
+		return mealList;
+	}
+	
+	public ArrayList<Menu> getMenuList(){
+		return menuList;
 	}
 	
 	public static MenuPanel getInstance() {

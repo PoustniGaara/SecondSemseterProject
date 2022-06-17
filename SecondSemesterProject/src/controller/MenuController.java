@@ -24,11 +24,36 @@ public class MenuController {
 		mealDAO = MealConcreteDAO.getInstance();
 	}
 	
+	public void deleteMenu(Menu menu) throws SQLException {
+		try {
+			menuDAO.delete(menu);
+		} catch (SQLException e) {
+			throw new SQLException("Error in deleting menu from DB:" + e.getMessage());
+
+		}
+	}
+	
+	public Menu getMenuById(int id) throws SQLException {
+		try {
+			return menuDAO.read(id);
+		} catch (SQLException e) {
+			throw new SQLException("Error in geting menu from DB:" + e.getMessage());
+		}
+	}
+	
+	public void createMenu(Menu menu) throws SQLException {
+		try {
+			menuDAO.create(menu);
+		} catch (SQLException e) {
+			throw new SQLException("Error in creatting menu to DB:" + e.getMessage());
+		}
+	}
+	
 	public ArrayList<Meal> getMealList() throws SQLException {
 		try {
 			return mealDAO.read();
 		} catch (SQLException e) {
-			throw new SQLException("Error in getting RestaurantLayouts from DB:" + e.getMessage());
+			throw new SQLException("Error in getting meals from DB:" + e.getMessage());
 		}
 	}
 	
@@ -36,7 +61,7 @@ public class MenuController {
 		try {
 			return menuDAO.read();
 		} catch (SQLException e) {
-			throw new SQLException("Error in getting RestaurantLayouts from DB:" + e.getMessage());
+			throw new SQLException("Error in getting menus from DB:" + e.getMessage());
 		}
 	}
 
