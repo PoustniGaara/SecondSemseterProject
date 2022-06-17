@@ -157,6 +157,9 @@ public class ReservationsPanel extends JPanel {
 					"An error occured, while getting reservation information! \nTry refreshing the table", "Error",
 					JOptionPane.WARNING_MESSAGE);
 		}
+		table.getColumnModel().getColumn(0).setWidth(0);
+		table.getColumnModel().getColumn(0).setMinWidth(0);
+		table.getColumnModel().getColumn(0).setMaxWidth(0);
 
 		JPanel mainPanel = new JPanel();
 		mainPanel.setLayout(new GridBagLayout());
@@ -207,7 +210,7 @@ public class ReservationsPanel extends JPanel {
 		modifyButton.setBackground(new Color(242, 233, 228));
 		modifyButton.setPreferredSize(new Dimension((int) (getWidth() * 0.15), 40));
 		modifyButton.setFocusable(false);
-		// modifyButton.addActionListener(change());
+		modifyButton.addActionListener(e -> change());
 		footerPanel.add(modifyButton, gbcFooter);
 
 		// delete button
@@ -260,18 +263,10 @@ public class ReservationsPanel extends JPanel {
 	private void change() {
 		try {
 			if (table.getSelectedRow() != -1) {
-				if (!reservationController.getAllReservations().isEmpty()) {
-					int id = Integer.parseInt(table.getValueAt(table.getSelectedRow(), 3).toString());
-					if (reservationController.getReservationById(id) != null) {
-						Reservation r = reservationController.getReservationById(id);
-						if (JOptionPane.showConfirmDialog(null,
-								"Are you sure you want to delete this reservation?\nThis action is permanent!",
-								"Reservation deletion", JOptionPane.YES_NO_OPTION,
-								JOptionPane.WARNING_MESSAGE) == JOptionPane.YES_OPTION) {
-							reservationController.deleteReservation(r);
-							populateTable(reservationController.getAllReservations());
-						}
-					}
+				int id = Integer.parseInt(table.getValueAt(table.getSelectedRow(), 0).toString());
+				Reservation reservation = reservationController.getReservationById(id);
+				if (reservation != null) {
+					UpdateReservationFrame.open(reservation);
 				}
 			} else {
 				JOptionPane.showMessageDialog(null, "You must select a reservation in the list you want to delete!",
@@ -324,7 +319,7 @@ public class ReservationsPanel extends JPanel {
 						"Are you sure you want to delete the reservation?\nThis action is permanent!",
 						"Reservation deletion", JOptionPane.YES_NO_OPTION,
 						JOptionPane.WARNING_MESSAGE) == JOptionPane.YES_OPTION) {
-					int id = Integer.parseInt(table.getValueAt(table.getSelectedRow(), 3).toString());
+					long id = Long.parseLong(table.getValueAt(table.getSelectedRow(), 0).toString());
 					tableModel.removeRow(table.getSelectedRow());
 					if (reservationController.getReservationById(id) != null) {
 						Reservation r = reservationController.getReservationById(id);
@@ -343,7 +338,7 @@ public class ReservationsPanel extends JPanel {
 	}
 
 	private void createColumns() {
-		Object[] columns = { "Date", "Time", "Duration", "ID", "Customer", "Guests", "Tables", "Menus", "Note" };
+		Object[] columns = { "id", "Date", "Time", "Duration", "Customer", "Guests", "Tables", "Menus", "Note" };
 		for (Object o : columns) {
 			tableModel.addColumn(o);
 		}
@@ -353,14 +348,15 @@ public class ReservationsPanel extends JPanel {
 		tableModel.setRowCount(0);
 		if (!reservations.isEmpty()) {
 			for (Reservation reservation : reservations) {
-				tableModel.addRow(new Object[] { toDate(reservation.getTimestamp().getTimeInMillis()),
-						toTime(reservation.getTimestamp().getTimeInMillis()), reservation.getDuration() + " h",
-						reservation.getId(),
-						reservation.getCustomer().getSurname().toUpperCase() + " "
-								+ reservation.getCustomer().getName(),
-						reservation.getGuests(), tableNames(reservation), menuNames(reservation),
-						reservation.getNote().length() > 50 ? reservation.getNote().substring(0, 50).concat("...")
-								: reservation.getNote() });
+				tableModel.addRow(
+						new Object[] { reservation.getId(), toDate(reservation.getTimestamp().getTimeInMillis()),
+								toTime(reservation.getTimestamp().getTimeInMillis()), reservation.getDuration() + " h",
+								reservation.getCustomer().getSurname().toUpperCase() + " "
+										+ reservation.getCustomer().getName(),
+								reservation.getGuests(), tableNames(reservation), menuNames(reservation),
+								reservation.getNote().length() > 50
+										? reservation.getNote().substring(0, 50).concat("...")
+										: reservation.getNote() });
 			}
 			tableModel.fireTableDataChanged();
 		}
