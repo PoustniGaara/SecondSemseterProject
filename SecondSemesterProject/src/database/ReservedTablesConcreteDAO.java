@@ -27,7 +27,7 @@ public class ReservedTablesConcreteDAO implements ReservedTablesDAO {
 	}
 
 	@Override
-	public void create(Reservation reservation) throws SQLException,BatchUpdateException {
+	public void create(Reservation reservation) throws SQLException, BatchUpdateException {
 		Connection con = DBConnection.getInstance().getDBcon();
 
 		try {
@@ -39,25 +39,23 @@ public class ReservedTablesConcreteDAO implements ReservedTablesDAO {
 				ps.setLong(2, reservation.getId());
 				ps.addBatch();
 			}
-    		try {
-    			ps.executeBatch();
-    			con.commit();
-    			}
-    		 catch(BatchUpdateException e){
-    		    con.rollback();
-    		    throw new BatchUpdateException("Error in batching", e.getUpdateCounts());
-    		    }
+			try {
+				ps.executeBatch();
+				con.commit();
+			} catch (BatchUpdateException e) {
+				con.rollback();
+				throw new BatchUpdateException("Error in batching", e.getUpdateCounts());
+			}
 		} catch (SQLException e) {
 			e.printStackTrace();
 			throw new SQLException("Error in getting RestaurantLayouts from DB:" + e.getMessage());
-		}
-		finally{
+		} finally {
 			con.setAutoCommit(true);
 		}
 	}
-	
+
 	@Override
-	public ArrayList<Table> getReservationTables(int reservationid) throws SQLException {
+	public ArrayList<Table> getReservationTables(long reservationid) throws SQLException {
 		Connection con = DBConnection.getInstance().getDBcon();
 		ArrayList<Table> tables = new ArrayList<Table>();
 		try {

@@ -154,44 +154,44 @@ public class CreateReservationFrame extends JFrame {
 		firstCard.setLayout(new GridBagLayout());
 		firstCard.setBackground(Color.WHITE);
 
-		GridBagConstraints gbc1 = new GridBagConstraints();
-		gbc1.insets = new Insets(20, 20, 60, 20);
-		gbc1.gridx = 0;
-		gbc1.gridy = 0;
-		gbc1.ipadx = 0;
-		gbc1.ipady = 0;
-		gbc1.gridwidth = GridBagConstraints.REMAINDER;
-		gbc1.anchor = GridBagConstraints.CENTER;
-		gbc1.fill = GridBagConstraints.HORIZONTAL;
+		GridBagConstraints gbc = new GridBagConstraints();
+		gbc.insets = new Insets(20, 20, 60, 20);
+		gbc.gridx = 0;
+		gbc.gridy = 0;
+		gbc.ipadx = 0;
+		gbc.ipady = 0;
+		gbc.gridwidth = GridBagConstraints.REMAINDER;
+		gbc.anchor = GridBagConstraints.CENTER;
+		gbc.fill = GridBagConstraints.HORIZONTAL;
 
 		JLabel titleLabel = new JLabel("Creating new reservation", JLabel.CENTER);
 		titleLabel.setFont(new Font("Segoe UI Semibold", Font.BOLD, 28));
 		titleLabel.setForeground(darkGray);
-		firstCard.add(titleLabel, gbc1);
+		firstCard.add(titleLabel, gbc);
 
 		JLabel guestsLabel = new JLabel("Number of guests:");
 		guestsLabel.setForeground(darkGray);
 		guestsLabel.setFont(font);
-		gbc1.gridy++;
-		gbc1.gridheight = 1;
-		gbc1.anchor = GridBagConstraints.WEST;
-		gbc1.insets = new Insets(25, 30, 10, 30);
-		firstCard.add(guestsLabel, gbc1);
+		gbc.gridy++;
+		gbc.gridheight = 1;
+		gbc.anchor = GridBagConstraints.WEST;
+		gbc.insets = new Insets(25, 30, 10, 30);
+		firstCard.add(guestsLabel, gbc);
 
 		guestsField = new JTextField();
 		guestsField.setFont(font);
 		guestsField.setBorder(new CompoundBorder(new LineBorder(darkGray, 1), new EmptyBorder(0, 10, 0, 0)));
 		guestsField.setBackground(Color.WHITE);
-		gbc1.gridy++;
-		gbc1.insets = new Insets(10, 30, 25, 30);
-		firstCard.add(guestsField, gbc1);
+		gbc.gridy++;
+		gbc.insets = new Insets(10, 30, 25, 30);
+		firstCard.add(guestsField, gbc);
 
 		JLabel dateLabel = new JLabel("Date:");
 		dateLabel.setForeground(darkGray);
 		dateLabel.setFont(font);
-		gbc1.gridy++;
-		gbc1.insets = new Insets(25, 30, 10, 30);
-		firstCard.add(dateLabel, gbc1);
+		gbc.gridy++;
+		gbc.insets = new Insets(25, 30, 10, 30);
+		firstCard.add(dateLabel, gbc);
 
 		DateFormat format = new SimpleDateFormat("dd.MM.yyyy");
 		DateFormatter df = new DateFormatter(format);
@@ -199,16 +199,16 @@ public class CreateReservationFrame extends JFrame {
 		dateField.setValue(new Date());
 		dateField.setFont(font);
 		dateField.setBorder(new CompoundBorder(new LineBorder(darkGray, 1), new EmptyBorder(0, 10, 0, 0)));
-		gbc1.gridy++;
-		gbc1.insets = new Insets(10, 30, 25, 30);
-		firstCard.add(dateField, gbc1);
+		gbc.gridy++;
+		gbc.insets = new Insets(10, 30, 25, 30);
+		firstCard.add(dateField, gbc);
 
 		JLabel timeLabel = new JLabel("Time:");
 		timeLabel.setForeground(darkGray);
 		timeLabel.setFont(font);
-		gbc1.gridy++;
-		gbc1.insets = new Insets(25, 30, 10, 30);
-		firstCard.add(timeLabel, gbc1);
+		gbc.gridy++;
+		gbc.insets = new Insets(25, 30, 10, 30);
+		firstCard.add(timeLabel, gbc);
 
 		Calendar calendar = Calendar.getInstance();
 		calendar.set(Calendar.HOUR_OF_DAY, 12);
@@ -225,17 +225,17 @@ public class CreateReservationFrame extends JFrame {
 		spinnerH.setEditor(editorH);
 		spinnerH.setFont(font);
 		spinnerH.setBorder(new CompoundBorder(new LineBorder(darkGray, 1), new EmptyBorder(0, 10, 0, 0)));
-		gbc1.gridy++;
-		gbc1.gridwidth = 1;
-		gbc1.anchor = GridBagConstraints.NORTH;
-		gbc1.insets = new Insets(10, 30, 25, 30);
-		firstCard.add(spinnerH, gbc1);
+		gbc.gridy++;
+		gbc.gridwidth = 1;
+		gbc.anchor = GridBagConstraints.NORTH;
+		gbc.insets = new Insets(10, 30, 25, 30);
+		firstCard.add(spinnerH, gbc);
 
 		JLabel separator = new JLabel(":", JLabel.CENTER);
 		separator.setForeground(darkGray);
 		separator.setFont(font);
-		gbc1.gridx++;
-		firstCard.add(separator, gbc1);
+		gbc.gridx++;
+		firstCard.add(separator, gbc);
 
 		SpinnerDateModel model2 = new SpinnerDateModel();
 		model2.setValue(calendar.getTime());
@@ -248,20 +248,20 @@ public class CreateReservationFrame extends JFrame {
 		spinnerM.setEditor(editorM);
 		spinnerM.setFont(font);
 		spinnerM.setBorder(new CompoundBorder(new LineBorder(darkGray, 1), new EmptyBorder(0, 10, 0, 0)));
-		gbc1.gridx++;
-		firstCard.add(spinnerM, gbc1);
+		gbc.gridx++;
+		firstCard.add(spinnerM, gbc);
 
 		JButton cancelButton = new JButton("Cancel");
 		cancelButton.setFont(font);
 		cancelButton.setBackground(new Color(242, 233, 228));
 		cancelButton.setFocusable(false);
 		cancelButton.addActionListener(e -> cancel());
-		gbc1.gridy++;
-		gbc1.gridx = 0;
-		gbc1.weightx = 1;
-		gbc1.anchor = GridBagConstraints.SOUTH;
-		gbc1.insets = new Insets(80, 30, 25, 30);
-		firstCard.add(cancelButton, gbc1);
+		gbc.gridy++;
+		gbc.gridx = 0;
+		gbc.weightx = 1;
+		gbc.anchor = GridBagConstraints.SOUTH;
+		gbc.insets = new Insets(80, 30, 25, 30);
+		firstCard.add(cancelButton, gbc);
 
 		JButton nextButton = new JButton("Next >");
 		nextButton.setFont(font);
@@ -313,8 +313,8 @@ public class CreateReservationFrame extends JFrame {
 						"Resources not loaded", JOptionPane.OK_CANCEL_OPTION, JOptionPane.WARNING_MESSAGE);
 			}
 		});
-		gbc1.gridx = 2;
-		firstCard.add(nextButton, gbc1);
+		gbc.gridx = 2;
+		firstCard.add(nextButton, gbc);
 	}
 
 	private void createSecondCard() {
@@ -818,7 +818,6 @@ public class CreateReservationFrame extends JFrame {
 		nextButton.addActionListener(e -> {
 			for (JComboBox<String> j : menuComboBoxes) {
 				String selMenu = j.getSelectedItem().toString();
-				System.out.println("selMenu");
 				if (!selMenu.equalsIgnoreCase("No menu")) {
 					for (Menu m : dbMenus) {
 						if (m.getName().equalsIgnoreCase(selMenu)) {

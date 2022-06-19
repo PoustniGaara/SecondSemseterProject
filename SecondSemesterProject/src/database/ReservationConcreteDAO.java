@@ -63,7 +63,7 @@ public class ReservationConcreteDAO implements ReservationDAO {
 	}
 
 	@Override
-	public Reservation read(int id) throws SQLException {
+	public Reservation read(long id) throws SQLException {
 		Connection con = DBConnection.getInstance().getDBcon();
 		try {
 			Statement statement = con.createStatement();
@@ -86,6 +86,7 @@ public class ReservationConcreteDAO implements ReservationDAO {
 				reservation.setGuests(guests);
 				reservation.setNote(note);
 				reservation.setCustomer(CustomerConcreteDAO.getInstance().read(phone));
+				reservation.setMenus(ReservedMenusConcreteDAO.getInstance().getReservationMenus(reservationID));
 				return reservation;
 			}
 		} catch (SQLException e) {
@@ -93,6 +94,26 @@ public class ReservationConcreteDAO implements ReservationDAO {
 			throw new SQLException("Error getting Reservation from DB:" + e.getMessage());
 		}
 		return null;
+	}
+
+	@Override
+	public ArrayList<Reservation> readByCustomer(String customerName) throws SQLException {
+		ArrayList<Reservation> reservations = new ArrayList<Reservation>();
+		Connection con = DBConnection.getInstance().getDBcon();
+		try {
+			PreparedStatement statement = con.prepareStatement(
+					"SELECT reservationID FROM Reservations JOIN (SELECT * FROM Customers WHERE name LIKE '%"
+							+ customerName
+							+ "%' OR surname LIKE '%"+ customerName+"%') sel ON customerphone=sel.phone");
+			ResultSet rs = statement.executeQuery();
+			while (rs.next()) {
+				reservations.add(read(rs.getInt("reservationID")));
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+			throw new SQLException("Error getting Reservations from DB:" + e.getMessage());
+		}
+		return reservations;
 	}
 
 	@Override
@@ -158,7 +179,7 @@ public class ReservationConcreteDAO implements ReservationDAO {
 			con.setAutoCommit(true);
 		}
 	}
-	
+
 	private void updateReservation(Reservation reservation) throws SQLException {
 		Connection con = DBConnection.getInstance().getDBcon();
 		try {

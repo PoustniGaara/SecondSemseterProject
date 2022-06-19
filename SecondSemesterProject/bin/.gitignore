@@ -1,4 +1,3 @@
 /gui/
-/model/
-/database/
 /controller/
+/tests/

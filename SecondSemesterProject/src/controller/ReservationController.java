@@ -54,8 +54,12 @@ public class ReservationController {
 		reservationDAO = (ReservationConcreteDAO) ReservationConcreteDAO.getInstance();
 	}
 
-	public Reservation getReservationById(int id) throws SQLException {
+	public Reservation getReservationById(long id) throws SQLException {
 		return reservationDAO.read(id);
+	}
+	
+	public ArrayList<Reservation> getReservationByCustomer(String customerName) throws SQLException {
+		return reservationDAO.readByCustomer(customerName);
 	}
 
 	public ArrayList<Reservation> getAllReservations() throws SQLException {
