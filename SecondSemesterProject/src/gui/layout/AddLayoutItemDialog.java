@@ -32,12 +32,12 @@ public class AddLayoutItemDialog extends JFrame  {
 	private FancyButtonOneClick okBtn, cancelBtn;
 	private JComboBox<String> typeComboBox;
 	private JComboBox<Integer> capacityComboBox;
-	private LayoutMiniPanel parentMiniPanel;
+	private LayoutEditorMiniPanel parentMiniPanel;
 	private FontIcon tableIcon, barIcon, entranceIcon, plusIcon;
 	private GridBagConstraints gbc;
 	private JLabel iconLabel;
 	
-	public AddLayoutItemDialog(LayoutMiniPanel parentMiniPanel){
+	public AddLayoutItemDialog(LayoutEditorMiniPanel parentMiniPanel){
 		
 			//frame setup
 			setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);

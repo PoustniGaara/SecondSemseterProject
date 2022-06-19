@@ -278,7 +278,7 @@ public class MenuPanel extends JPanel{
 							"Are you sure you want to delete the menu?\nThis action is permanent!",
 							"Menu deletion", JOptionPane.YES_NO_OPTION,
 							JOptionPane.WARNING_MESSAGE) == JOptionPane.YES_OPTION) {
-						int id = Integer.parseInt(menuTable.getValueAt(menuTable.getSelectedRow(), 3).toString());
+						int id = Integer.parseInt(menuTable.getValueAt(menuTable.getSelectedRow(), 0).toString());
 						menuTableModel.removeRow(menuTable.getSelectedRow());
 						if (menuController.getMenuById(id) != null) {
 							Menu menu = menuController.getMenuById(id);
@@ -345,11 +345,9 @@ public class MenuPanel extends JPanel{
 		String string = new String("");
 		if (!menus.isEmpty()) {
 			for (Menu menu : menus) {
-				System.out.print(menu.getMeals());
 				for(Meal meal : menu.getMeals()) {
 					string += (meal.getName()+ " ");
 				}
-				System.out.print(string);
 				menuTableModel.addRow(new Object[] {menu.getID(), menu.getName(), string });
 			}
 			menuTableModel.fireTableDataChanged();

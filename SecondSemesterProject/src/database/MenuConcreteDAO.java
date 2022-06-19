@@ -47,7 +47,7 @@ public class MenuConcreteDAO implements MenuDAO {
 		}
 		return menus;
 	}
-
+	
 	@Override
 	public Menu read(int id) throws SQLException {
 		Connection con = DBConnection.getInstance().getDBcon();
@@ -70,15 +70,20 @@ public class MenuConcreteDAO implements MenuDAO {
 
 	@Override
 	public void create(Menu menu) throws SQLException {
+		MealConcreteDAO mcd = (MealConcreteDAO) MealConcreteDAO.getInstance();
+		MenuMealsConcreteDAO mmcd = (MenuMealsConcreteDAO) MenuMealsConcreteDAO.getInstance();
+		
 		Connection con = DBConnection.getInstance().getDBcon();
 		try {
 			con.setAutoCommit(false);
 			int id = createMenu(menu);
 			menu.setID(id); 
-			for(Meal m : menu.getMeals()) {
-				MealConcreteDAO.getInstance().create(m);
+			for(Meal m : mcd.read()) {
+				if (m.getId() == id) {
+					menu.getMeals().add(m);
+				}
 			}
-			MenuMealsConcreteDAO.getInstance().create(menu, menu.getMeals());
+			mmcd.create(menu, menu.getMeals());
 			con.commit();
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -118,8 +123,6 @@ public class MenuConcreteDAO implements MenuDAO {
 			for (Menu menu : menus) {
 				ps.setString(1, menu.getName());
 				ps.setInt(2, menu.getID());
-				System.out.println(menu.getID());
-				System.out.println(menu.getName());
 				ps.addBatch();
 			}
 			try {

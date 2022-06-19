@@ -1,6 +1,8 @@
 package database;
 
+import java.sql.BatchUpdateException;
 import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -24,9 +26,20 @@ public class MenuMealsConcreteDAO implements MenuMealsDAO {
 	}
 
 	@Override
-	public void create(Menu menu, ArrayList<Meal> meals) {
-		// TODO Auto-generated method stub
-		
+	public void create(Menu menu, ArrayList<Meal> meals) throws SQLException {
+		Connection con = DBConnection.getInstance().getDBcon();
+		try {
+			PreparedStatement ps = con
+					.prepareStatement("INSERT INTO dbo.MenuMeals (menuID, mealID) VALUES (?,?)");
+
+			ps.setInt(1, menu.getID());
+			ps.setInt(2, meals.get(0).getId());
+			ps.execute();
+		} catch (SQLException e) {
+			e.printStackTrace();
+			throw new SQLException("Error inserting Meal from DB:" + e.getMessage());
+		}
+
 	}
 
 	@Override
@@ -49,8 +62,6 @@ public class MenuMealsConcreteDAO implements MenuMealsDAO {
 			ResultSet menusResultSet = menusStatement.executeQuery(
 					"SELECT * FROM MenuMeals JOIN Meals ON MenuMeals.mealID = Meals.mealID WHERE MenuMeals.menuID = "
 							+ menuId);
-			System.out.print("RESULT SELT:" + menusResultSet.next());
-			System.out.print("MENU ID :"+menuId);
 			while (menusResultSet.next()) {
 				String name = menusResultSet.getString("name");
 				String description = menusResultSet.getString("description");

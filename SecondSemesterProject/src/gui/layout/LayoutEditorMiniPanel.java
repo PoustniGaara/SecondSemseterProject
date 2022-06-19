@@ -1,11 +1,13 @@
 package gui.layout;
 
+import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.awt.Point;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
-import java.util.ArrayList;
 
 import javax.swing.BorderFactory;
 import javax.swing.JLabel;
@@ -17,35 +19,32 @@ import org.kordamp.ikonli.coreui.CoreUiFree;
 import org.kordamp.ikonli.icomoon.Icomoon;
 import org.kordamp.ikonli.swing.FontIcon;
 
+import gui.HeaderPanel;
 import gui.MainFrame;
 import gui.tools.Fonts;
 import gui.tools.ProjectColors;
 import model.LayoutItem;
-import model.ReservedTableInfo;
 import model.Table;
 
-public class LayoutMiniPanel extends JPanel implements MouseListener {
+public class LayoutEditorMiniPanel extends JPanel implements MouseListener {
 	
 	private JLabel nameLabel,capacityLabel,iconLabel;
 	private int locationX,locationY;
 	private FontIcon currentIcon;
-	private Border border;
-	private boolean isSelected = false;
-	private LayoutItem layoutItem;
-	private ArrayList<ReservedTableInfo> reservedTableInfoList;
+	private Border capacityBorder;
 	
-	public LayoutMiniPanel(int sizeOfMiniPanel) {
+	public LayoutEditorMiniPanel(int sizeOfMiniPanel) {
 		
 		//panel setup
 		int height = (int) (MainFrame.height*0.84);
 		int width = MainFrame.width;
 		addMouseListener(this);
-		setBackground(ProjectColors.WHITE.get());
 		
 		setLayout(new GridBagLayout());
 		GridBagConstraints gbc = new GridBagConstraints();
 		
-		border = BorderFactory.createLineBorder(ProjectColors.BLACK.get(), 1);
+		capacityBorder = BorderFactory.createLineBorder(ProjectColors.BLACK.get(), 1);
+//		setBorder(borderBlack);
 		setPreferredSize(new Dimension(sizeOfMiniPanel,sizeOfMiniPanel));
 //		System.out.println(this.getPreferredSize());
 		
@@ -62,10 +61,10 @@ public class LayoutMiniPanel extends JPanel implements MouseListener {
 		gbc.gridy = 0;
 		add(capacityLabel, gbc);
 		
-//		//icon setup
-//		FontIcon plusIcon = FontIcon.of(CoreUiFree.POOL);
-//		plusIcon.setIconSize(Math.round(30));
-//		currentIcon  = plusIcon;
+		//icon setup
+		FontIcon plusIcon = FontIcon.of(CoreUiFree.POOL);
+		plusIcon.setIconSize(Math.round(30));
+		currentIcon  = plusIcon;
 		
 		iconLabel = new JLabel();
 		iconLabel.setIcon(currentIcon);
@@ -83,14 +82,9 @@ public class LayoutMiniPanel extends JPanel implements MouseListener {
 		gbc.gridy = 2;
 		add(nameLabel, gbc);
 
-	} // end of constructor
-	
-	public void updateReservedTableInfoList(ArrayList<ReservedTableInfo> reservedTableInfoList) {
-		this.reservedTableInfoList = reservedTableInfoList;
 	}
 	
 	public void setLayoutItem(LayoutItem layoutItem) {
-		this.layoutItem = layoutItem;
 		nameLabel.setText(layoutItem.getName());
 		if(layoutItem instanceof Table) {
 			Table table  = (Table) layoutItem;
@@ -120,7 +114,7 @@ public class LayoutMiniPanel extends JPanel implements MouseListener {
 		if(capacity.equals(""))
 			capacityLabel.setBorder(null);
 		else
-			capacityLabel.setBorder(border);
+			capacityLabel.setBorder(capacityBorder);
 	}
 	
 	public void setIcon(FontIcon icon) {
@@ -143,46 +137,18 @@ public class LayoutMiniPanel extends JPanel implements MouseListener {
 	public void setNameLabel(String name) {
 		nameLabel.setText(name);
 	}
-	
-	public boolean isSelected() {
-		return isSelected;
-	}
-	
-	public void setSelected(boolean state) {
-		this.isSelected = state;
-	}
 
 	@Override
 	public void mouseClicked(MouseEvent e) {
-		if(iconLabel.getIcon() != null) {
-			if (e.getClickCount() == 2 && e.getButton() == MouseEvent.BUTTON1) {
-				new TableInfoFrame(layoutItem.getName(), reservedTableInfoList);
-			}
-			else {
-				if(isSelected == true) {
-					setSelected(false);
-					setBackground(ProjectColors.WHITE.get());
-					setBorder(null);
-				}
-				else {
-					setSelected(true);
-					setBackground(ProjectColors.SELECTED.get());
-					setBorder(border);
-
-				}
-			}
-		}
+		new AddLayoutItemDialog(this);
 	}
 
 	@Override
 	public void mousePressed(MouseEvent e) {
-		// TODO Auto-generated method stub
-		
 	}
 
 	@Override
 	public void mouseReleased(MouseEvent e) {
-		// TODO Auto-generated method stub
 		
 	}
 
@@ -197,5 +163,4 @@ public class LayoutMiniPanel extends JPanel implements MouseListener {
 		// TODO Auto-generated method stub
 		
 	}
-
 }

@@ -8,7 +8,7 @@ import model.Menu;
 
 public interface MenuMealsDAO {
 
-	void create(Menu menu, ArrayList<Meal> meals);
+	void create(Menu menu, ArrayList<Meal> meals) throws SQLException;
 
 	void update(Menu menu);
 

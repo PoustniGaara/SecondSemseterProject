@@ -8,10 +8,12 @@ import java.util.Calendar;
 import javax.swing.JComponent;
 
 import database.ReservationConcreteDAO;
+import database.ReservedTablesConcreteDAO;
 import database.TableConcreteDAO;
 import model.Customer;
 import model.Menu;
 import model.Reservation;
+import model.ReservedTableInfo;
 import model.Table;
 
 public class ReservationController {
@@ -24,6 +26,14 @@ public class ReservationController {
 	public Reservation startReservation(Calendar timestamp, ArrayList<Table> tables) {
 		reservation = new Reservation(timestamp, tables);
 		return reservation;
+	}
+	
+	public ArrayList<ReservedTableInfo> getReservedTableInfo(int layoutItemId, Calendar calendar) throws SQLException{
+		try {
+			return ReservedTablesConcreteDAO.getInstance().getReservedTableInfoByTime(layoutItemId, calendar);
+		} catch (SQLException e) {
+			throw new SQLException("Error getting Info from DB:" + e.getMessage());
+		}
 	}
 
 	public void confirmReservation(Customer customer, int guests, ArrayList<Menu> menus, String note)

@@ -14,14 +14,14 @@ import model.Menu;
 
 public class MenuController {
 	
-	private MealDAO mealDAO;
-	private MenuMealsDAO menuMealDAO;
-	private MenuDAO menuDAO;
+	private MealConcreteDAO mealDAO;
+	private MenuMealsConcreteDAO menuMealDAO;
+	private MenuConcreteDAO menuDAO;
 	
 	public MenuController() {
-		menuDAO = MenuConcreteDAO.getInstance();
-		menuMealDAO = MenuMealsConcreteDAO.getInstance();
-		mealDAO = MealConcreteDAO.getInstance();
+		menuDAO = (MenuConcreteDAO) MenuConcreteDAO.getInstance();
+		menuMealDAO = (MenuMealsConcreteDAO) MenuMealsConcreteDAO.getInstance();
+		mealDAO = (MealConcreteDAO) MealConcreteDAO.getInstance();
 	}
 	
 	public void deleteMenu(Menu menu) throws SQLException {

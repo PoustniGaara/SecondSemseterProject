@@ -8,6 +8,7 @@ import java.awt.GridBagLayout;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.HashMap;
 
 import javax.swing.BorderFactory;
 import javax.swing.DefaultComboBoxModel;
@@ -19,12 +20,17 @@ import javax.swing.border.Border;
 import org.kordamp.ikonli.coreui.CoreUiFree;
 import org.kordamp.ikonli.swing.FontIcon;
 
+import controller.ReservationController;
 import controller.RestaurantLayoutController;
+import gui.layout.LayoutPanel;
 import gui.layout.NoLayoutInfoPanel;
 import gui.tools.FancyButtonMoreClick;
 import gui.tools.FancyButtonOneClick;
 import gui.tools.ProjectColors;
+import model.LayoutItem;
+import model.ReservedTableInfo;
 import model.RestaurantLayout;
+import model.Table;
 
 public class OverviewPanel extends JPanel {
 	
@@ -37,11 +43,17 @@ public class OverviewPanel extends JPanel {
 	private JLabel dateLbl;
 	private ArrayList<RestaurantLayout> layoutList;	
 	private RestaurantLayoutController restaurantLayoutController;
+	private HashMap<String, LayoutPanel> layoutPanelMap;
+	private LayoutPanel currentLayoutPanel;
+	private ReservationController reservationController;
+	private HashMap<String, ArrayList<ReservedTableInfo>> reservedTableInfoMap;
+	
 	
 	private OverviewPanel() {
 		
 		//control
 		restaurantLayoutController = new RestaurantLayoutController();
+		reservationController = new ReservationController();
 		
 		//Panel dimensions setup
 		int mainHeight = (int)MainFrame.height;
@@ -56,14 +68,28 @@ public class OverviewPanel extends JPanel {
 		setLayout(new BorderLayout());
 		setVisible(true);
 		
-		//load layouts
+		//load data
+		
+		
+		try {
+			layoutList = (ArrayList<RestaurantLayout>) restaurantLayoutController.read();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		loadLayouts();
+		
+
 		
 		//Panel support classes
 		Border borderGreen = BorderFactory.createLineBorder(ProjectColors.GREEN.get(), 1);
 		Border borderBlack = BorderFactory.createLineBorder(ProjectColors.BLACK.get(), 2);
 		Border borderRed = BorderFactory.createLineBorder(ProjectColors.RED.get(), 2);
 		Font font1 = new Font("Monaco", Font.BOLD, 20);
+		
+		// -----------------------------------------------
+		// ------------------ TOOL ---------------------
+		// -----------------------------------------------
 		
 		//Tool Panel
 		ToolPanel toolPanel = new ToolPanel();
@@ -158,7 +184,14 @@ public class OverviewPanel extends JPanel {
 		gbcTool.gridx = 6;
 		toolPanel.add(dayForwardBtn,gbcTool);
 		
-		//end of Tool panel*************************************
+		// -----------------------------------------------
+		// ------------------ MAIN PANEL ---------------------
+		// -----------------------------------------------
+		
+		
+		// -----------------------------------------------
+		// ------------------ FOOTER PANEL ---------------------
+		// -----------------------------------------------
 		
 		//footer panel
 		FooterPanel footerPanel = new FooterPanel();
@@ -176,6 +209,7 @@ public class OverviewPanel extends JPanel {
 		footerPanel.add(layoutLbl,gbcFooter);
 		
 		layoutCB = new JComboBox(new DefaultComboBoxModel());
+		layoutCB.addActionListener(e -> switchLayout());
 		layoutCB.setMaximumRowCount(5);
 		layoutCB.setFont(font1);
 		layoutCB.setPreferredSize(new Dimension(FooterPanel.panelWidth/8, FooterPanel.panelHeight/3));
@@ -183,6 +217,8 @@ public class OverviewPanel extends JPanel {
 		gbcFooter.gridx = 0;
 		gbcFooter.gridy = 1;
 		footerPanel.add(layoutCB,gbcFooter);
+		
+		loadLayoutCB();
 		
 		makeReservationBtn = new FancyButtonOneClick(ProjectColors.BLACK.get(), ProjectColors.RED.get(),
 				ProjectColors.RED.get());
@@ -201,20 +237,60 @@ public class OverviewPanel extends JPanel {
 		
 	}
 	
+	private void loadLayoutsReservedTableInfoList(RestaurantLayout rl, Calendar calendar) throws SQLException {
+		new Thread(() -> {
+			try {
+				reservedTableInfoMap.get(rl.getName()).clear();
+				reservedTableInfoMap.get(rl.getName()).addAll(reservationController.getReservedTableInfo((int) rl.getId(), calendar));
+			} catch (SQLException e) {
+				e.printStackTrace();
+//				throw new SQLException("Error getting Info from DB:" + e.getMessage());
+			}
+		}).start();
+	}
+	
 	private void loadLayouts() {
+		Calendar calendar = Calendar.getInstance();
+		reservedTableInfoMap = new HashMap<>();
+		layoutPanelMap = new HashMap<>();
+		//fill the map with panels ... Layout panel setup
+		for(RestaurantLayout rl : layoutList) {
+		reservedTableInfoMap.put(rl.getName(), new ArrayList<ReservedTableInfo>());
 		try {
-			layoutList = (ArrayList<RestaurantLayout>) restaurantLayoutController.read();
-			if(layoutList.size() == 0) {
-				System.out.print("I am trying to display info panel");
-				this.add(new NoLayoutInfoPanel(), BorderLayout.CENTER);
-			}
-			else {
-				System.out.print("Im here");
-			}
+			loadLayoutsReservedTableInfoList(rl, calendar);
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		LayoutPanel layoutPanel = new LayoutPanel();
+		layoutPanel.loadExistingMiniPanels(rl);
+		layoutPanel.updateReservedTablesByTime(rl, reservedTableInfoMap.get(rl.getName())); /// INPUT LSIT HERE
+		layoutPanelMap.put(rl.getName(), layoutPanel);
+		}
+		// if there is any layout in DB 
+		if(layoutList.size() != 0) {
+		currentLayoutPanel = layoutPanelMap.get(layoutList.get(0).getName());
+		this.add(currentLayoutPanel, BorderLayout.CENTER);
+		}
+		// if there is not layout in DB ... need to be done
+		else {
+			
+		}
+	}
+	
+	private void loadLayoutCB() {
+		for(RestaurantLayout rl : layoutList) {
+			layoutCB.addItem(rl.getName());
+		}
+		layoutCB.setSelectedItem(layoutList.get(0).getName());
+	}
+	
+	private void switchLayout() {
+		this.remove(currentLayoutPanel);
+		currentLayoutPanel = layoutPanelMap.get(layoutCB.getSelectedItem().toString());
+		this.add(currentLayoutPanel);
+		this.repaint();
+		this.revalidate();
 	}
 	
 	private JComboBox getTimeCB() {
@@ -232,7 +308,7 @@ public class OverviewPanel extends JPanel {
 	}
 	
 	public static OverviewPanel getInstance() {
-		if(instance == null) return new OverviewPanel();
+		if(instance == null) return instance = new OverviewPanel();
 		else return instance;
 	}
 

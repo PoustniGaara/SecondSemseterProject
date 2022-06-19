@@ -43,7 +43,8 @@ public class ConnectionCheckPanel extends JPanel {
 		};
 		
 		new Thread(task).start();
-	}
+		
+	} // end of constructor
 	
 	private void checkConnection(){
 		try{

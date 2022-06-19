@@ -6,9 +6,13 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.GregorianCalendar;
 
 import model.Reservation;
+import model.ReservedTableInfo;
 import model.Table;
 
 public class ReservedTablesConcreteDAO implements ReservedTablesDAO {
@@ -65,7 +69,6 @@ public class ReservedTablesConcreteDAO implements ReservedTablesDAO {
 				String name = tablesResultSet.getString("name");
 				String type = tablesResultSet.getString("type");
 				int capacity = tablesResultSet.getInt("capacity");
-
 				Table table = new Table(name, type, capacity);
 				tables.add(table);
 			}
@@ -86,6 +89,44 @@ public class ReservedTablesConcreteDAO implements ReservedTablesDAO {
 	public void delete(Reservation reservation) throws SQLException {
 		// TODO Auto-generated method stub
 
+	}
+
+	@Override
+	public ArrayList<ReservedTableInfo> getReservedTableInfoByTime(int restaurantLayoutId, Calendar calendar) throws SQLException {
+		Connection con = DBConnection.getInstance().getDBcon();
+		ArrayList<ReservedTableInfo> list = new ArrayList<>();
+		try {
+			PreparedStatement ps = con.prepareStatement("select * from LayoutItems \r\n"
+					+ "JOIN ReservedTables on LayoutItems.layoutItemID = ReservedTables.layoutItemID\r\n"
+					+ "JOIN reservations on ReservedTables.reservationID = Reservations.reservationID\r\n"
+					+ "JOIN Customers on Reservations.customerPhone = Customers.phone \r\n"
+					+ "where restaurantLayoutID = ? AND timestamp >= ?");
+			
+			ps.setInt(1, restaurantLayoutId);
+			
+			java.util.Date dateTime = calendar.getTime();
+			java.sql.Timestamp timestamp = new java.sql.Timestamp(dateTime.getTime());
+			ps.setTimestamp(2, timestamp);
+			
+			ResultSet rs = ps.executeQuery();
+			while (rs.next()) {
+				Timestamp timestampDB = rs.getTimestamp("timestamp");
+				String name = rs.getString("name");
+				String note = rs.getString("note");
+				String phone = rs.getString("phone");
+				int duration = rs.getInt("duration");
+				
+				Calendar cal = new GregorianCalendar();
+				cal.setTimeInMillis(timestampDB.getTime());
+				
+				ReservedTableInfo reservedTableInfo = new ReservedTableInfo(cal, name, phone, note, duration);
+				list.add(reservedTableInfo);
+			}
+			return list;
+		} catch (SQLException e) {
+			e.printStackTrace();
+			throw new SQLException("Error in getting reservationTables:" + e.getMessage());
+		}
 	}
 
 }
