@@ -14,6 +14,8 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Properties;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import javax.swing.BorderFactory;
 import javax.swing.DefaultComboBoxModel;
@@ -57,7 +59,7 @@ public class OverviewPanel extends JPanel {
 	
 	private static OverviewPanel instance;
 	private JComboBox<String> timeCB, layoutCB;
-	private JSpinner hourSpinner, minuteSpinner;
+	private JSpinner hourSpinner, minuteSpinner, durationSpinner;
 	private JComboBox<Integer> personCB, durationCB;
 	private FancyButtonMoreClick dayBackBtn, dayForwardBtn;
 	private FancyButtonOneClick nowBtn,calendarBtn,makeReservationBtn;
@@ -70,6 +72,7 @@ public class OverviewPanel extends JPanel {
 	private HashMap<String, ArrayList<ReservedTableInfo>> reservedTableInfoMap;
 	private UtilDateModel calendarModel;
 	private JDatePickerImpl datePicker;
+	private boolean automaticSystemTime = true;
 	
 	
 	private OverviewPanel() {
@@ -100,8 +103,8 @@ public class OverviewPanel extends JPanel {
 			e.printStackTrace();
 		}
 		
-		loadLayouts();
 		setCalendarCurrentTime();
+		loadLayouts(1,calendar,1);
 		
 		//Panel support classes
 		Border borderGreen = BorderFactory.createLineBorder(ProjectColors.GREEN.get(), 1);
@@ -128,21 +131,25 @@ public class OverviewPanel extends JPanel {
 		gbcTool.gridy = 0;
 		toolPanel.add(personLabel,gbcTool);
 		
+		// Person ComboBox
 		personCB = new JComboBox(new DefaultComboBoxModel());
 		populatePersonCB();
 		personCB.setMaximumRowCount(5);
-		personCB.setFont(font1);
-		personCB.setPreferredSize(new Dimension(panelWidth/12, ToolPanel.getPanelHeight()/3));
+		personCB.addActionListener(e -> PersonComboBoxAction());
+		personCB.setFont(Fonts.FONT30.get());
+		personCB.setPreferredSize(new Dimension(panelWidth/12, ToolPanel.getPanelHeight()/2));
 		gbcTool.anchor = GridBagConstraints.FIRST_LINE_START;
 		gbcTool.gridx = 0;
 		gbcTool.gridy = 1;
 		toolPanel.add(personCB,gbcTool);
 		
+		// DayBack button
 		dayBackBtn = new FancyButtonMoreClick(ProjectColors.BLACK.get(), ProjectColors.GREEN.get(),
 				ProjectColors.GREY.get(),ProjectColors.GREY.get());
 		FontIcon leftArrowIcon = FontIcon.of(CoreUiFree.ARROW_LEFT);
 		leftArrowIcon.setIconSize(100);
 		dayBackBtn.setIcon(leftArrowIcon);
+		dayBackBtn.addActionListener(e -> dayBackClicked());
 		dayBackBtn.setPreferredSize(new Dimension(panelWidth/10, (int) (ToolPanel.getPanelHeight()*0.80)));
 		gbcTool.anchor = GridBagConstraints.CENTER;
 		gbcTool.gridheight = 2;
@@ -158,14 +165,21 @@ public class OverviewPanel extends JPanel {
 		gbcTool.gridheight = 1;
 		toolPanel.add(durationLabel,gbcTool);
 		
-		durationCB = getDurationCB();
-		durationCB.setMaximumRowCount(5);
-		durationCB.setFont(font1);
-		durationCB.setPreferredSize(new Dimension(panelWidth/12, ToolPanel.getPanelHeight()/3));
+//		 Duration spinner
+		SpinnerNumberModel numberModelDuration = new SpinnerNumberModel(1,1,8,1);
+		durationSpinner = new JSpinner(numberModelDuration);
+		JSpinner.NumberEditor editorDuration = new JSpinner.NumberEditor(durationSpinner);
+		NumberFormatter formatterDuration = (NumberFormatter) editorDuration.getTextField().getFormatter();
+		formatterDuration.setAllowsInvalid(false);
+		formatterDuration.setOverwriteMode(true);
+		durationSpinner.setEditor(editorDuration);
+		durationSpinner.setFont(Fonts.FONT30.get());
+		durationSpinner.setPreferredSize(new Dimension(panelWidth/16, ToolPanel.getPanelHeight()/2));
+//		durationSpinner.setBorder(new CompoundBorder(new LineBorder(darkGray, 1), new EmptyBorder(0, 10, 0, 0)));
 		gbcTool.anchor = GridBagConstraints.FIRST_LINE_START;
 		gbcTool.gridx = 2;
 		gbcTool.gridy = 1;
-		toolPanel.add(durationCB,gbcTool);
+		toolPanel.add(durationSpinner, gbcTool);
 		
 		// Hour label
 		JLabel hourLabel = new JLabel("Hour:");
@@ -184,8 +198,8 @@ public class OverviewPanel extends JPanel {
 		formatterHours.setAllowsInvalid(false);
 		formatterHours.setOverwriteMode(true);
 		hourSpinner.setEditor(editorHours);
-		hourSpinner.setFont(Fonts.FONT20.get());
-		hourSpinner.setPreferredSize(new Dimension(panelWidth/12, ToolPanel.getPanelHeight()/3));
+		hourSpinner.setFont(Fonts.FONT30.get());
+		hourSpinner.setPreferredSize(new Dimension(panelWidth/16, ToolPanel.getPanelHeight()/2));
 //		hourSpinner.setBorder(new CompoundBorder(new LineBorder(darkGray, 1), new EmptyBorder(0, 10, 0, 0)));
 		gbcTool.anchor = GridBagConstraints.FIRST_LINE_START;
 		gbcTool.gridx = 3;
@@ -196,7 +210,8 @@ public class OverviewPanel extends JPanel {
 		
 		// Separator label
 		JLabel separatorLabel = new JLabel(":", JLabel.CENTER);
-		separatorLabel.setFont(Fonts.FONT20.get());
+		separatorLabel.setPreferredSize(new Dimension(panelWidth/30, ToolPanel.getPanelHeight()/2));
+		separatorLabel.setFont(Fonts.FONT30.get());
 		gbcTool.gridheight = 2;
 		gbcTool.gridx = 4;
 		toolPanel.add(separatorLabel, gbcTool);
@@ -218,8 +233,8 @@ public class OverviewPanel extends JPanel {
 		minuteSpinner.setEditor(editorMinutes);
 		formatterMinutes.setAllowsInvalid(false);
 		formatterMinutes.setOverwriteMode(true);
-		minuteSpinner.setFont(Fonts.FONT20.get());
-		minuteSpinner.setPreferredSize(new Dimension(panelWidth/12, ToolPanel.getPanelHeight()/3));
+		minuteSpinner.setFont(Fonts.FONT30.get());
+		minuteSpinner.setPreferredSize(new Dimension(panelWidth/16, ToolPanel.getPanelHeight()/2));
 //		minuteSpinner.setBorder(new CompoundBorder(new LineBorder(darkGray, 1), new EmptyBorder(0, 10, 0, 0)));
 		gbcTool.anchor = GridBagConstraints.FIRST_LINE_START;
 		gbcTool.gridx = 5;
@@ -285,6 +300,7 @@ public class OverviewPanel extends JPanel {
 		FontIcon rightArrowIcon = FontIcon.of(CoreUiFree.ARROW_RIGHT);
 		rightArrowIcon.setIconSize(100);
 		dayForwardBtn.setIcon(rightArrowIcon);
+		dayForwardBtn.addActionListener(e -> dayForwardClicked());
 		dayForwardBtn.setPreferredSize(new Dimension(panelWidth/10, (int) (ToolPanel.getPanelHeight()*0.80)));
 		gbcTool.anchor = GridBagConstraints.CENTER;
 		gbcTool.insets = new Insets(0,0,0,0);
@@ -345,16 +361,77 @@ public class OverviewPanel extends JPanel {
 
 	} // end of constructor
 	
-	private void refreshAvailabilityOfRestaurantLayout() {
-		
+	public void startTimerForGettingReservationInfoFromDB() {
+		Timer timer = new Timer(); // create new timer
+		TimerTask task = new TimerTask() {
+
+			@Override
+			public void run() {
+				if(automaticSystemTime == true) {// If user is not editing time by himself
+					setCalendarCurrentTime(); 
+					setValueOfMinuteSpinner();
+					setValueOfHourSpinner();
+					setDateOfDatePicker();
+					for(RestaurantLayout rl :layoutList) {
+						try {
+							loadLayoutsReservedTableInfoListByTime(rl, calendar);
+						} catch (SQLException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
+					}
+					try {
+						wait(10000);//10 seconds
+						setAvailabilityOfRestaurantLayout((Integer) personCB.getSelectedItem(), calendar, (Integer) durationSpinner.getValue());
+					} catch (InterruptedException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+				}
+				
+			}// end of run
+			
+		}; // end of task
+		timer.scheduleAtFixedRate(task, 60000, 60000);//set timer 1 minute
+	}
+	
+	private void PersonComboBoxAction() {
+		setAvailabilityOfRestaurantLayout((Integer) personCB.getSelectedItem(), calendar, (Integer) durationSpinner.getValue());
+	}
+	
+	private void setAvailabilityOfRestaurantLayout(int noOfPerson, Calendar calendar, int duration) {
+		for(LayoutPanel panel : layoutPanelMap.values()) {
+			panel.setAvailabilityOfTables(noOfPerson, calendar,duration);
+			this.repaint();
+			this.revalidate();
+		}
+	}
+	
+	private void dayBackClicked() {
+		automaticSystemTime = false;
+		calendar.add(Calendar.DAY_OF_MONTH, -1);
+		setValueOfMinuteSpinner();
+		setValueOfHourSpinner();
+		setDateOfDatePicker();
+		setAvailabilityOfRestaurantLayout((Integer) personCB.getSelectedItem(), calendar, (Integer) durationSpinner.getValue());
+	}
+	
+	private void dayForwardClicked() {
+		automaticSystemTime = false;
+		calendar.add(Calendar.DAY_OF_MONTH, +1);
+		setValueOfMinuteSpinner();
+		setValueOfHourSpinner();
+		setDateOfDatePicker();
+		setAvailabilityOfRestaurantLayout((Integer) personCB.getSelectedItem(), calendar, (Integer) durationSpinner.getValue());
 	}
 	
 	private void nowBtnClicked() {
+		automaticSystemTime = true;
 		setCalendarCurrentTime();
 		setValueOfMinuteSpinner();
 		setValueOfHourSpinner();
 		setDateOfDatePicker();
-		refreshAvailabilityOfRestaurantLayout();
+		setAvailabilityOfRestaurantLayout((Integer) personCB.getSelectedItem(), calendar, (Integer) durationSpinner.getValue());
 	}
 	
 	private void setCalendarCurrentTime() {
@@ -371,14 +448,17 @@ public class OverviewPanel extends JPanel {
 	}
 	
 	private void setValueOfMinuteSpinner() {
+		automaticSystemTime = false;
 		minuteSpinner.setValue(calendar.get(Calendar.MINUTE));	
 	}
 	
 	private void setValueOfHourSpinner() {
+		automaticSystemTime = false;
 		hourSpinner.setValue(calendar.get(Calendar.HOUR_OF_DAY));
 	}
 	
 	private void setDateOfDatePicker() {
+		automaticSystemTime = false;
 		Date date = new Date(calendar.getTimeInMillis());
 		calendarModel.setDate(calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH),calendar.get(Calendar.DAY_OF_MONTH));
 		calendarModel.setSelected(true);
@@ -395,7 +475,7 @@ public class OverviewPanel extends JPanel {
 		}).start();
 	}
 	
-	private void loadLayoutsReservedTableInfoList(RestaurantLayout rl, Calendar calendar) throws SQLException {
+	private void loadLayoutsReservedTableInfoListByTime(RestaurantLayout rl, Calendar calendar) throws SQLException {
 		new Thread(() -> {
 			try {
 				reservedTableInfoMap.get(rl.getName()).clear();
@@ -406,24 +486,27 @@ public class OverviewPanel extends JPanel {
 		}).start();
 	}
 	
-	private void loadLayouts() {
-		Calendar calendar = Calendar.getInstance();
+	private void loadLayouts(int noOfPerson, Calendar calendar, int duration) {
 		reservedTableInfoMap = new HashMap<>();
 		layoutPanelMap = new HashMap<>();
 		//fill the map with panels ... Layout panel setup
 		for(RestaurantLayout rl : layoutList) {
+			
 		reservedTableInfoMap.put(rl.getName(), new ArrayList<ReservedTableInfo>());
 		try {
-			loadLayoutsReservedTableInfoList(rl, calendar);
+			loadLayoutsReservedTableInfoListByTime(rl, calendar);
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		LayoutPanel layoutPanel = new LayoutPanel();
 		layoutPanel.loadExistingMiniPanels(rl);
-		layoutPanel.updateReservedTablesByTime(rl, reservedTableInfoMap.get(rl.getName())); /// INPUT LSIT HERE
+		layoutPanel.updateReservedTablesByTime(rl, reservedTableInfoMap.get(rl.getName()));
+		layoutPanel.setAvailabilityOfTables(noOfPerson, calendar, duration); 
 		layoutPanelMap.put(rl.getName(), layoutPanel);
-		}
+		
+		} // end of loop
+		
 		// if there is any layout in DB 
 		if(layoutList.size() != 0) {
 		currentLayoutPanel = layoutPanelMap.get(layoutList.get(0).getName());
@@ -450,21 +533,6 @@ public class OverviewPanel extends JPanel {
 		this.revalidate();
 	}
 	
-	private JComboBox getTimeCB() {
-		String[] times = {"17:00","17:30","18:00","18:30","19:00","19:30","20:00","20:30","21:00","21:30",
-				"22:00","22:30","23:00"};
-		DefaultComboBoxModel<String> dm = new DefaultComboBoxModel<String>(times);
-		return new JComboBox(dm);
-		
-	}
-	
-	private JComboBox getDurationCB() {
-		durationCB = new JComboBox();
-		for(int i = 1; i <6; i++) {
-			durationCB.addItem(i);
-		}
-		return durationCB;
-	}
 	
 	private void populatePersonCB() {
 		for(int i = 1; i <30; i++) {

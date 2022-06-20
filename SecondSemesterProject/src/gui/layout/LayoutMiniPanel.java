@@ -6,6 +6,8 @@ import java.awt.GridBagLayout;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.HashMap;
 
 import javax.swing.BorderFactory;
 import javax.swing.JLabel;
@@ -33,6 +35,11 @@ public class LayoutMiniPanel extends JPanel implements MouseListener {
 	private boolean isSelected = false;
 	private LayoutItem layoutItem;
 	private ArrayList<ReservedTableInfo> reservedTableInfoList;
+	private FontIcon icon;
+	private boolean isAvailable;
+	private int tableCapacity;
+	private boolean hasTable = false;
+	private HashMap<Integer, ArrayList<ReservedTableInfo>> reservedTableInfoMap;
 	
 	public LayoutMiniPanel(int sizeOfMiniPanel) {
 		
@@ -47,7 +54,9 @@ public class LayoutMiniPanel extends JPanel implements MouseListener {
 		
 		border = BorderFactory.createLineBorder(ProjectColors.BLACK.get(), 1);
 		setPreferredSize(new Dimension(sizeOfMiniPanel,sizeOfMiniPanel));
-//		System.out.println(this.getPreferredSize());
+		
+		// reservedTableInfoMap setup
+		reservedTableInfoMap = new HashMap<>();
 		
 		//capacity label setup
 		capacityLabel = new JLabel("");
@@ -85,33 +94,64 @@ public class LayoutMiniPanel extends JPanel implements MouseListener {
 
 	} // end of constructor
 	
-	public void updateReservedTableInfoList(ArrayList<ReservedTableInfo> reservedTableInfoList) {
-		this.reservedTableInfoList = reservedTableInfoList;
+//	public boolean getTimeAvailability(Calendar calendar, int duration) {
+		// compare reservedTableInfo list with input
+//	}
+	
+//	public void updateReservedTableInfoList(ArrayList<ReservedTableInfo> reservedTableInfoList) {
+//		this.reservedTableInfoList = reservedTableInfoList;
+//	}
+	
+	public void addReservedTableInfoToMap(ReservedTableInfo rti, int tableId) {
+		reservedTableInfoMap.put(tableId, reservedTableInfoList);
+	}
+	
+	public void setReservedTableInfoMap(HashMap<Integer, ArrayList<ReservedTableInfo>> reservedTableInfoMap) {
+		this.reservedTableInfoMap = reservedTableInfoMap;
 	}
 	
 	public void setLayoutItem(LayoutItem layoutItem) {
 		this.layoutItem = layoutItem;
 		nameLabel.setText(layoutItem.getName());
 		if(layoutItem instanceof Table) {
+			hasTable = true;
 			Table table  = (Table) layoutItem;
 			setCapacityLabel(String.valueOf(table.getCapacity()));
+			tableCapacity = ((Table) layoutItem).getCapacity();
 			FontIcon tableIcon = FontIcon.of(Icomoon.ICM_SPOON_KNIFE);
 			tableIcon.setIconSize(30);
 			setIcon(tableIcon);
 		}
 		if(layoutItem.getType().equals("bar")) {
 			FontIcon barIcon = FontIcon.of(Icomoon.ICM_GLASS2);
+			hasTable = false;
 			barIcon.setIconSize(30);
 			setIcon(barIcon);
 		}
 		if(layoutItem.getType().equals("entrance")) {
 			FontIcon entranceIcon = FontIcon.of(Icomoon.ICM_ENTER);
+			hasTable = false;
 			entranceIcon.setIconSize(30);
 			setIcon(entranceIcon);
 		}
 		if(layoutItem.equals(null)) {
+			hasTable = false;
 			setIcon(null);
 			setCapacityLabel("");
+		}
+	}
+	
+	public void setAvailable() {
+		isAvailable = true;
+		icon.setIconColor(ProjectColors.GREEN.get());
+		this.repaint();
+	}
+	
+	public void setUnavailable() {
+		if(hasTable == true) {
+		isAvailable = false;
+		icon.setIconColor(ProjectColors.RED.get());
+		this.repaint();
 		}
 	}
 	
@@ -124,6 +164,7 @@ public class LayoutMiniPanel extends JPanel implements MouseListener {
 	}
 	
 	public void setIcon(FontIcon icon) {
+		this.icon = icon;
 		iconLabel.setIcon(icon);
 	}
 	
@@ -151,6 +192,18 @@ public class LayoutMiniPanel extends JPanel implements MouseListener {
 	public void setSelected(boolean state) {
 		this.isSelected = state;
 	}
+	
+	public boolean hasTable() {
+		return hasTable;
+	}
+	
+	public int getTableCapacity() {
+		return tableCapacity;
+	}
+	
+	public LayoutItem getLayoutItem() {
+		return this.layoutItem;
+	}
 
 	@Override
 	public void mouseClicked(MouseEvent e) {
@@ -159,16 +212,17 @@ public class LayoutMiniPanel extends JPanel implements MouseListener {
 				new TableInfoFrame(layoutItem.getName(), reservedTableInfoList);
 			}
 			else {
-				if(isSelected == true) {
-					setSelected(false);
-					setBackground(ProjectColors.WHITE.get());
-					setBorder(null);
+				if(isAvailable) { // select only if it is available
+					if(isSelected == true) {
+						setSelected(false);
+						setBackground(ProjectColors.WHITE.get());
+						setBorder(null);
+					}
+					else {
+						setSelected(true);
+						setBackground(ProjectColors.SELECTED.get());
+						setBorder(border);
 				}
-				else {
-					setSelected(true);
-					setBackground(ProjectColors.SELECTED.get());
-					setBorder(border);
-
 				}
 			}
 		}

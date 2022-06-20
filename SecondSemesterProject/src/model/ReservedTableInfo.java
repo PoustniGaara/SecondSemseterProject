@@ -4,7 +4,7 @@ import java.util.Calendar;
 
 public class ReservedTableInfo {
 	
-	private Calendar timestamp;
+	private Calendar calendar;
 	private String name;
 	private String phone;
 	private String note;
@@ -31,11 +31,11 @@ public class ReservedTableInfo {
 		this.duration = duration;
 	}
 	
-	public Calendar getTimestamp() {
-		return timestamp;
+	public Calendar getCalendar() {
+		return calendar;
 	}
 	public void setTimestamp(Calendar timestamp) {
-		this.timestamp = timestamp;
+		this.calendar = timestamp;
 	}
 	public String getName() {
 		return name;
@@ -55,10 +55,10 @@ public class ReservedTableInfo {
 	public void setNote(String note) {
 		this.note = note;
 	}
-	public ReservedTableInfo(Calendar timestamp, String name, String phone, String note, int duration, int id) {
+	public ReservedTableInfo(Calendar calendar, String name, String phone, String note, int duration, int id) {
 		this.id = id;
 		this.duration = duration;
-		this.timestamp = timestamp;
+		this.calendar = calendar;
 		this.name = name;
 		this.phone = phone;
 		this.note = note;

@@ -148,10 +148,10 @@ public class TableInfoFrame extends JFrame{
 		String string = new String("");
 		if (!reservedTableInfoList.isEmpty()) {
 			for (ReservedTableInfo rti : reservedTableInfoList) {
-				String date = String.valueOf(rti.getTimestamp().get(Calendar.DAY_OF_MONTH)) +"."+ 
-						String.valueOf(rti.getTimestamp().get(Calendar.MONTH));
-				String time = String.valueOf(rti.getTimestamp().get(Calendar.HOUR_OF_DAY)) +":"+ 
-						String.valueOf(rti.getTimestamp().get(Calendar.MINUTE));
+				String date = String.valueOf(rti.getCalendar().get(Calendar.DAY_OF_MONTH)) +"."+ 
+						String.valueOf(rti.getCalendar().get(Calendar.MONTH));
+				String time = String.valueOf(rti.getCalendar().get(Calendar.HOUR_OF_DAY)) +":"+ 
+						String.valueOf(rti.getCalendar().get(Calendar.MINUTE));
 				tableModel.addRow(new Object[] {rti.getId() ,date, time, rti.getDuration(), rti.getName(), rti.getPhone(), rti.getNote() });
 			}
 			tableModel.fireTableDataChanged();

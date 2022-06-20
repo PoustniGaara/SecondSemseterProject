@@ -8,6 +8,7 @@ import java.awt.Point;
 import java.awt.event.ComponentEvent;
 import java.awt.event.ComponentListener;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.HashMap;
 
 import javax.swing.JPanel;
@@ -17,8 +18,10 @@ import javax.swing.ScrollPaneConstants;
 import controller.ReservationController;
 import gui.MainFrame;
 import gui.tools.ProjectColors;
+import model.LayoutItem;
 import model.ReservedTableInfo;
 import model.RestaurantLayout;
+import model.Table;
 
 public class LayoutPanel extends JPanel implements ComponentListener {
 	
@@ -66,9 +69,27 @@ public class LayoutPanel extends JPanel implements ComponentListener {
 		
 	}// end of second constructor
 	
+	public void setAvailabilityOfTables(int noOfPerson, Calendar calendar, int duration) {
+		for(LayoutMiniPanel miniPanel : miniPanelMap.values()) {
+			if(miniPanel.hasTable()) {
+				if(miniPanel.getTableCapacity() < noOfPerson ) {
+					miniPanel.setUnavailable();
+				}
+				else {
+					miniPanel.setAvailable();
+				}
+			}
+		}
+	}
+	HashMap<Integer,ArrayList<ReservedTableInfo>> layoutItemReservedTableInfoMap;
+	
 	public void updateReservedTablesByTime(RestaurantLayout rl, ArrayList<ReservedTableInfo> reservedTableInfoList) {
-		for(Point point : rl.getItemMap().keySet()) {
-			miniPanelMap.get(point).updateReservedTableInfoList(reservedTableInfoList);
+		for(LayoutMiniPanel miniPanel : miniPanelMap.values()) {
+			for(ReservedTableInfo rti : reservedTableInfoList) {
+				if(rti.getId() == miniPanel.getLayoutItem().getId()) {
+					miniPanel.addReservedTableInfoToMap(rti, rti.getId());
+				}
+			}
 		}
 	}
 	
@@ -80,7 +101,8 @@ public class LayoutPanel extends JPanel implements ComponentListener {
 				LayoutMiniPanel miniPanel = new LayoutMiniPanel(sizeOfMiniPanel);
 				miniPanel.setLocation(j, i);
 				if(rl.getItemMap().get(new Point(j,i)) != null) {
-				miniPanel.setLayoutItem(rl.getItemMap().get(new Point(j,i)));
+				miniPanel.setLayoutItem(rl.getItemMap().get(new Point(j,i))); // this also sets an icon and else
+				miniPanel.setAvailable();// SET EVERY MINI PANEL AVAILABLE AND THEN DISABLE IT.
 				}
 				miniPanelMap.put(new Point(j,i), miniPanel);
 				contentPane.add(miniPanel, gbc);

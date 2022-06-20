@@ -31,6 +31,7 @@ import javax.swing.table.TableColumn;
 
 import controller.MenuController;
 import database.ReservationConcreteDAO;
+import gui.menu.AddMealInputFrame;
 import gui.menu.AddMenuInputFrame;
 import gui.reservation.ReservationsPanel;
 import gui.tools.Fonts;
@@ -298,6 +299,19 @@ public class MenuPanel extends JPanel{
 	}
 	
 	// here should be passed menu without problems!
+	public void createMeal(Meal meal) {
+		try {
+			menuController.createMeal(meal);
+			mealList.clear();
+			mealList.addAll(menuController.getMealList());
+			populateMealTable(mealList);
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
+	// here should be passed menu without problems!
 	public void createMenu(Menu menu) {
 		try {
 			menuController.createMenu(menu);
@@ -312,6 +326,9 @@ public class MenuPanel extends JPanel{
 	private void create() {
 		if(currentPanel.equals(menuPanel)) {
 			new AddMenuInputFrame();
+		}
+		else {
+			new AddMealInputFrame();
 		}
 	}
 	

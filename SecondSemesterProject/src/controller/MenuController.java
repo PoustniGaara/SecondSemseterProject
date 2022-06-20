@@ -24,6 +24,16 @@ public class MenuController {
 		mealDAO = (MealConcreteDAO) MealConcreteDAO.getInstance();
 	}
 	
+	
+	
+	public void createMeal(Meal meal) throws SQLException{
+		try {
+			mealDAO.create(meal);
+		} catch (SQLException e) {
+			throw new SQLException("Error in deleting menu from DB:" + e.getMessage());
+		}
+	}
+	
 	public void deleteMenu(Menu menu) throws SQLException {
 		try {
 			menuDAO.delete(menu);
