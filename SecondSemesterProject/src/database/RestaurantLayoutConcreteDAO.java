@@ -32,6 +32,7 @@ import model.RestaurantLayout;
 							(HashMap<Point, LayoutItem>) LayoutItemConcreteDAO.getInstance().getLayoutItems(rs.getLong("restaurantLayoutID"));
 					RestaurantLayout restaurantLayout = new RestaurantLayout(rs.getString("name"),
 							rs.getInt("sizeX"), rs.getInt("sizeY"),itemMap);
+					restaurantLayout.setId(rs.getLong("restaurantLayoutID"));
 					listOfRestaurantLayouts.add(restaurantLayout);
 				}
 			}

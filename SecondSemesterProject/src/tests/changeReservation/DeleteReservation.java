@@ -92,7 +92,7 @@ public class DeleteReservation {
 
 
 		// Act
-		reservationCntrl.deleteReservation(reservationCntrl.getReservationById(id));
+		reservationCntrl.deleteReservation(id);
 
 		// Assert
 		assertEquals(reservationCntrl.getReservationById(id), null);

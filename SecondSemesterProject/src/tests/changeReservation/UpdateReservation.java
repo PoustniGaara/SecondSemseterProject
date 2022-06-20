@@ -114,7 +114,7 @@ public class UpdateReservation {
 	@After
 	public void cleanUp() {
 		try {
-			reservationCntrl.deleteReservation(reservationCntrl.getReservationById(id));
+			reservationCntrl.deleteReservation(id);
 			customerCntrl.deleteCustomer(customerCntrl.findByPhone("32211457"));
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block

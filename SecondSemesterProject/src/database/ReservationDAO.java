@@ -15,7 +15,7 @@ public interface ReservationDAO {
 
 	void update(Reservation reservation) throws SQLException;
 
-	void delete(Reservation reservation) throws SQLException;
+	void delete(int reservationId) throws SQLException;
 
 	ArrayList<Reservation> readByCustomer(String customerName) throws SQLException;
 	

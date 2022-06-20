@@ -321,10 +321,11 @@ public class ReservationsPanel extends JPanel {
 						JOptionPane.WARNING_MESSAGE) == JOptionPane.YES_OPTION) {
 					long id = Long.parseLong(table.getValueAt(table.getSelectedRow(), 0).toString());
 					tableModel.removeRow(table.getSelectedRow());
-					if (reservationController.getReservationById(id) != null) {
-						Reservation r = reservationController.getReservationById(id);
-						reservationController.deleteReservation(r);
-					}
+//					if (reservationController.getReservationById(id) != null) { OLD CODE
+//						Reservation r = reservationController.getReservationById(id);
+//						reservationController.deleteReservation(r);
+//					}
+					reservationController.deleteReservation((int) id); // NEW CODE
 				}
 			} else {
 				JOptionPane.showMessageDialog(null, "You must select a reservation in the list you want to delete!",

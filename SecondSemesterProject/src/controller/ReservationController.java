@@ -70,8 +70,8 @@ public class ReservationController {
 		reservationDAO.update(reservation);
 	}
 
-	public void deleteReservation(Reservation reservation) throws SQLException {
-		reservationDAO.delete(reservation);
+	public void deleteReservation(int reservationId) throws SQLException {
+		reservationDAO.delete(reservationId);
 	}
 
 	public Customer checkCustomer(String phone) throws SQLException {

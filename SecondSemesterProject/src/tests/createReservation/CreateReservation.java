@@ -96,7 +96,7 @@ public class CreateReservation {
 	@After
 	public void cleanUp() {
 		try {
-			reservationCntrl.deleteReservation(reservationCntrl.getReservationById(id));
+			reservationCntrl.deleteReservation(id);
 			customerCntrl.deleteCustomer(customerCntrl.findByPhone("387654354"));
 			rlc.deleteRestaurantLayout("Test Layout 1");
 			ArrayList<Table> t = new ArrayList<Table>();

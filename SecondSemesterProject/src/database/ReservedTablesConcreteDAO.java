@@ -113,11 +113,12 @@ public class ReservedTablesConcreteDAO implements ReservedTablesDAO {
 				String note = rs.getString("note");
 				String phone = rs.getString("phone");
 				int duration = rs.getInt("duration");
+				int id = rs.getInt("reservationID");
 				
 				Calendar cal = new GregorianCalendar();
 				cal.setTimeInMillis(timestampDB.getTime());
 				
-				ReservedTableInfo reservedTableInfo = new ReservedTableInfo(cal, name, phone, note, duration);
+				ReservedTableInfo reservedTableInfo = new ReservedTableInfo(cal, name, phone, note, duration,id);
 				list.add(reservedTableInfo);
 			}
 			return list;

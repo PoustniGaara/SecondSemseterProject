@@ -9,6 +9,19 @@ public class ReservedTableInfo {
 	private String phone;
 	private String note;
 	private int duration;
+	private int id;
+	
+	public String toString() {
+		return new String("ID: "+id+" Name: "+name+" Phone: "+phone+" Note: "+note+ " Duration: " +String.valueOf(duration));
+	}
+	
+	public int getId() {
+		return id;
+	}
+	
+	public void setId(int id) {
+		this.id = id;
+	}
 
 	public int getDuration() {
 		return duration;
@@ -42,7 +55,8 @@ public class ReservedTableInfo {
 	public void setNote(String note) {
 		this.note = note;
 	}
-	public ReservedTableInfo(Calendar timestamp, String name, String phone, String note, int duration) {
+	public ReservedTableInfo(Calendar timestamp, String name, String phone, String note, int duration, int id) {
+		this.id = id;
 		this.duration = duration;
 		this.timestamp = timestamp;
 		this.name = name;

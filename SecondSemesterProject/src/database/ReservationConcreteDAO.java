@@ -201,11 +201,11 @@ public class ReservationConcreteDAO implements ReservationDAO {
 	}
 
 	@Override
-	public void delete(Reservation reservation) throws SQLException {
+	public void delete(int reservationId) throws SQLException {
 		Connection con = DBConnection.getInstance().getDBcon();
 		try {
 			PreparedStatement ps = con.prepareStatement("DELETE FROM dbo.Reservations WHERE reservationID=?");
-			ps.setLong(1, reservation.getId());
+			ps.setLong(1, reservationId);
 			ps.execute();
 		} catch (SQLException e) {
 			e.printStackTrace();
