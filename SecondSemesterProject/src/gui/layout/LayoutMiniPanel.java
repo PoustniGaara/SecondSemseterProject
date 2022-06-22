@@ -61,7 +61,7 @@ public class LayoutMiniPanel extends JPanel implements MouseListener {
 		//capacity label setup
 		capacityLabel = new JLabel("");
 		capacityLabel.setPreferredSize(new Dimension(sizeOfMiniPanel/2, sizeOfMiniPanel/4));
-		capacityLabel.setFont(Fonts.FONT15.get());
+		capacityLabel.setFont(Fonts.FONT18.get());
 		capacityLabel.setHorizontalAlignment(SwingConstants.CENTER);
 		capacityLabel.setVerticalTextPosition(SwingConstants.BOTTOM);
 		capacityLabel.setHorizontalTextPosition(SwingConstants.RIGHT);
@@ -85,7 +85,7 @@ public class LayoutMiniPanel extends JPanel implements MouseListener {
 		
 		//name label setup
 		nameLabel = new JLabel("");
-		nameLabel.setFont(Fonts.FONT15.get());
+		nameLabel.setFont(Fonts.FONT18.get());
 		nameLabel.setHorizontalAlignment(SwingConstants.CENTER);
 		nameLabel.setVerticalTextPosition(SwingConstants.CENTER);
 		nameLabel.setHorizontalTextPosition(SwingConstants.CENTER);

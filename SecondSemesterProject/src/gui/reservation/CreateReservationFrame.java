@@ -826,7 +826,7 @@ public class CreateReservationFrame extends JFrame {
 					}
 				}
 			}
-
+			System.out.println("Reserved menus: " + reservedMenus);
 			createFinalCard();
 			next();
 		});
