@@ -278,7 +278,7 @@ public class MenuPanel extends JPanel {
 
 		JLabel conCheck = ConnectionCheckLabel.getInstance();
 		footerPanel.add(conCheck, gbcFooter);
-		
+
 		// delete button
 		JButton deleteButton = new JButton("Delete");
 		deleteButton.addActionListener(e -> delete());
@@ -299,10 +299,10 @@ public class MenuPanel extends JPanel {
 		modifyButton.setBorder(new LineBorder(ProjectColors.LIGHT_BLUE.get(), 1));
 		modifyButton.setPreferredSize(new Dimension((int) (getWidth() * 0.15), 40));
 		modifyButton.setFocusable(false);
-		//modifyButton.addActionListener(e -> change());
+		// modifyButton.addActionListener(e -> change());
 		gbcFooter.gridx = 2;
 		footerPanel.add(modifyButton, gbcFooter);
-		
+
 		// add button
 		JButton addButton = new JButton("Add +");
 		addButton.setFont(Fonts.FONT18.get());
