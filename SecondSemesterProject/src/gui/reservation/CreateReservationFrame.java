@@ -26,11 +26,13 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JSpinner;
+import javax.swing.JSpinner.NumberEditor;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.ScrollPaneConstants;
 import javax.swing.ScrollPaneLayout;
 import javax.swing.SpinnerDateModel;
+import javax.swing.SpinnerNumberModel;
 import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 import javax.swing.border.CompoundBorder;
@@ -38,12 +40,15 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.border.LineBorder;
 import javax.swing.border.MatteBorder;
 import javax.swing.text.DateFormatter;
+import javax.swing.text.NumberFormatter;
 
-import controller.CustomerController;
 import controller.ReservationController;
 import database.MenuConcreteDAO;
 import database.ReservationConcreteDAO;
 import database.TableConcreteDAO;
+import gui.ToolPanel;
+import gui.tools.Fonts;
+import gui.tools.ProjectColors;
 import gui.tools.Validator;
 import model.Customer;
 import model.Menu;
@@ -63,7 +68,6 @@ public class CreateReservationFrame extends JFrame {
 	private int currentCard;
 
 	private ReservationController reservationController;
-	private CustomerController customerController;
 
 	private JTextField guestsField;
 	private JFormattedTextField dateField;
@@ -78,6 +82,11 @@ public class CreateReservationFrame extends JFrame {
 	private static ArrayList<Menu> dbMenus;
 	private static boolean resourcesLoaded = false;
 
+	private boolean card2Created = false;
+	private boolean card3Created = false;
+	private boolean card4Created = false;
+	private boolean card5Created = false;
+
 	private Calendar reservationTimeDate;
 	private int guests;
 	private String phone;
@@ -86,9 +95,9 @@ public class CreateReservationFrame extends JFrame {
 	private Customer customer;
 	private ArrayList<Menu> reservedMenus;
 
-	private final Font font = new Font("Segoe UI Semibold", Font.PLAIN, 20);
-	private final Font italics = new Font("Segoe UI Semibold", Font.ITALIC, 20);
-	private final Font placeholderFont = new Font("Segoe UI", Font.ITALIC, 18);
+	private final Font font = Fonts.FONT20.get();
+	private final Font italics = new Font("Dialog", Font.ITALIC, 20);
+	private final Font placeholderFont = new Font("Dialog", Font.ITALIC, 20);
 
 	private final Color darkGray = new Color(18, 18, 18);
 	private final Color lightGray = new Color(89, 89, 89);
@@ -116,7 +125,6 @@ public class CreateReservationFrame extends JFrame {
 
 	public CreateReservationFrame() {
 		reservationController = new ReservationController();
-		customerController = new CustomerController();
 		currentCard = 1;
 
 		setTitle("New Reservation");
@@ -131,11 +139,7 @@ public class CreateReservationFrame extends JFrame {
 		cardLayout = new CardLayout();
 		contentPane.setLayout(cardLayout);
 
-		// FIRST CARD
 		firstCard = new JPanel();
-		createFirstCard();
-
-		// SECOND CARD
 		secondCard = new JPanel();
 		thirdCard = new JPanel();
 		fourthCard = new JPanel();
@@ -148,11 +152,13 @@ public class CreateReservationFrame extends JFrame {
 		contentPane.add(fourthCard, "4");
 		contentPane.add(finalCard, "5");
 		cardLayout.first(contentPane);
+
+		createFirstCard();
 	}
 
 	private void createFirstCard() {
 		firstCard.setLayout(new GridBagLayout());
-		firstCard.setBackground(Color.WHITE);
+		firstCard.setBackground(ProjectColors.BG.get());
 
 		GridBagConstraints gbc = new GridBagConstraints();
 		gbc.insets = new Insets(20, 20, 60, 20);
@@ -165,7 +171,7 @@ public class CreateReservationFrame extends JFrame {
 		gbc.fill = GridBagConstraints.HORIZONTAL;
 
 		JLabel titleLabel = new JLabel("Creating new reservation", JLabel.CENTER);
-		titleLabel.setFont(new Font("Segoe UI Semibold", Font.BOLD, 28));
+		titleLabel.setFont(new Font("Dialog", Font.BOLD, 28));
 		titleLabel.setForeground(darkGray);
 		firstCard.add(titleLabel, gbc);
 
@@ -175,7 +181,7 @@ public class CreateReservationFrame extends JFrame {
 		gbc.gridy++;
 		gbc.gridheight = 1;
 		gbc.anchor = GridBagConstraints.WEST;
-		gbc.insets = new Insets(25, 30, 10, 30);
+		gbc.insets = new Insets(25, 30, 5, 30);
 		firstCard.add(guestsLabel, gbc);
 
 		guestsField = new JTextField();
@@ -183,14 +189,14 @@ public class CreateReservationFrame extends JFrame {
 		guestsField.setBorder(new CompoundBorder(new LineBorder(darkGray, 1), new EmptyBorder(0, 10, 0, 0)));
 		guestsField.setBackground(Color.WHITE);
 		gbc.gridy++;
-		gbc.insets = new Insets(10, 30, 25, 30);
+		gbc.insets = new Insets(5, 30, 25, 30);
 		firstCard.add(guestsField, gbc);
 
 		JLabel dateLabel = new JLabel("Date:");
 		dateLabel.setForeground(darkGray);
 		dateLabel.setFont(font);
 		gbc.gridy++;
-		gbc.insets = new Insets(25, 30, 10, 30);
+		gbc.insets = new Insets(25, 30, 5, 30);
 		firstCard.add(dateLabel, gbc);
 
 		DateFormat format = new SimpleDateFormat("dd.MM.yyyy");
@@ -200,14 +206,14 @@ public class CreateReservationFrame extends JFrame {
 		dateField.setFont(font);
 		dateField.setBorder(new CompoundBorder(new LineBorder(darkGray, 1), new EmptyBorder(0, 10, 0, 0)));
 		gbc.gridy++;
-		gbc.insets = new Insets(10, 30, 25, 30);
+		gbc.insets = new Insets(5, 30, 25, 30);
 		firstCard.add(dateField, gbc);
 
 		JLabel timeLabel = new JLabel("Time:");
 		timeLabel.setForeground(darkGray);
 		timeLabel.setFont(font);
 		gbc.gridy++;
-		gbc.insets = new Insets(25, 30, 10, 30);
+		gbc.insets = new Insets(25, 30, 5, 30);
 		firstCard.add(timeLabel, gbc);
 
 		Calendar calendar = Calendar.getInstance();
@@ -228,7 +234,7 @@ public class CreateReservationFrame extends JFrame {
 		gbc.gridy++;
 		gbc.gridwidth = 1;
 		gbc.anchor = GridBagConstraints.NORTH;
-		gbc.insets = new Insets(10, 30, 25, 30);
+		gbc.insets = new Insets(5, 30, 25, 30);
 		firstCard.add(spinnerH, gbc);
 
 		JLabel separator = new JLabel(":", JLabel.CENTER);
@@ -251,21 +257,47 @@ public class CreateReservationFrame extends JFrame {
 		gbc.gridx++;
 		firstCard.add(spinnerM, gbc);
 
+		JLabel durationLabel = new JLabel("Duration:");
+		durationLabel.setFont(font);
+		gbc.gridy++;
+		gbc.gridx = 0;
+		gbc.weightx = 1;
+		gbc.insets = new Insets(25, 30, 5, 30);
+		firstCard.add(durationLabel, gbc);
+
+		SpinnerNumberModel numberModelDuration = new SpinnerNumberModel(2, 1, 10, 1);
+		JSpinner durationSpinner = new JSpinner(numberModelDuration);
+		NumberEditor editorDuration = new NumberEditor(durationSpinner);
+		NumberFormatter formatterDuration = (NumberFormatter) editorDuration.getTextField().getFormatter();
+		formatterDuration.setOverwriteMode(true);
+		formatterDuration.setAllowsInvalid(false);
+		durationSpinner.setEditor(editorDuration);
+		durationSpinner.setFont(Fonts.FONT20.get());
+		durationSpinner.setBorder(new CompoundBorder(new LineBorder(darkGray, 1), new EmptyBorder(0, 10, 0, 0)));
+		gbc.insets = new Insets(5, 30, 25, 30);
+		gbc.gridy++;
+		firstCard.add(durationSpinner, gbc);
+
 		JButton cancelButton = new JButton("Cancel");
-		cancelButton.setFont(font);
-		cancelButton.setBackground(new Color(242, 233, 228));
+		cancelButton.setFont(Fonts.FONT18.get());
+		cancelButton.setForeground(new Color(195, 70, 70));
+		cancelButton.setBackground(new Color(252, 232, 232));
+		cancelButton.setBorder(new LineBorder(new Color(220, 48, 48), 1));
+		cancelButton.setPreferredSize(new Dimension((int) (getWidth() * 0.3), 40));
 		cancelButton.setFocusable(false);
 		cancelButton.addActionListener(e -> cancel());
 		gbc.gridy++;
 		gbc.gridx = 0;
 		gbc.weightx = 1;
 		gbc.anchor = GridBagConstraints.SOUTH;
-		gbc.insets = new Insets(80, 30, 25, 30);
+		gbc.insets = new Insets(40, 30, 25, 30);
 		firstCard.add(cancelButton, gbc);
 
 		JButton nextButton = new JButton("Next >");
-		nextButton.setFont(font);
-		nextButton.setBackground(new Color(242, 233, 228));
+		nextButton.setFont(Fonts.FONT18.get());
+		nextButton.setBackground(ProjectColors.BLUE.get());
+		nextButton.setForeground(Color.white);
+		nextButton.setPreferredSize(new Dimension((int) (getWidth() * 0.3), 40));
 		nextButton.setFocusable(false);
 		nextButton.addActionListener(e -> {
 			if (guestsField.getText().isEmpty() || guestsField.getText().isBlank()) {
@@ -274,7 +306,14 @@ public class CreateReservationFrame extends JFrame {
 						"Guests field", JOptionPane.OK_OPTION, JOptionPane.WARNING_MESSAGE);
 				return;
 			}
-			guests = Integer.parseInt(guestsField.getText());
+			try {
+				guests = Integer.parseInt(guestsField.getText());
+			} catch (Exception e2) {
+				JOptionPane.showConfirmDialog(null,
+						"The input value of the number of guests incorrect!\nPlease correct the information in the field!",
+						"Number of guests", JOptionPane.OK_OPTION, JOptionPane.WARNING_MESSAGE);
+				return;
+			}
 			if (guests <= 0) {
 				JOptionPane.showConfirmDialog(null,
 						"The number of guests cannot be zero or lower!\nPlease correct the information in the field!",
@@ -304,12 +343,13 @@ public class CreateReservationFrame extends JFrame {
 			}
 
 			if (resourcesLoaded) {
-				createSecondCard();
+				if (!card2Created)
+					createSecondCard();
 				populateTables();
 				next();
 			} else {
 				JOptionPane.showConfirmDialog(null,
-						"The resources needed for cration of reservtaion hasn't been loaded!\nPlease, wait a bit and try again.",
+						"The resources needed for the next step of reservation creation haven't been loaded!\nPlease, wait a bit and try again.",
 						"Resources not loaded", JOptionPane.OK_CANCEL_OPTION, JOptionPane.WARNING_MESSAGE);
 			}
 		});
@@ -319,7 +359,8 @@ public class CreateReservationFrame extends JFrame {
 
 	private void createSecondCard() {
 		secondCard.setLayout(new GridBagLayout());
-		secondCard.setBackground(Color.WHITE);
+		secondCard.setBackground(ProjectColors.BG.get());
+		card2Created = true;
 
 		GridBagConstraints gbc = new GridBagConstraints();
 		gbc.insets = new Insets(20, 20, 40, 20);
@@ -396,8 +437,12 @@ public class CreateReservationFrame extends JFrame {
 		secondCard.add(noteField, gbc);
 
 		JButton cancelButton = new JButton("Cancel");
-		cancelButton.setFont(font);
-		cancelButton.setBackground(new Color(242, 233, 228));
+		cancelButton.setFont(Fonts.FONT18.get());
+		cancelButton.setForeground(new Color(195, 70, 70));
+		cancelButton.setBackground(new Color(252, 232, 232));
+		cancelButton.setBorder(new LineBorder(new Color(220, 48, 48), 1));
+		cancelButton.setPreferredSize(new Dimension((int) (getWidth() * 0.2), 40));
+		cancelButton.setFocusable(false);
 		cancelButton.addActionListener(e -> cancel());
 		gbc.gridy++;
 		gbc.anchor = GridBagConstraints.SOUTH;
@@ -406,28 +451,32 @@ public class CreateReservationFrame extends JFrame {
 		secondCard.add(cancelButton, gbc);
 
 		JButton prevButton = new JButton("< Back");
-		prevButton.setFont(font);
-		prevButton.setBackground(new Color(242, 233, 228));
-		// prevButton.addActionListener();
+		prevButton.setFont(Fonts.FONT18.get());
+		prevButton.setBackground(ProjectColors.BLUE1.get());
+		prevButton.setBorder(new LineBorder(ProjectColors.LIGHT_BLUE.get(), 1));
+		prevButton.setPreferredSize(new Dimension((int) (getWidth() * 0.2), 40));
+		prevButton.addActionListener(e -> back(1));
 		gbc.gridx = 1;
 		gbc.insets = new Insets(40, 20, 20, 20);
 		secondCard.add(prevButton, gbc);
 
 		JButton nextButton = new JButton("Next >");
-		nextButton.setFont(font);
-		nextButton.setBackground(new Color(242, 233, 228));
+		nextButton.setFont(Fonts.FONT18.get());
+		nextButton.setBackground(ProjectColors.BLUE.get());
+		nextButton.setForeground(Color.white);
+		nextButton.setFocusable(false);
+		nextButton.setPreferredSize(new Dimension((int) (getWidth() * 0.2), 40));
 		nextButton.addActionListener(e -> {
-			for (Table t : dbTables) {
-				if (tables.getSelectedItem().equals(t.getName())) {
-					reservedTable = t;
-				}
-			}
-
-			if (reservedTable == null) {
+			if (tables.getSelectedItem() == null) {
 				JOptionPane.showConfirmDialog(null,
-						"No table was selected!\nPlease, try selecting a table from the drop down menu!",
+						"No table was selected!\nPlease, select a table from the drop down menu!",
 						"Table selection", JOptionPane.OK_CANCEL_OPTION, JOptionPane.WARNING_MESSAGE);
 				return;
+			}
+
+			for (Table t : dbTables) {
+				if (tables.getSelectedItem().equals(t.getName()))
+					reservedTable = t;
 			}
 
 			String input = phoneField.getText();
@@ -450,8 +499,8 @@ public class CreateReservationFrame extends JFrame {
 			ArrayList<Table> rt = new ArrayList<>();
 			rt.add(reservedTable);
 			reservationController.startReservation(reservationTimeDate, rt);
-
-			createThirdCard();
+			if (!card3Created)
+				createThirdCard();
 			next();
 		});
 		gbc.gridx = 2;
@@ -461,7 +510,8 @@ public class CreateReservationFrame extends JFrame {
 
 	private void createThirdCard() {
 		thirdCard.setLayout(new GridBagLayout());
-		thirdCard.setBackground(Color.WHITE);
+		thirdCard.setBackground(ProjectColors.BG.get());
+		card3Created = true;
 
 		GridBagConstraints gbc = new GridBagConstraints();
 		gbc.insets = new Insets(20, 20, 30, 20);
@@ -496,18 +546,6 @@ public class CreateReservationFrame extends JFrame {
 		} catch (SQLException e1) {
 		}
 		boolean isCustomer = customer != null;
-
-//		JLabel existsLabel = new JLabel();
-//		existsLabel.setForeground(darkGray);
-//		existsLabel.setFont(italics);
-//		if (isCustomer) {
-//			existsLabel.setText("Found already existing customer with the phone number the system:");
-//		} else {
-//			existsLabel.setText("Create new customer:");
-//		}
-//		gbc1.gridy++;
-//		gbc1.insets = new Insets(10, 30, 25, 30);
-//		thirdCard.add(existsLabel, gbc1);
 
 		JLabel phoneLabel = new JLabel("Customer phone:");
 		phoneLabel.setForeground(Color.BLACK);
@@ -642,8 +680,12 @@ public class CreateReservationFrame extends JFrame {
 		thirdCard.add(zipField, gbc);
 
 		JButton cancelButton = new JButton("Cancel");
-		cancelButton.setFont(font);
-		cancelButton.setBackground(new Color(242, 233, 228));
+		cancelButton.setFont(Fonts.FONT18.get());
+		cancelButton.setForeground(new Color(195, 70, 70));
+		cancelButton.setBackground(new Color(252, 232, 232));
+		cancelButton.setBorder(new LineBorder(new Color(220, 48, 48), 1));
+		cancelButton.setPreferredSize(new Dimension((int) (getWidth() * 0.2), 40));
+		cancelButton.setFocusable(false);
 		cancelButton.addActionListener(e -> cancel());
 		gbc.gridy++;
 		gbc.gridx = 0;
@@ -653,16 +695,22 @@ public class CreateReservationFrame extends JFrame {
 		thirdCard.add(cancelButton, gbc);
 
 		JButton prevButton = new JButton("< Back");
-		prevButton.setFont(font);
-		prevButton.setBackground(new Color(242, 233, 228));
-		// prevButton.addActionListener();
+		prevButton.setFont(Fonts.FONT18.get());
+		prevButton.setBackground(ProjectColors.BLUE1.get());
+		prevButton.setBorder(new LineBorder(ProjectColors.LIGHT_BLUE.get(), 1));
+		prevButton.setPreferredSize(new Dimension((int) (getWidth() * 0.2), 40));
+		prevButton.addActionListener(e -> back(2));
 		gbc.gridx = 1;
 		gbc.insets = new Insets(30, 20, 20, 20);
 		thirdCard.add(prevButton, gbc);
 
 		JButton nextButton = new JButton("Next >");
-		nextButton.setFont(font);
-		nextButton.setBackground(new Color(242, 233, 228));
+		nextButton.setFont(Fonts.FONT18.get());
+		nextButton.setBackground(ProjectColors.BLUE.get());
+		nextButton.setForeground(Color.white);
+		nextButton.setPreferredSize(new Dimension((int) (getWidth() * 0.2), 40));
+
+		nextButton.setFocusable(false);
 		nextButton.addActionListener(e -> {
 
 			for (Component c : thirdCard.getComponents()) {
@@ -685,7 +733,8 @@ public class CreateReservationFrame extends JFrame {
 
 			customer = new Customer(nameField.getText(), surnameField.getText(), phone, "", townField.getText(),
 					zipField.getText(), streetField.getText(), streetNoField.getText());
-			createFourthCard();
+			if (!card4Created)
+				createFourthCard();
 			next();
 		});
 		gbc.gridx = 2;
@@ -696,7 +745,8 @@ public class CreateReservationFrame extends JFrame {
 
 	private void createFourthCard() {
 		fourthCard.setLayout(new GridBagLayout());
-		fourthCard.setBackground(Color.WHITE);
+		fourthCard.setBackground(ProjectColors.BG.get());
+		card4Created = true;
 		reservedMenus = new ArrayList<>();
 
 		GridBagConstraints gbc = new GridBagConstraints();
@@ -737,8 +787,6 @@ public class CreateReservationFrame extends JFrame {
 		JScrollPane scrollPane = new JScrollPane();
 		scrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
 		scrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
-		// scrollPane.setPreferredSize(new Dimension(fourthCard.getWidth() / 100 * 70,
-		// fourthCard.getHeight() / 100 * 50));
 		scrollPane.setMinimumSize(new Dimension(fourthCard.getWidth() / 100 * 40, fourthCard.getHeight() / 100 * 30));
 		scrollPane.setBorder(null);
 		scrollPane.setLayout(new ScrollPaneLayout());
@@ -794,8 +842,12 @@ public class CreateReservationFrame extends JFrame {
 		}
 
 		JButton cancelButton = new JButton("Cancel");
-		cancelButton.setFont(font);
-		cancelButton.setBackground(new Color(242, 233, 228));
+		cancelButton.setFont(Fonts.FONT18.get());
+		cancelButton.setForeground(new Color(195, 70, 70));
+		cancelButton.setBackground(new Color(252, 232, 232));
+		cancelButton.setBorder(new LineBorder(new Color(220, 48, 48), 1));
+		cancelButton.setPreferredSize(new Dimension((int) (getWidth() * 0.2), 40));
+		cancelButton.setFocusable(false);
 		cancelButton.addActionListener(e -> cancel());
 		gbc.gridy++;
 		gbc.gridx = 0;
@@ -805,16 +857,21 @@ public class CreateReservationFrame extends JFrame {
 		fourthCard.add(cancelButton, gbc);
 
 		JButton prevButton = new JButton("< Back");
-		prevButton.setFont(font);
-		prevButton.setBackground(new Color(242, 233, 228));
-		// prevButton.addActionListener();
+		prevButton.setFont(Fonts.FONT18.get());
+		prevButton.setBackground(ProjectColors.BLUE1.get());
+		prevButton.setBorder(new LineBorder(ProjectColors.LIGHT_BLUE.get(), 1));
+		prevButton.setPreferredSize(new Dimension((int) (getWidth() * 0.2), 40));
+		prevButton.addActionListener(e -> back(3));
 		gbc.gridx = 1;
 		gbc.insets = new Insets(20, 20, 20, 20);
 		fourthCard.add(prevButton, gbc);
 
 		JButton nextButton = new JButton("Next >");
-		nextButton.setFont(font);
-		nextButton.setBackground(new Color(242, 233, 228));
+		nextButton.setFont(Fonts.FONT18.get());
+		nextButton.setBackground(ProjectColors.BLUE.get());
+		nextButton.setForeground(Color.white);
+		nextButton.setPreferredSize(new Dimension((int) (getWidth() * 0.2), 40));
+		nextButton.setFocusable(false);
 		nextButton.addActionListener(e -> {
 			for (JComboBox<String> j : menuComboBoxes) {
 				String selMenu = j.getSelectedItem().toString();
@@ -827,7 +884,8 @@ public class CreateReservationFrame extends JFrame {
 				}
 			}
 			System.out.println("Reserved menus: " + reservedMenus);
-			createFinalCard();
+			if (!card5Created)
+				createFinalCard();
 			next();
 		});
 		gbc.gridx = 2;
@@ -837,7 +895,8 @@ public class CreateReservationFrame extends JFrame {
 
 	private void createFinalCard() {
 		finalCard.setLayout(new GridBagLayout());
-		finalCard.setBackground(Color.WHITE);
+		finalCard.setBackground(ProjectColors.BG.get());
+		card5Created = true;
 
 		GridBagConstraints gbc = new GridBagConstraints();
 		gbc.insets = new Insets(20, 20, 60, 20);
@@ -870,8 +929,12 @@ public class CreateReservationFrame extends JFrame {
 		finalCard.add(reservationLabel, gbc);
 
 		JButton cancelButton = new JButton("Cancel");
-		cancelButton.setFont(font);
-		cancelButton.setBackground(new Color(242, 233, 228));
+		cancelButton.setFont(Fonts.FONT18.get());
+		cancelButton.setForeground(new Color(195, 70, 70));
+		cancelButton.setBackground(new Color(252, 232, 232));
+		cancelButton.setBorder(new LineBorder(new Color(220, 48, 48), 1));
+		cancelButton.setPreferredSize(new Dimension((int) (getWidth() * 0.2), 40));
+		cancelButton.setFocusable(false);
 		cancelButton.addActionListener(e -> cancel());
 		gbc.gridy++;
 		gbc.gridx = 0;
@@ -881,18 +944,21 @@ public class CreateReservationFrame extends JFrame {
 		finalCard.add(cancelButton, gbc);
 
 		JButton prevButton = new JButton("< Back");
-		prevButton.setFont(font);
-		prevButton.setBackground(new Color(242, 233, 228));
-		// prevButton.addActionListener();
+		prevButton.setFont(Fonts.FONT18.get());
+		prevButton.setBackground(ProjectColors.BLUE1.get());
+		prevButton.setBorder(new LineBorder(ProjectColors.LIGHT_BLUE.get(), 1));
+		prevButton.setPreferredSize(new Dimension((int) (getWidth() * 0.2), 40));
+		prevButton.addActionListener(e -> back(4));
 		gbc.gridx = 1;
 		gbc.insets = new Insets(20, 20, 20, 20);
 		finalCard.add(prevButton, gbc);
 
 		JButton createButton = new JButton("Create");
-		createButton.setFont(font);
-		createButton.setBackground(new Color(242, 233, 228));
+		createButton.setFont(Fonts.FONT18.get());
+		createButton.setBackground(ProjectColors.BLUE.get());
+		createButton.setForeground(Color.white);
+		createButton.setPreferredSize(new Dimension((int) (getWidth() * 0.2), 40));
 		createButton.addActionListener(e -> {
-
 			new Thread(() -> {
 				try {
 					reservationController.confirmReservation(customer, guests, reservedMenus, note);
@@ -901,7 +967,7 @@ public class CreateReservationFrame extends JFrame {
 					ReservationsPanel.repopulateTable();
 				} catch (SQLException e1) {
 					JOptionPane.showConfirmDialog(null,
-							"An error eccured while creating the reservation.\nPlease try again.", "Error",
+							"An error occured while creating the reservation.\nPlease try again.", "Error",
 							JOptionPane.OK_CANCEL_OPTION, JOptionPane.WARNING_MESSAGE);
 					return;
 				}
@@ -973,5 +1039,10 @@ public class CreateReservationFrame extends JFrame {
 				}
 			}
 		});
+	}
+
+	private void back(int card) {
+		cardLayout.show(contentPane, card + "");
+		currentCard = card;
 	}
 }
