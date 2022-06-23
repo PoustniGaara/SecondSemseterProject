@@ -69,8 +69,11 @@ public class OverviewPanel extends JPanel {
 	private UtilDateModel calendarModel;
 	private JDatePickerImpl datePicker;
 	private boolean automaticSystemTime = true;
+<<<<<<< HEAD
 	private ToolBorderPanel personBorderPanel, timeBorderPanel, durationBorderPanel, calendarBorderPanel;
 	private ArrayList<Table> selectedTables;
+=======
+>>>>>>> parent of 3c8f828 (GUI)
 	
 	
 	private OverviewPanel() {
@@ -93,7 +96,10 @@ public class OverviewPanel extends JPanel {
 		setVisible(true);
 		
 		//load data
+<<<<<<< HEAD
 		selectedTables = new ArrayList<>();
+=======
+>>>>>>> parent of 3c8f828 (GUI)
 		try {
 			layoutList = (ArrayList<RestaurantLayout>) restaurantLayoutController.read();
 			System.out.print("RL FIRST ID: "+layoutList.get(0).getId());
@@ -101,6 +107,10 @@ public class OverviewPanel extends JPanel {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+<<<<<<< HEAD
+=======
+		
+>>>>>>> parent of 3c8f828 (GUI)
 		setCalendarCurrentTime();
 		loadLayouts(1,calendar,1);
 		
@@ -122,6 +132,7 @@ public class OverviewPanel extends JPanel {
 		gbcTool.weighty = 1;
 		add(toolPanel, BorderLayout.NORTH);
 		
+<<<<<<< HEAD
 		// Person border panel
 		personBorderPanel = new ToolBorderPanel(0,0,0,0);
 		//new ToolBorderPanel((int) ((panelWidth/8)*0.98),(int) (ToolPanel.getPanelHeight()*0.2),
@@ -135,6 +146,14 @@ public class OverviewPanel extends JPanel {
 		gbcTool.gridy = 0;
 		gbcTool.fill = GridBagConstraints.BOTH;
 		toolPanel.add(personBorderPanel,gbcTool);
+=======
+		JLabel personLabel = new JLabel("No. of persons:");
+		personLabel.setFont(font1);
+		gbcTool.anchor = GridBagConstraints.LAST_LINE_START;
+		gbcTool.gridx = 0;
+		gbcTool.gridy = 0;
+		toolPanel.add(personLabel,gbcTool);
+>>>>>>> parent of 3c8f828 (GUI)
 		
 		// Person ComboBox
 		personCB = new JComboBox<Integer>(new DefaultComboBoxModel());
@@ -142,6 +161,7 @@ public class OverviewPanel extends JPanel {
 		personCB.setMaximumRowCount(5);
 		personCB.addActionListener(e -> PersonComboBoxAction());
 		personCB.setFont(Fonts.FONT30.get());
+<<<<<<< HEAD
 		personCB.setPreferredSize(new Dimension(panelWidth/14, ToolPanel.getPanelHeight()/2));
 		gbcPersonBP.anchor = GridBagConstraints.CENTER;
 		gbcPersonBP.gridx = 0;
@@ -257,6 +277,38 @@ public class OverviewPanel extends JPanel {
 		
 		// Duration spinner
 		SpinnerNumberModel numberModelDuration = new SpinnerNumberModel(2,1,8,1);
+=======
+		personCB.setPreferredSize(new Dimension(panelWidth/12, ToolPanel.getPanelHeight()/2));
+		gbcTool.anchor = GridBagConstraints.FIRST_LINE_START;
+		gbcTool.gridx = 0;
+		gbcTool.gridy = 1;
+		toolPanel.add(personCB,gbcTool);
+		
+		// DayBack button
+		dayBackBtn = new FancyButtonMoreClick(ProjectColors.BLACK.get(), ProjectColors.GREEN.get(),
+				ProjectColors.GREY.get(),ProjectColors.GREY.get());
+		FontIcon leftArrowIcon = FontIcon.of(CoreUiFree.ARROW_LEFT);
+		leftArrowIcon.setIconSize(100);
+		dayBackBtn.setIcon(leftArrowIcon);
+		dayBackBtn.addActionListener(e -> dayBackClicked());
+		dayBackBtn.setPreferredSize(new Dimension(panelWidth/10, (int) (ToolPanel.getPanelHeight()*0.80)));
+		gbcTool.anchor = GridBagConstraints.CENTER;
+		gbcTool.gridheight = 2;
+		gbcTool.gridx = 1;
+		gbcTool.gridy = 0;
+		toolPanel.add(dayBackBtn,gbcTool);
+		
+		JLabel durationLabel = new JLabel("Duration:");
+		durationLabel.setFont(font1);
+		gbcTool.anchor = GridBagConstraints.LAST_LINE_START;
+		gbcTool.gridx = 2;
+		gbcTool.gridy = 0;
+		gbcTool.gridheight = 1;
+		toolPanel.add(durationLabel,gbcTool);
+		
+//		 Duration spinner
+		SpinnerNumberModel numberModelDuration = new SpinnerNumberModel(1,1,8,1);
+>>>>>>> parent of 3c8f828 (GUI)
 		durationSpinner = new JSpinner(numberModelDuration);
 		JSpinner.NumberEditor editorDuration = new JSpinner.NumberEditor(durationSpinner);
 		NumberFormatter formatterDuration = (NumberFormatter) editorDuration.getTextField().getFormatter();
@@ -264,6 +316,7 @@ public class OverviewPanel extends JPanel {
 		formatterDuration.setOverwriteMode(true);
 		durationSpinner.setEditor(editorDuration);
 		durationSpinner.setFont(Fonts.FONT30.get());
+<<<<<<< HEAD
 		durationSpinner.setPreferredSize(new Dimension(panelWidth/14, ToolPanel.getPanelHeight()/2));
 //		durationSpinner.setBorder(new CompoundBorder(new LineBorder(darkGray, 1), new EmptyBorder(0, 10, 0, 0)));
 		gbcDurationBP.anchor = GridBagConstraints.CENTER;
@@ -320,6 +373,86 @@ public class OverviewPanel extends JPanel {
 		gbcCalendarBP.gridx = 1;
 		calendarBorderPanel.add(calendarLabel,gbcCalendarBP);
 
+=======
+		durationSpinner.setPreferredSize(new Dimension(panelWidth/16, ToolPanel.getPanelHeight()/2));
+//		durationSpinner.setBorder(new CompoundBorder(new LineBorder(darkGray, 1), new EmptyBorder(0, 10, 0, 0)));
+		gbcTool.anchor = GridBagConstraints.FIRST_LINE_START;
+		gbcTool.gridx = 2;
+		gbcTool.gridy = 1;
+		toolPanel.add(durationSpinner, gbcTool);
+		
+		// Hour label
+		JLabel hourLabel = new JLabel("Hour:");
+		hourLabel.setFont(font1);
+		gbcTool.anchor = GridBagConstraints.LAST_LINE_START;
+		gbcTool.gridx = 3;
+		gbcTool.gridy = 0;
+		gbcTool.gridheight = 1;
+		toolPanel.add(hourLabel,gbcTool);
+		
+		// Hours spinner
+		SpinnerNumberModel numberModelHours = new SpinnerNumberModel(17,17,23,1);
+		hourSpinner = new JSpinner(numberModelHours);
+		JSpinner.NumberEditor editorHours = new JSpinner.NumberEditor(hourSpinner);
+		NumberFormatter formatterHours = (NumberFormatter) editorHours.getTextField().getFormatter();
+		formatterHours.setAllowsInvalid(false);
+		formatterHours.setOverwriteMode(true);
+		hourSpinner.setEditor(editorHours);
+		hourSpinner.setFont(Fonts.FONT30.get());
+		hourSpinner.setPreferredSize(new Dimension(panelWidth/16, ToolPanel.getPanelHeight()/2));
+//		hourSpinner.setBorder(new CompoundBorder(new LineBorder(darkGray, 1), new EmptyBorder(0, 10, 0, 0)));
+		gbcTool.anchor = GridBagConstraints.FIRST_LINE_START;
+		gbcTool.gridx = 3;
+		gbcTool.gridy = 1;
+		toolPanel.add(hourSpinner, gbcTool);
+		
+		setValueOfHourSpinner();
+		
+		// Separator label
+		JLabel separatorLabel = new JLabel(":", JLabel.CENTER);
+		separatorLabel.setPreferredSize(new Dimension(panelWidth/30, ToolPanel.getPanelHeight()/2));
+		separatorLabel.setFont(Fonts.FONT30.get());
+		gbcTool.gridheight = 2;
+		gbcTool.gridx = 4;
+		toolPanel.add(separatorLabel, gbcTool);
+		
+		// Minute label
+		JLabel minuteLabel = new JLabel("Minute: ");
+		minuteLabel.setFont(font1);
+		gbcTool.anchor = GridBagConstraints.LAST_LINE_START;
+		gbcTool.gridx = 5;
+		gbcTool.gridy = 0;
+		gbcTool.gridheight = 1;
+		toolPanel.add(minuteLabel,gbcTool);
+		
+		// Minute spinner
+		SpinnerNumberModel numberModelMinutes = new SpinnerNumberModel(0,0,50,10);
+		minuteSpinner = new JSpinner(numberModelMinutes);
+		JSpinner.NumberEditor editorMinutes = new JSpinner.NumberEditor(minuteSpinner);
+		NumberFormatter formatterMinutes = (NumberFormatter) editorMinutes.getTextField().getFormatter();
+		minuteSpinner.setEditor(editorMinutes);
+		formatterMinutes.setAllowsInvalid(false);
+		formatterMinutes.setOverwriteMode(true);
+		minuteSpinner.setFont(Fonts.FONT30.get());
+		minuteSpinner.setPreferredSize(new Dimension(panelWidth/16, ToolPanel.getPanelHeight()/2));
+//		minuteSpinner.setBorder(new CompoundBorder(new LineBorder(darkGray, 1), new EmptyBorder(0, 10, 0, 0)));
+		gbcTool.anchor = GridBagConstraints.FIRST_LINE_START;
+		gbcTool.gridx = 5;
+		gbcTool.gridy = 1;
+		toolPanel.add(minuteSpinner, gbcTool);
+		
+		setValueOfMinuteSpinner();
+		
+		// Date label
+		JLabel dateLbl = new JLabel("Date: ");  
+		dateLbl.setFont(font1);
+		gbcTool.gridheight = 1;
+		gbcTool.gridx = 6;
+		gbcTool.gridy = 0;
+		gbcTool.anchor = GridBagConstraints.LAST_LINE_START;
+		toolPanel.add(dateLbl,gbcTool);
+		
+>>>>>>> parent of 3c8f828 (GUI)
 		// Date picker
 		calendarModel = new UtilDateModel();
 		Properties properties = new Properties();
@@ -334,12 +467,29 @@ public class OverviewPanel extends JPanel {
 		datePicker.setPreferredSize(new Dimension(panelWidth/12, ToolPanel.getPanelHeight()/3));
 	    datePicker.getComponent(0).setPreferredSize(new Dimension(panelWidth/12, ToolPanel.getPanelHeight()/3)); //JFormattedTextField
 	    datePicker.getComponent(1).setPreferredSize(new Dimension(40,ToolPanel.getPanelHeight()/3));//JButton
+<<<<<<< HEAD
 	    gbcCalendarBP.insets = new Insets(0,-panelWidth/200,0,0);
 
 		gbcCalendarBP.gridx = 2;
 		calendarBorderPanel.add(datePicker,gbcCalendarBP);
 	    
 	    setDateOfDatePicker();
+=======
+	    
+		gbcTool.anchor = GridBagConstraints.FIRST_LINE_START;
+		gbcTool.gridheight = 1;
+		gbcTool.gridx = 6;
+		gbcTool.gridy = 1;
+		toolPanel.add(datePicker,gbcTool);
+	    
+	    setDateOfDatePicker();
+	    
+//		Date selectedDate = (Date) datePicker.getModel().getValue();
+//		calendarModel.setValue(selectedDate);
+
+//		FontIcon calendarIcon = FontIcon.of(CoreUiFree.CALENDAR);
+//		calendarIcon.setIconSize(32);
+>>>>>>> parent of 3c8f828 (GUI)
 		
 		// Now button
 		nowBtn = new FancyButtonOneClick(ProjectColors.BLACK.get(), ProjectColors.RED.get(), ProjectColors.RED.get());
@@ -349,10 +499,19 @@ public class OverviewPanel extends JPanel {
 		nowBtn.setText("now");
 		nowBtn.setBorder(borderBlack);
 		nowBtn.addActionListener(e -> nowBtnClicked());
+<<<<<<< HEAD
 	    gbcCalendarBP.insets = new Insets(0,-panelWidth/160,0,0);
 		gbcCalendarBP.gridy = 0;
 		gbcCalendarBP.gridx = 3;
 		calendarBorderPanel.add(nowBtn,gbcCalendarBP);
+=======
+		gbcTool.anchor = GridBagConstraints.FIRST_LINE_START;
+		gbcTool.insets = new Insets(0,-panelWidth/26,0,0);
+		gbcTool.gridy = 1;
+		gbcTool.gridheight = 1;
+		gbcTool.gridx = 7;
+		toolPanel.add(nowBtn,gbcTool);
+>>>>>>> parent of 3c8f828 (GUI)
 		
 		dayForwardBtn = new FancyButtonMoreClick(ProjectColors.BLACK.get(), ProjectColors.GREEN.get(),
 				ProjectColors.GREY.get(),ProjectColors.GREY.get());
@@ -361,6 +520,7 @@ public class OverviewPanel extends JPanel {
 		dayForwardBtn.setIcon(rightArrowIcon);
 		dayForwardBtn.addActionListener(e -> dayForwardClicked());
 		dayForwardBtn.setPreferredSize(new Dimension(panelWidth/10, (int) (ToolPanel.getPanelHeight()*0.80)));
+<<<<<<< HEAD
 		gbcCalendarBP.anchor = GridBagConstraints.CENTER;
 		gbcCalendarBP.insets = new Insets(0,0,0,0);
 		gbcCalendarBP.gridy = 0;
@@ -377,6 +537,14 @@ public class OverviewPanel extends JPanel {
 		gbcCalendarBP.gridy = 1;
 		gbcCalendarBP.anchor = GridBagConstraints.PAGE_END;
 		calendarBorderPanel.add(dateLbl,gbcCalendarBP);
+=======
+		gbcTool.anchor = GridBagConstraints.CENTER;
+		gbcTool.insets = new Insets(0,0,0,0);
+		gbcTool.gridy = 0;
+		gbcTool.gridheight = 2;
+		gbcTool.gridx = 8;
+		toolPanel.add(dayForwardBtn,gbcTool);
+>>>>>>> parent of 3c8f828 (GUI)
 		
 		// -----------------------------------------------
 		// ------------------ MAIN PANEL ---------------------
@@ -428,6 +596,7 @@ public class OverviewPanel extends JPanel {
 		gbcFooter.gridheight = 2;
 		gbcFooter.weightx = 1;
 		footerPanel.add(makeReservationBtn,gbcFooter);
+<<<<<<< HEAD
 		
 		setAutomaticTime(true); // because its turned of in setup method
 
@@ -475,6 +644,11 @@ public class OverviewPanel extends JPanel {
 		}
 	}
 	
+=======
+
+	} // end of constructor
+	
+>>>>>>> parent of 3c8f828 (GUI)
 	public void startTimerForGettingReservationInfoFromDB() {
 		Timer timer = new Timer(); // create new timer
 		TimerTask task = new TimerTask() {
@@ -550,12 +724,28 @@ public class OverviewPanel extends JPanel {
 	
 	private void setCalendarCurrentTime() {
 		calendar = Calendar.getInstance();
+<<<<<<< HEAD
 		int minute = calendar.get(Calendar.MINUTE);
 		minute = (int) (Math.round(minute/10.0) * 10) ;
 		calendar.set(Calendar.MINUTE,minute);
 	}
 	
 	private void setValueOfMinuteSpinner() {
+=======
+		if(calendar.get(Calendar.HOUR_OF_DAY) < 17) { // IF IT IS BEFORE 17
+			calendar.set(Calendar.HOUR_OF_DAY,17);
+			calendar.set(Calendar.MINUTE,0);
+		}
+		else { // IF IT IS AFTER 17
+			int minute = calendar.get(Calendar.MINUTE);
+			minute = (int) (Math.round(minute/10.0) * 10) ;
+			calendar.set(Calendar.MINUTE,minute);
+		}
+	}
+	
+	private void setValueOfMinuteSpinner() {
+		automaticSystemTime = false;
+>>>>>>> parent of 3c8f828 (GUI)
 		minuteSpinner.setValue(calendar.get(Calendar.MINUTE));	
 	}
 	
