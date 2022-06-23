@@ -249,7 +249,6 @@ public class LayoutEditorFrame extends JFrame {
 		if(currentComponent != null) {
 		mainPanel.remove(currentComponent);
 		currentComponent = editorPanelMap.get(layoutsCB.getSelectedItem().toString());
-		System.out.println(editorPanelMap.get(layoutsCB.getSelectedItem().toString()));
 		mainPanel.add(currentComponent, BorderLayout.CENTER); //add editor panel
 		mainPanel.repaint();
 		mainPanel.revalidate();
