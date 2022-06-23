@@ -1,13 +1,7 @@
 package gui.reservation;
 
-import java.awt.BorderLayout;
-import java.awt.Color;
-import java.awt.Component;
-import java.awt.Dimension;
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
-import java.awt.Insets;
-import java.awt.Toolkit;
+import java.awt.*;
+import java.awt.event.ActionListener;
 import java.sql.SQLException;
 import java.time.Instant;
 import java.time.LocalDate;
@@ -15,9 +9,11 @@ import java.time.LocalTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.GregorianCalendar;
+import java.util.Random;
 
 import javax.swing.JButton;
-import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
@@ -26,26 +22,24 @@ import javax.swing.JTextField;
 import javax.swing.ListSelectionModel;
 import javax.swing.ScrollPaneConstants;
 import javax.swing.ScrollPaneLayout;
+import javax.swing.border.Border;
 import javax.swing.border.CompoundBorder;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.LineBorder;
-import javax.swing.border.MatteBorder;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.JTableHeader;
 import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableColumn;
 
 import controller.ReservationController;
+import database.MenuConcreteDAO;
 import database.ReservationConcreteDAO;
-import gui.ConnectionCheckLabel;
+import database.TableConcreteDAO;
+import database.TableDAO;
 import gui.FooterPanel;
-import gui.MainFrame;
 import gui.ToolPanel;
-import gui.tools.Fonts;
-import gui.tools.ProjectColors;
+import model.*;
 import model.Menu;
-import model.Reservation;
-import model.Table;
 
 @SuppressWarnings("serial")
 public class ReservationsPanel extends JPanel {
@@ -54,15 +48,18 @@ public class ReservationsPanel extends JPanel {
 	private ReservationController reservationController;
 	private JTextField searchBar;
 
+	private int width;
+	private int height;
 	private JTable table;
 	private DefaultTableModel tableModel;
+	private float time;
 
 	private ReservationsPanel() {
 		reservationController = new ReservationController();
-
-		setBounds(0, 100, MainFrame.width, MainFrame.height - 100);
+		Toolkit tk = Toolkit.getDefaultToolkit();
+		setBounds(0, 100, tk.getScreenSize().width, tk.getScreenSize().height - 100);
 		setLayout(new BorderLayout());
-		setBackground(ProjectColors.BG.get());
+		setBackground(Color.WHITE);
 
 		// -----------------------------------------------
 		// ------------------ HEADER ---------------------
@@ -70,10 +67,11 @@ public class ReservationsPanel extends JPanel {
 
 		// Tool Panel
 		ToolPanel toolPanel = new ToolPanel();
-		toolPanel.setBackground(ProjectColors.BG.get());
+		toolPanel.setBorder(new LineBorder(Color.GREEN));
 		add(toolPanel, BorderLayout.NORTH);
 
 		GridBagConstraints gbcTool = new GridBagConstraints();
+		gbcTool.insets = new Insets(20, 25, 20, 25);
 		gbcTool.fill = GridBagConstraints.NONE;
 		gbcTool.anchor = GridBagConstraints.CENTER;
 		gbcTool.weightx = 0.5;
@@ -81,40 +79,34 @@ public class ReservationsPanel extends JPanel {
 
 		// search bar
 		searchBar = new JTextField();
-		searchBar.setFont(Fonts.FONT18.get());
+		searchBar.setFont(new Font("Segoe UI Semibold", Font.PLAIN, 20));
 		searchBar.setSize(new Dimension((int) (getWidth() * 0.45), 40));
 		searchBar.setPreferredSize(new Dimension((int) (getWidth() * 0.45), 40));
-		searchBar.setBorder(
-				new CompoundBorder(new LineBorder(new Color(212, 221, 233), 1), new EmptyBorder(0, 10, 0, 0)));
+		searchBar.setBorder(new CompoundBorder(new LineBorder(Color.BLACK, 1), new EmptyBorder(0, 10, 0, 0)));
 		searchBar.setBackground(Color.WHITE);
 		searchBar.setToolTipText("Search reservations by date or customer's name");
 		gbcTool.gridx = 0;
 		gbcTool.gridy = 0;
 		gbcTool.gridwidth = 2;
 		gbcTool.gridheight = 1;
-		gbcTool.insets = new Insets(20, 35, 20, 0);
-		gbcTool.anchor = GridBagConstraints.WEST;
 		toolPanel.add(searchBar, gbcTool);
 
 		// search button
 		JButton searchButton = new JButton("Search");
-		searchButton.setFont(Fonts.FONT18.get());
-		searchButton.setBackground(Color.white);
-		searchButton.setBorder(new LineBorder(ProjectColors.BLUE3.get(), 1));
+		searchButton.setFont(new Font("Segoe UI Semibold", Font.PLAIN, 16));
+		searchButton.setBackground(new Color(242, 233, 228));
 		searchButton.setPreferredSize(new Dimension((int) (getWidth() * 0.15), 40));
 		searchButton.setFocusable(false);
 		searchButton.addActionListener(e -> search());
 		gbcTool.gridx = 2;
 		gbcTool.gridwidth = 1;
-		gbcTool.insets = new Insets(20, 0, 20, 35);
 		gbcTool.anchor = GridBagConstraints.WEST;
 		toolPanel.add(searchButton, gbcTool);
 
 		// show all button
 		JButton showButton = new JButton("Refresh");
-		showButton.setFont(Fonts.FONT18.get());
-		showButton.setBackground(Color.white);
-		showButton.setBorder(new LineBorder(ProjectColors.LIGHT_BLUE.get(), 1));
+		showButton.setFont(new Font("Segoe UI Semibold", Font.PLAIN, 16));
+		showButton.setBackground(new Color(242, 233, 228));
 		showButton.setPreferredSize(new Dimension((int) (getWidth() * 0.15), 40));
 		showButton.setFocusable(false);
 		showButton.addActionListener(e -> new Thread(() -> {
@@ -125,7 +117,7 @@ public class ReservationsPanel extends JPanel {
 			}
 		}).start());
 		gbcTool.gridx = 3;
-		gbcTool.anchor = GridBagConstraints.EAST;
+		gbcTool.anchor = GridBagConstraints.CENTER;
 		toolPanel.add(showButton, gbcTool);
 
 		// -----------------------------------------------
@@ -146,20 +138,16 @@ public class ReservationsPanel extends JPanel {
 		};
 		tableModel = new DefaultTableModel();
 		table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-		table.setBackground(ProjectColors.BLUEtable.get());
-		table.setShowGrid(false);
-		table.setShowHorizontalLines(true);
-		table.setFont(Fonts.TABLE_FONT.get());
+		table.setPreferredScrollableViewportSize(new Dimension(getWidth(), getHeight() - 100));
+		table.setFont(new Font("Tahoma", Font.PLAIN, 16));
 		table.setModel(tableModel);
 		table.setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
 		table.setDefaultEditor(Object.class, null);
 		table.setRowHeight((int) (table.getRowHeight() * 2));
-		table.setBorder(null);
 		JTableHeader header = table.getTableHeader();
-		header.setFont(Fonts.FONT18.get());
+		header.setFont(new Font("Tahoma", Font.BOLD, 16));
 		header.setResizingAllowed(false);
 		header.setReorderingAllowed(false);
-		header.setBackground(ProjectColors.BLUE1.get());
 		table.setTableHeader(header);
 		createColumns();
 		try {
@@ -172,20 +160,17 @@ public class ReservationsPanel extends JPanel {
 		table.getColumnModel().getColumn(0).setWidth(0);
 		table.getColumnModel().getColumn(0).setMinWidth(0);
 		table.getColumnModel().getColumn(0).setMaxWidth(0);
-		table.setFillsViewportHeight(true);
 
 		JPanel mainPanel = new JPanel();
 		mainPanel.setLayout(new GridBagLayout());
-		mainPanel.setBackground(Color.white);
+		mainPanel.setBackground(Color.WHITE);
 		add(mainPanel, BorderLayout.CENTER);
-		mainPanel.setBorder(new MatteBorder(0, 0, 1, 0, ProjectColors.BLUE1.get()));
 
 		GridBagConstraints gbcMain = new GridBagConstraints();
-		gbcMain.insets = new Insets(20, 35, 20, 35);
-		gbcMain.fill = GridBagConstraints.BOTH;
+		gbcMain.insets = new Insets(20, 25, 20, 25);
+		gbcMain.fill = GridBagConstraints.VERTICAL;
 		gbcMain.anchor = GridBagConstraints.CENTER;
-		gbcMain.gridwidth = GridBagConstraints.REMAINDER;
-		gbcMain.gridheight = GridBagConstraints.REMAINDER;
+		gbcMain.gridwidth = 1;
 		gbcMain.weightx = 1;
 		gbcMain.weighty = 1;
 		gbcMain.gridx = 0;
@@ -194,6 +179,7 @@ public class ReservationsPanel extends JPanel {
 		// pane
 		JScrollPane scrollPane = new JScrollPane(table);
 		scrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+		scrollPane.setPreferredSize(new Dimension(getWidth() / 100 * 90, getHeight() / 100 * 50));
 		scrollPane.setBorder(null);
 		scrollPane.setLayout(new ScrollPaneLayout());
 		mainPanel.add(scrollPane, gbcMain);
@@ -203,66 +189,54 @@ public class ReservationsPanel extends JPanel {
 		// -----------------------------------------------
 
 		FooterPanel footerPanel = new FooterPanel();
-		footerPanel.setBackground(Color.WHITE);
 		add(footerPanel, BorderLayout.SOUTH);
-		GridBagLayout footergbl = new GridBagLayout();
-		footergbl.columnWidths = new int[] { 550, 170, 170, 170 };
-		footerPanel.setLayout(footergbl);
+		footerPanel.setLayout(new GridBagLayout());
 
 		GridBagConstraints gbcFooter = new GridBagConstraints();
-		gbcFooter.insets = new Insets(20, 5, 0, 15);
+		gbcFooter.insets = new Insets(10, 15, 10, 15);
 		gbcFooter.fill = GridBagConstraints.VERTICAL;
-		gbcFooter.anchor = GridBagConstraints.SOUTHWEST;
+		gbcFooter.anchor = GridBagConstraints.WEST;
 		gbcFooter.gridwidth = 1;
 		gbcFooter.weightx = 1;
-		gbcFooter.weighty = 0;
-		gbcFooter.ipadx = 0;
+		gbcFooter.weighty = 1;
+		gbcFooter.ipadx = 20;
 		gbcFooter.ipady = 0;
 		gbcFooter.gridx = 0;
 		gbcFooter.gridy = 0;
 
-		JLabel conCheck = ConnectionCheckLabel.getInstance();
-		footerPanel.add(conCheck, gbcFooter);
+		// modify button
+		JButton modifyButton = new JButton("Change");
+		modifyButton.setFont(new Font("Segoe UI Semibold", Font.PLAIN, 16));
+		modifyButton.setBackground(new Color(242, 233, 228));
+		modifyButton.setPreferredSize(new Dimension((int) (getWidth() * 0.15), 40));
+		modifyButton.setFocusable(false);
+		modifyButton.addActionListener(e -> change());
+		footerPanel.add(modifyButton, gbcFooter);
 
 		// delete button
 		JButton deleteButton = new JButton("Delete");
-		deleteButton.setFont(Fonts.FONT18.get());
-		deleteButton.setForeground(new Color(195, 70, 70));
-		deleteButton.setBackground(new Color(252, 232, 232));
-		deleteButton.setBorder(new LineBorder(new Color(220, 48, 48), 1));
+		deleteButton.setFont(new Font("Segoe UI Semibold", Font.PLAIN, 16));
+		deleteButton.setBackground(new Color(242, 233, 228));
 		deleteButton.setPreferredSize(new Dimension((int) (getWidth() * 0.15), 40));
 		deleteButton.setFocusable(false);
 		deleteButton.addActionListener(e -> new Thread(() -> {
 			delete();
 		}).start());
-		gbcFooter.insets = new Insets(10, 15, 10, 15);
-		gbcFooter.anchor = GridBagConstraints.EAST;
 		gbcFooter.gridx = 1;
+		gbcFooter.anchor = GridBagConstraints.WEST;
 		footerPanel.add(deleteButton, gbcFooter);
 
-		// modify button
-		JButton modifyButton = new JButton("Change");
-		modifyButton.setFont(Fonts.FONT18.get());
-		modifyButton.setBackground(ProjectColors.BLUE1.get());
-		modifyButton.setBorder(new LineBorder(ProjectColors.LIGHT_BLUE.get(), 1));
-		modifyButton.setPreferredSize(new Dimension((int) (getWidth() * 0.15), 40));
-		modifyButton.setFocusable(false);
-		modifyButton.addActionListener(e -> change());
-		gbcFooter.gridx = 2;
-		gbcFooter.ipadx = 20;
-		footerPanel.add(modifyButton, gbcFooter);
-
 		// add button
-		JButton addButton = new JButton("Add +");
-		addButton.setFont(Fonts.FONT18.get());
-		addButton.setBackground(ProjectColors.BLUE.get());
-		addButton.setForeground(Color.white);
+		JButton addButton = new JButton("Add");
+		addButton.setFont(new Font("Segoe UI Semibold", Font.PLAIN, 16));
+		addButton.setBackground(new Color(242, 233, 228));
 		addButton.setPreferredSize(new Dimension((int) (getWidth() * 0.15), 40));
 		addButton.setFocusable(false);
 		addButton.addActionListener(e -> add());
-		gbcFooter.gridx = 3;
-		gbcFooter.insets = new Insets(10, 15, 10, 35);
+		gbcFooter.gridx = 4;
+		gbcFooter.anchor = GridBagConstraints.EAST;
 		footerPanel.add(addButton, gbcFooter);
+
 	}
 
 	private void search() {
@@ -307,6 +281,35 @@ public class ReservationsPanel extends JPanel {
 
 	private void add() {
 		CreateReservationFrame.open();
+
+//		try {
+//			Calendar calendar = new GregorianCalendar();
+//			Random r = new Random();
+//			calendar.set(2022, r.nextInt(11 - 6) + 6, r.nextInt(30 - 1) + 1, r.nextInt(20 - 12) + 12, 0);
+//
+//			Table t = TableConcreteDAO.getInstance().read(1);
+//			ArrayList<Table> tables = new ArrayList<>();
+//			tables.add(t);
+//
+//			Reservation reservation = reservationController.startReservation(calendar, tables);
+//
+//			Menu m = MenuConcreteDAO.getInstance().read(1);
+//			ArrayList<Menu> menus = new ArrayList<>();
+//			menus.add(m);
+//			menus.add(m);
+//			menus.add(m);
+//			menus.add(m);
+//
+//			String phone = "187654351";
+//			Customer customer = reservationController.checkCustomer(phone);
+//
+//			String note = "Please, decorate the table with dead kittens :)";
+//
+//			reservationController.confirmReservation(customer, 4, menus, note);
+//
+//		} catch (Exception e) {
+//			e.printStackTrace();
+//		}
 	}
 
 	private void delete() {
@@ -318,7 +321,11 @@ public class ReservationsPanel extends JPanel {
 						JOptionPane.WARNING_MESSAGE) == JOptionPane.YES_OPTION) {
 					long id = Long.parseLong(table.getValueAt(table.getSelectedRow(), 0).toString());
 					tableModel.removeRow(table.getSelectedRow());
-					reservationController.deleteReservation((int) id);
+//					if (reservationController.getReservationById(id) != null) { OLD CODE
+//						Reservation r = reservationController.getReservationById(id);
+//						reservationController.deleteReservation(r);
+//					}
+					reservationController.deleteReservation((int) id); // NEW CODE
 				}
 			} else {
 				JOptionPane.showMessageDialog(null, "You must select a reservation in the list you want to delete!",

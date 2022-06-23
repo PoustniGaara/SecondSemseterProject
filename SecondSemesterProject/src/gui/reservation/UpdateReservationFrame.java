@@ -73,7 +73,7 @@ public class UpdateReservationFrame extends JFrame {
 
 		setTitle("Update Reservation");
 		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-		setBounds(0, 0, 1000, 800);
+		setBounds(0, 0, 1000, 900);
 		setUndecorated(false);
 		setResizable(false);
 
@@ -84,13 +84,13 @@ public class UpdateReservationFrame extends JFrame {
 		contentPane.setLayout(gbl);
 
 		GridBagConstraints gbc = new GridBagConstraints();
-		gbc.insets = new Insets(20, 30, 20, 30);
+		gbc.insets = new Insets(20, 20, 40, 20);
 		gbc.gridx = 0;
 		gbc.gridy = 0;
 		gbc.ipadx = 0;
 		gbc.ipady = 0;
 		gbc.gridwidth = GridBagConstraints.REMAINDER;
-		gbc.anchor = GridBagConstraints.NORTH;
+		gbc.anchor = GridBagConstraints.CENTER;
 		gbc.fill = GridBagConstraints.HORIZONTAL;
 
 		JLabel titleLabel = new JLabel("Updating reservation no. " + reservation.getId(), JLabel.CENTER);
@@ -105,7 +105,7 @@ public class UpdateReservationFrame extends JFrame {
 		gbc.gridheight = 1;
 		gbc.anchor = GridBagConstraints.WEST;
 		gbc.gridwidth = 3;
-		gbc.insets = new Insets(20, 30, 10, 30);
+		gbc.insets = new Insets(25, 30, 10, 30);
 		contentPane.add(guestsLabel, gbc);
 
 		JTextField guestsField = new JTextField();
@@ -114,14 +114,14 @@ public class UpdateReservationFrame extends JFrame {
 		guestsField.setBackground(Color.WHITE);
 		guestsField.setText(reservation.getGuests() + "");
 		gbc.gridy++;
-		gbc.insets = new Insets(10, 30, 20, 30);
+		gbc.insets = new Insets(10, 30, 25, 30);
 		contentPane.add(guestsField, gbc);
 
 		JLabel dateLabel = new JLabel("Date:");
 		dateLabel.setForeground(darkGray);
 		dateLabel.setFont(font);
 		gbc.gridy++;
-		gbc.insets = new Insets(20, 30, 10, 30);
+		gbc.insets = new Insets(25, 30, 10, 30);
 		contentPane.add(dateLabel, gbc);
 
 		DateFormat format = new SimpleDateFormat("dd.MM.yyyy");
@@ -131,14 +131,14 @@ public class UpdateReservationFrame extends JFrame {
 		dateField.setFont(font);
 		dateField.setBorder(new CompoundBorder(new LineBorder(darkGray, 1), new EmptyBorder(0, 10, 0, 0)));
 		gbc.gridy++;
-		gbc.insets = new Insets(10, 30, 20, 30);
+		gbc.insets = new Insets(10, 30, 25, 30);
 		contentPane.add(dateField, gbc);
 
 		JLabel timeLabel = new JLabel("Time:");
 		timeLabel.setForeground(darkGray);
 		timeLabel.setFont(font);
 		gbc.gridy++;
-		gbc.insets = new Insets(20, 30, 10, 30);
+		gbc.insets = new Insets(25, 30, 10, 30);
 		contentPane.add(timeLabel, gbc);
 
 		Calendar calendar = Calendar.getInstance();
@@ -160,7 +160,7 @@ public class UpdateReservationFrame extends JFrame {
 		gbc.gridy++;
 		gbc.gridwidth = 1;
 		// gbc.anchor = GridBagConstraints.NORTH;
-		gbc.insets = new Insets(10, 30, 20, 30);
+		gbc.insets = new Insets(10, 30, 25, 30);
 		contentPane.add(spinnerH, gbc);
 
 		JLabel separator = new JLabel(":", JLabel.CENTER);
@@ -190,7 +190,7 @@ public class UpdateReservationFrame extends JFrame {
 		gbc.gridx = 0;
 		gbc.gridy++;
 		gbc.gridwidth = 3;
-		gbc.insets = new Insets(20, 30, 10, 30);
+		gbc.insets = new Insets(25, 30, 10, 30);
 		contentPane.add(tablesLabel, gbc);
 
 		JComboBox<String> tables = new JComboBox<String>();
@@ -201,8 +201,7 @@ public class UpdateReservationFrame extends JFrame {
 			tables.addItem(t.getName());
 		}
 		gbc.gridy++;
-		gbc.anchor = GridBagConstraints.NORTH;
-		gbc.insets = new Insets(10, 30, 20, 30);
+		gbc.insets = new Insets(10, 30, 25, 30);
 		contentPane.add(tables, gbc);
 
 		JLabel phoneLabel = new JLabel("Customer:");
@@ -210,7 +209,7 @@ public class UpdateReservationFrame extends JFrame {
 		phoneLabel.setFont(font);
 		gbc.gridy = 1;
 		gbc.gridx = 3;
-		gbc.insets = new Insets(20, 30, 10, 30);
+		gbc.insets = new Insets(25, 30, 10, 30);
 		contentPane.add(phoneLabel, gbc);
 
 		JTextField phoneField = new JTextField();
@@ -219,14 +218,14 @@ public class UpdateReservationFrame extends JFrame {
 		phoneField.setBackground(Color.WHITE);
 		phoneField.setText(reservation.getCustomer().getPhone());
 		gbc.gridy++;
-		gbc.insets = new Insets(10, 30, 20, 30);
+		gbc.insets = new Insets(10, 30, 25, 30);
 		contentPane.add(phoneField, gbc);
 
 		JLabel noteLabel = new JLabel("Note:");
 		noteLabel.setForeground(darkGray);
 		noteLabel.setFont(font);
 		gbc.gridy++;
-		gbc.insets = new Insets(20, 30, 10, 30);
+		gbc.insets = new Insets(25, 30, 10, 30);
 		contentPane.add(noteLabel, gbc);
 
 		JTextField noteField = new JTextField();
@@ -235,7 +234,7 @@ public class UpdateReservationFrame extends JFrame {
 		noteField.setBackground(Color.WHITE);
 		noteField.setText(reservation.getNote());
 		gbc.gridy++;
-		gbc.insets = new Insets(10, 30, 20, 30);
+		gbc.insets = new Insets(10, 30, 40, 30);
 		contentPane.add(noteField, gbc);
 
 		ArrayList<Menu> dbMenus = new ArrayList<>();
@@ -245,16 +244,32 @@ public class UpdateReservationFrame extends JFrame {
 			e.printStackTrace();
 		}
 
+		JScrollPane scrollPane = new JScrollPane();
+		scrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+		scrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
+		scrollPane.setMinimumSize(new Dimension(contentPane.getWidth() / 100 * 40, contentPane.getHeight() / 100 * 30));
+		scrollPane.setBorder(null);
+		scrollPane.setLayout(new ScrollPaneLayout());
+		scrollPane.setBackground(Color.WHITE);
+		gbc.gridy++;
+		gbc.fill = GridBagConstraints.HORIZONTAL;
+		gbc.gridwidth = GridBagConstraints.REMAINDER;
+		gbc.gridheight = GridBagConstraints.RELATIVE;
+		gbc.weightx = 0;
+		gbc.weighty = 0;
+		contentPane.add(scrollPane, gbc);
+
 		JPanel menuPanel = new JPanel();
 		menuPanel.setLayout(new GridBagLayout());
 		menuPanel.setBackground(Color.WHITE);
+		scrollPane.setViewportView(menuPanel);
 
 		GridBagConstraints gbcM = new GridBagConstraints();
 		gbcM.anchor = GridBagConstraints.NORTH;
 		gbcM.fill = GridBagConstraints.HORIZONTAL;
 		gbcM.gridy = 0;
 		gbcM.gridx = 0;
-		gbcM.insets = new Insets(10, 10, 20, 10);
+		gbcM.insets = new Insets(10, 10, 10, 10);
 
 		String[] menus = new String[dbMenus.size()];
 		for (int x = 0; x < dbMenus.size(); x++) {
@@ -275,43 +290,20 @@ public class UpdateReservationFrame extends JFrame {
 
 			JComboBox<String> menuBox = new JComboBox<String>(menus);
 			menuBox.setFont(font);
-			// menuBox.setBorder(new CompoundBorder(new LineBorder(darkGray, 1), new
-			// EmptyBorder(0, 10, 0, 0)));
+			menuBox.setBorder(new CompoundBorder(new LineBorder(darkGray, 1), new EmptyBorder(0, 10, 0, 0)));
 			menuBox.setBackground(Color.WHITE);
 			menuBox.addItem("No menu");
 			if (reservation.getMenus() != null) {
 				menuBox.setSelectedItem(reservation.getMenus().get(i).getName());
 			}
 			menuComboBoxes.add(menuBox);
+
+			gbcM.insets = new Insets(10, 10, 20, 10);
 			gbcM.gridx = 1;
 			menuPanel.add(menuBox, gbcM);
 			gbcM.gridy++;
+			gbcM.insets = new Insets(20, 10, 10, 10);
 		}
-
-		JLabel menusLabel = new JLabel("Menus:");
-		menusLabel.setForeground(darkGray);
-		menusLabel.setFont(font);
-		gbc.gridy++;
-		gbc.insets = new Insets(20, 30, 10, 30);
-		contentPane.add(menusLabel, gbc);
-
-		JScrollPane scrollPane = new JScrollPane(menuPanel);
-		scrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
-		scrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
-		// scrollPane.setMinimumSize(new Dimension(contentPane.getWidth() / 100 * 35,
-		// contentPane.getHeight() / 100 * 30));
-		// scrollPane.setBorder(null);
-		scrollPane.setBackground(Color.WHITE);
-		gbc.gridy++;
-		gbc.fill = GridBagConstraints.BOTH;
-		gbc.gridwidth = GridBagConstraints.REMAINDER;
-		gbc.gridheight = GridBagConstraints.RELATIVE;
-		gbc.weightx = 0;
-		gbc.weighty = 0;
-		gbc.insets = new Insets(10, 30, 20, 30);
-		contentPane.add(scrollPane, gbc);
-		menuPanel.revalidate();
-		menuPanel.repaint();
 
 		JButton cancelButton = new JButton("Cancel");
 		cancelButton.setFont(font);
@@ -323,20 +315,16 @@ public class UpdateReservationFrame extends JFrame {
 		gbc.weightx = 0;
 		gbc.gridwidth = 3;
 		gbc.anchor = GridBagConstraints.NORTH;
-		gbc.insets = new Insets(30, 30, 20, 30);
+		gbc.insets = new Insets(40, 30, 25, 30);
 		contentPane.add(cancelButton, gbc);
 
 		JButton nextButton = new JButton("Update");
 		nextButton.setFont(font);
 		nextButton.setBackground(new Color(242, 233, 228));
 		nextButton.setFocusable(false);
-		nextButton.addActionListener(e -> {
-
-//			if(guestsField.getText() == reservation.getGuests())
-//			JOptionPane.showConfirmDialog(null,
-//					"The number of guests cannot be zero or lower!\nPlease correct the information in the field!",
-//					"Number of guests", JOptionPane.OK_OPTION, JOptionPane.WARNING_MESSAGE);
-		});
+		nextButton.addActionListener(e -> JOptionPane.showConfirmDialog(null,
+				"The number of guests cannot be zero or lower!\nPlease correct the information in the field!",
+				"Number of guests", JOptionPane.OK_OPTION, JOptionPane.WARNING_MESSAGE));
 		gbc.gridx = 3;
 		gbc.gridwidth = 3;
 		contentPane.add(nextButton, gbc);

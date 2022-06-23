@@ -106,7 +106,7 @@ public class AddLayoutItemDialog extends JFrame  {
 			typeComboBox = new JComboBox(new DefaultComboBoxModel());
 			populateTypeComboBox();
 			typeComboBox.setMaximumRowCount(3);
-			typeComboBox.setFont(Fonts.FONT18.get());
+			typeComboBox.setFont(Fonts.FONT15.get());
 			typeComboBox.addActionListener(e -> checkTypeInput());
 			typeComboBox.setPreferredSize(new Dimension(100, 30));
 			gbc.anchor = GridBagConstraints.FIRST_LINE_START;
@@ -126,7 +126,7 @@ public class AddLayoutItemDialog extends JFrame  {
 			capacityComboBox = new JComboBox(new DefaultComboBoxModel());
 			populatecapacityLabel();
 			capacityComboBox.setMaximumRowCount(4);
-			capacityComboBox.setFont(Fonts.FONT18.get());
+			capacityComboBox.setFont(Fonts.FONT15.get());
 			capacityComboBox.setPreferredSize(new Dimension(100, 30));
 			gbc.anchor = GridBagConstraints.FIRST_LINE_START;
 			gbc.gridx = 0;

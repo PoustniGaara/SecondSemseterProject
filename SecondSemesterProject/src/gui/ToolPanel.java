@@ -9,27 +9,28 @@ import javax.swing.JPanel;
 import gui.tools.ProjectColors;
 
 public class ToolPanel extends JPanel {
-
-	private static int toolPanelHeight, toolPanelWidth;
-
+	
+	private static int toolPanelHeight,toolPanelWidth;
+	
 	public ToolPanel() {
-
-		// Panel dimensions setup
-		int mainHeight = (int) MainFrame.height;
-		int mainWidth = (int) MainFrame.width;
-		int panelHeight = (int) ((int) mainHeight * 0.84);
+		
+		//Panel dimensions setup
+		int mainHeight = (int)MainFrame.height;
+		int mainWidth = (int)MainFrame.width;
+		int panelHeight = (int) ((int)mainHeight*0.84);
 		toolPanelWidth = mainWidth;
-		toolPanelHeight = (int) (panelHeight * 0.12);
-
-		setBackground(ProjectColors.WHITE.get());
+		toolPanelHeight = (int) (panelHeight*0.12);
+		
+		setBackground(ProjectColors.GREY.get());
 		setPreferredSize(new Dimension(toolPanelWidth, toolPanelHeight));
 		setLayout(new GridBagLayout());
+		setBorder(BorderFactory.createLineBorder(ProjectColors.GREEN.get(), 1));
 	}
-
+	
 	public static int getPanelHeight() {
 		return toolPanelHeight;
 	}
-
+	
 	public static int getPanelWidth() {
 		return toolPanelWidth;
 	}

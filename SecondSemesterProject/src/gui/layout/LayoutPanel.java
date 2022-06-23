@@ -69,6 +69,18 @@ public class LayoutPanel extends JPanel implements ComponentListener {
 		
 	}// end of second constructor
 	
+	public void deselectAllMiniPanels() {
+		for(LayoutMiniPanel miniPanel: miniPanelMap.values()) {
+			miniPanel.setSelected(false);
+			miniPanel.repaint();
+			miniPanel.revalidate();
+		}
+	}
+	
+	public HashMap<Point,LayoutMiniPanel> getMiniPanelMap(){
+		return miniPanelMap;
+	}
+	
 	public void setAvailabilityOfTables(int noOfPerson, Calendar calendar, int duration) {
 		for(LayoutMiniPanel miniPanel : miniPanelMap.values()) {
 			if(miniPanel.hasTable()) {
