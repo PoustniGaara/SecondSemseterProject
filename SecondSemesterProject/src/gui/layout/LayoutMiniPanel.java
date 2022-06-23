@@ -61,7 +61,7 @@ public class LayoutMiniPanel extends JPanel implements MouseListener {
 		//capacity label setup
 		capacityLabel = new JLabel("");
 		capacityLabel.setPreferredSize(new Dimension(sizeOfMiniPanel/2, sizeOfMiniPanel/4));
-		capacityLabel.setFont(Fonts.FONT15.get());
+		capacityLabel.setFont(Fonts.FONT18.get());
 		capacityLabel.setHorizontalAlignment(SwingConstants.CENTER);
 		capacityLabel.setVerticalTextPosition(SwingConstants.BOTTOM);
 		capacityLabel.setHorizontalTextPosition(SwingConstants.RIGHT);
@@ -85,7 +85,7 @@ public class LayoutMiniPanel extends JPanel implements MouseListener {
 		
 		//name label setup
 		nameLabel = new JLabel("");
-		nameLabel.setFont(Fonts.FONT15.get());
+		nameLabel.setFont(Fonts.FONT18.get());
 		nameLabel.setHorizontalAlignment(SwingConstants.CENTER);
 		nameLabel.setVerticalTextPosition(SwingConstants.CENTER);
 		nameLabel.setHorizontalTextPosition(SwingConstants.CENTER);
@@ -191,14 +191,6 @@ public class LayoutMiniPanel extends JPanel implements MouseListener {
 	
 	public void setSelected(boolean state) {
 		this.isSelected = state;
-		if(isSelected == true) {
-			setBackground(ProjectColors.SELECTED.get());
-			setBorder(border);
-		}
-		else {
-			setBackground(ProjectColors.WHITE.get());
-			setBorder(null);
-		}
 	}
 	
 	public boolean hasTable() {
@@ -215,7 +207,7 @@ public class LayoutMiniPanel extends JPanel implements MouseListener {
 
 	@Override
 	public void mouseClicked(MouseEvent e) {
-		if(iconLabel.getIcon() != null && getLayoutItem() instanceof Table) {
+		if(iconLabel.getIcon() != null) {
 			if (e.getClickCount() == 2 && e.getButton() == MouseEvent.BUTTON1) {
 				new TableInfoFrame(layoutItem.getName(), reservedTableInfoList);
 			}
@@ -223,9 +215,13 @@ public class LayoutMiniPanel extends JPanel implements MouseListener {
 				if(isAvailable) { // select only if it is available
 					if(isSelected == true) {
 						setSelected(false);
+						setBackground(ProjectColors.WHITE.get());
+						setBorder(null);
 					}
 					else {
 						setSelected(true);
+						setBackground(ProjectColors.SELECTED.get());
+						setBorder(border);
 				}
 				}
 			}
