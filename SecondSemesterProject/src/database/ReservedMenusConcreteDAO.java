@@ -35,6 +35,7 @@ public class ReservedMenusConcreteDAO implements ReservedMenusDAO {
 				ps.setLong(1, reservation.getId());
 				ps.setInt(2, m.getID());
 				ps.setInt(3, groupedMenus.get(m));
+				System.out.println("Insert groupedd menus: " + m.getName() + " x" + groupedMenus.get(m));
 				ps.addBatch();
 			}
 			try {
@@ -67,7 +68,7 @@ public class ReservedMenusConcreteDAO implements ReservedMenusDAO {
 				int amount = menusResultSet.getInt("amount");
 				Menu menu = new Menu(name, MenuMealsConcreteDAO.getInstance().getMenuMeals(menuid));
 				menu.setID(menuid);
-				for (int i = 0; i <= amount; i++)
+				for (int i = 1; i <= amount; i++)
 					menus.add(menu);
 			}
 		} catch (SQLException e) {
@@ -82,8 +83,10 @@ public class ReservedMenusConcreteDAO implements ReservedMenusDAO {
 		for (Menu m : menus) {
 			if (groupedMenus.containsKey(m)) {
 				groupedMenus.put(m, groupedMenus.get(m) + 1);
+				System.out.println("Grouped menu " + groupedMenus.get(m) + ": " + m.getName());
 			} else {
 				groupedMenus.put(m, 1);
+				System.out.println("Grouped menu 1st: " + m.getName());
 			}
 		}
 		return groupedMenus;
