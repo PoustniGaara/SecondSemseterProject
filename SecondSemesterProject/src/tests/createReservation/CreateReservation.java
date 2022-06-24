@@ -85,7 +85,7 @@ public class CreateReservation {
 		reservation.setMenus(menus);
 
 		// Act
-		reservationCntrl.confirmReservation(customer, 4, menus, note);
+		reservationCntrl.confirmReservation(customer, 4, 2, menus, note);
 
 		// Assert
 		id = reservation.getId().intValue();

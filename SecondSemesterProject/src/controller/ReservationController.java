@@ -36,12 +36,13 @@ public class ReservationController {
 		}
 	}
 
-	public void confirmReservation(Customer customer, int guests, ArrayList<Menu> menus, String note)
+	public void confirmReservation(Customer customer, int guests, int duration, ArrayList<Menu> menus, String note)
 			throws SQLException {
 		reservation.setGuests(guests);
 		reservation.setMenus(menus);
 		reservation.setNote(note);
-
+		reservation.setDuration(duration);
+		
 		if (!isCustomer) {
 			control.createCustomer(customer);
 		}

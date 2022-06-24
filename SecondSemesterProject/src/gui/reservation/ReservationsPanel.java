@@ -348,17 +348,18 @@ public class ReservationsPanel extends JPanel {
 								reservation.getCustomer().getSurname().toUpperCase() + " "
 										+ reservation.getCustomer().getName(),
 								reservation.getGuests(), tableNames(reservation), menuNames(reservation),
-								reservation.getNote().length() > 50
-										? reservation.getNote().substring(0, 50).concat("...")
+								reservation.getNote().length() > 40
+										? reservation.getNote().substring(0, 40).concat("...")
 										: reservation.getNote() });
 			}
 			tableModel.fireTableDataChanged();
+			table.repaint();
 		}
 	}
 
 	private String tableNames(Reservation reservation) {
 		if (reservation.getTables().isEmpty()) {
-			return "no table :/";
+			return "No table";
 		}
 
 		String s = "";
