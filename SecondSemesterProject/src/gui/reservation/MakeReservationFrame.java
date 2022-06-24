@@ -44,6 +44,7 @@ import javax.swing.text.NumberFormatter;
 
 import controller.CustomerController;
 import controller.ReservationController;
+import database.MenuConcreteDAO;
 import gui.tools.FancyButtonOneClick;
 import gui.tools.Fonts;
 import gui.tools.ProjectColors;
@@ -118,6 +119,14 @@ public class MakeReservationFrame extends JFrame {
 
 		cardLayout = new CardLayout();
 		contentPane.setLayout(cardLayout);
+		
+		try {
+			dbMenus = MenuConcreteDAO.getInstance().read();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
 
 		// FIRST CARD
 		firstCard = new JPanel();

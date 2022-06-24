@@ -7,6 +7,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.Timestamp;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
@@ -98,13 +99,15 @@ public class ReservedTablesConcreteDAO implements ReservedTablesDAO {
 					+ "JOIN ReservedTables on LayoutItems.layoutItemID = ReservedTables.layoutItemID\r\n"
 					+ "JOIN reservations on ReservedTables.reservationID = Reservations.reservationID\r\n"
 					+ "JOIN Customers on Reservations.customerPhone = Customers.phone \r\n"
-					+ "where restaurantLayoutID = ? AND timestamp >= ?");
+					+ "where restaurantLayoutID = ? AND timestamp BETWEEN ? AND ?");
 			
 			ps.setInt(1, restaurantLayoutId);
 			
 			java.util.Date dateTime = calendar.getTime();
 			java.sql.Timestamp timestamp = new java.sql.Timestamp(dateTime.getTime());
 			ps.setTimestamp(2, timestamp);
+			calendar.add(Calendar.DAY_OF_MONTH, +1); // Get just 1 day in advance info 
+			ps.setTimestamp(3, timestamp);
 			
 			ResultSet rs = ps.executeQuery();
 			while (rs.next()) {

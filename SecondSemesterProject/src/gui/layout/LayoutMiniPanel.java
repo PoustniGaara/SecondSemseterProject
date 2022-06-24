@@ -1,5 +1,6 @@
 package gui.layout;
 
+import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
@@ -95,7 +96,10 @@ public class LayoutMiniPanel extends JPanel implements MouseListener {
 	} // end of constructor
 	
 //	public boolean getTimeAvailability(Calendar calendar, int duration) {
-		// compare reservedTableInfo list with input
+//		int startOfTheReservationInMinutes = calendar.get(Calendar.HOUR_OF_DAY) * 60;
+//		for(ArrayList<ReservedTableInfo> rti : reservedTableInfoMap.values()) {
+//			
+//		}
 //	}
 	
 //	public void updateReservedTableInfoList(ArrayList<ReservedTableInfo> reservedTableInfoList) {
@@ -143,14 +147,14 @@ public class LayoutMiniPanel extends JPanel implements MouseListener {
 	
 	public void setAvailable() {
 		isAvailable = true;
-		icon.setIconColor(ProjectColors.GREEN.get());
+		icon.setIconColor(ProjectColors.GGREEN.get());
 		this.repaint();
 	}
 	
 	public void setUnavailable() {
 		if(hasTable == true) {
 		isAvailable = false;
-		icon.setIconColor(ProjectColors.RED.get());
+		icon.setIconColor(ProjectColors.GRED.get());
 		this.repaint();
 		}
 	}
@@ -191,6 +195,14 @@ public class LayoutMiniPanel extends JPanel implements MouseListener {
 	
 	public void setSelected(boolean state) {
 		this.isSelected = state;
+		if(isSelected == true) {
+			setBackground(ProjectColors.SELECTED.get());
+			setBorder(border);
+		}
+		else {
+			setBackground(ProjectColors.WHITE.get());
+			setBorder(null);
+		}
 	}
 	
 	public boolean hasTable() {
@@ -207,7 +219,7 @@ public class LayoutMiniPanel extends JPanel implements MouseListener {
 
 	@Override
 	public void mouseClicked(MouseEvent e) {
-		if(iconLabel.getIcon() != null) {
+		if(iconLabel.getIcon() != null && getLayoutItem() instanceof Table) {
 			if (e.getClickCount() == 2 && e.getButton() == MouseEvent.BUTTON1) {
 				new TableInfoFrame(layoutItem.getName(), reservedTableInfoList);
 			}
@@ -215,13 +227,9 @@ public class LayoutMiniPanel extends JPanel implements MouseListener {
 				if(isAvailable) { // select only if it is available
 					if(isSelected == true) {
 						setSelected(false);
-						setBackground(ProjectColors.WHITE.get());
-						setBorder(null);
 					}
 					else {
 						setSelected(true);
-						setBackground(ProjectColors.SELECTED.get());
-						setBorder(border);
 				}
 				}
 			}
