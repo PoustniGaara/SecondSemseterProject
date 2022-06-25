@@ -23,7 +23,7 @@ public class ConnectionCheckLabel extends JLabel {
 	private ConnectionCheckLabel() {
 		setFont(new Font("Monaco", Font.BOLD, 12));
 		setText("Not connected to database");
-		setForeground(new Color(220, 48, 48));
+		setForeground(new Color(220, 48, 48));//red
 
 		Runnable task = () -> {
 			boolean running = true;

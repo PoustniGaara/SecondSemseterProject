@@ -4,7 +4,8 @@ import java.awt.Font;
 
 public enum Fonts {
 
-	FONT18(new Font("Dialog", Font.PLAIN, 18)), 
+	FONT18(new Font("Dialog", Font.PLAIN, 18)),
+	FONT15(new Font("Dialog", Font.PLAIN, 18)), 
 	FONT20(new Font("Dialog", Font.PLAIN, 20)),
 	TABLE_FONT(new Font("Segoe UI", Font.PLAIN, 17));
 

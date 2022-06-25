@@ -91,7 +91,8 @@ public class ReservedTablesConcreteDAO implements ReservedTablesDAO {
 	}
 
 	@Override
-	public ArrayList<ReservedTableInfo> getReservedTableInfoByTime(int restaurantLayoutId, Calendar calendar) throws SQLException {
+	public synchronized ArrayList<ReservedTableInfo> getReservedTableInfoByTime(int restaurantLayoutId, Calendar calendar) throws SQLException {
+//		calendar.add(Calendar.MONTH, -1);
 		Connection con = DBConnection.getInstance().getDBcon();
 		ArrayList<ReservedTableInfo> list = new ArrayList<>();
 		try {
@@ -106,10 +107,16 @@ public class ReservedTablesConcreteDAO implements ReservedTablesDAO {
 			java.util.Date dateTime = calendar.getTime();
 			java.sql.Timestamp timestamp = new java.sql.Timestamp(dateTime.getTime());
 			ps.setTimestamp(2, timestamp);
-			calendar.add(Calendar.DAY_OF_MONTH, +1); // Get just 1 day in advance info 
-			ps.setTimestamp(3, timestamp);
+			System.out.println("timestamp 1 :" + timestamp.toString());
+			Calendar calendar2 = (Calendar) calendar.clone(); // Get just 1 day in advance info 
+			calendar2.add(Calendar.DAY_OF_MONTH, +1);
+			java.util.Date dateTime2 = calendar2.getTime();
+			java.sql.Timestamp timestamp2 = new java.sql.Timestamp(dateTime2.getTime());
+			ps.setTimestamp(3, timestamp2);
+			System.out.println("timestamp 2 :" + timestamp2.toString());
 			
 			ResultSet rs = ps.executeQuery();
+			System.out.println("Resulset is :" + rs.next());
 			while (rs.next()) {
 				Timestamp timestampDB = rs.getTimestamp("timestamp");
 				String name = rs.getString("name");
@@ -117,11 +124,12 @@ public class ReservedTablesConcreteDAO implements ReservedTablesDAO {
 				String phone = rs.getString("phone");
 				int duration = rs.getInt("duration");
 				int id = rs.getInt("reservationID");
+				int layoutItemId = rs.getInt("layoutItemID");
 				
 				Calendar cal = new GregorianCalendar();
 				cal.setTimeInMillis(timestampDB.getTime());
 				
-				ReservedTableInfo reservedTableInfo = new ReservedTableInfo(cal, name, phone, note, duration,id);
+				ReservedTableInfo reservedTableInfo = new ReservedTableInfo(cal, name, phone, note, duration,id,layoutItemId);
 				list.add(reservedTableInfo);
 			}
 			return list;

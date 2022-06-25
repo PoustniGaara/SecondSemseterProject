@@ -10,9 +10,11 @@ public class ReservedTableInfo {
 	private String note;
 	private int duration;
 	private int id;
+	private int layoutItemId;
 	
 	public String toString() {
-		return new String("ID: "+id+" Name: "+name+" Phone: "+phone+" Note: "+note+ " Duration: " +String.valueOf(duration));
+		return new String("ID: "+id+" Name: "+name+" Phone: "+phone+" Note: "+note+ " Duration: " +String.valueOf(duration)
+		+ "layoutItemId:"+layoutItemId);
 	}
 	
 	public int getId() {
@@ -55,13 +57,22 @@ public class ReservedTableInfo {
 	public void setNote(String note) {
 		this.note = note;
 	}
-	public ReservedTableInfo(Calendar calendar, String name, String phone, String note, int duration, int id) {
+	
+	public void setLayoutItemId(int layoutItemId) {
+		this.layoutItemId = layoutItemId;
+	}
+	
+	public int getLayoutItemId() {
+		return this.layoutItemId;
+	}
+	public ReservedTableInfo(Calendar calendar, String name, String phone, String note, int duration, int id,int layoutItemId) {
 		this.id = id;
 		this.duration = duration;
 		this.calendar = calendar;
 		this.name = name;
 		this.phone = phone;
 		this.note = note;
+		this.layoutItemId = layoutItemId;
 	}
 	
 }

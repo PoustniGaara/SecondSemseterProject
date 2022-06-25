@@ -40,7 +40,7 @@ public class LayoutMiniPanel extends JPanel implements MouseListener {
 	private boolean isAvailable;
 	private int tableCapacity;
 	private boolean hasTable = false;
-	private HashMap<Integer, ArrayList<ReservedTableInfo>> reservedTableInfoMap;
+	private HashMap<Long, ArrayList<ReservedTableInfo>> reservedTableInfoMap;
 	
 	public LayoutMiniPanel(int sizeOfMiniPanel) {
 		
@@ -95,22 +95,43 @@ public class LayoutMiniPanel extends JPanel implements MouseListener {
 
 	} // end of constructor
 	
-//	public boolean getTimeAvailability(Calendar calendar, int duration) {
-//		int startOfTheReservationInMinutes = calendar.get(Calendar.HOUR_OF_DAY) * 60;
-//		for(ArrayList<ReservedTableInfo> rti : reservedTableInfoMap.values()) {
-//			
-//		}
-//	}
+	public boolean getTimeAvailability(Calendar calendar, int duration) {
+		boolean availability = true;
+		int	potentionalStartTimeInMinutes = calendar.get(Calendar.HOUR_OF_DAY) * 60;
+		int potentionalStartPlusDurationTimeInMinutes = calendar.get(Calendar.HOUR_OF_DAY) * 60 + duration;
+//		System.out.println("ReservedTableInfoMap"+reservedTableInfoMap.toString());
+		if(layoutItem != null && reservedTableInfoMap.get((layoutItem.getId())) != null) {
+			System.out.println(layoutItem);
+			System.out.println(reservedTableInfoMap.get((layoutItem.getId())));
+			for(ReservedTableInfo rti : reservedTableInfoMap.get((layoutItem.getId()))) {
+				int existingStartTimeInMinutes = rti.getCalendar().get(Calendar.HOUR_OF_DAY) * 60;
+				int existingStartPlusDurationTmeInMInutes = 
+						rti.getCalendar().get(Calendar.HOUR_OF_DAY) * 60 + rti.getDuration();
+				if(potentionalStartTimeInMinutes > existingStartTimeInMinutes) { // if potentional is sooner than real
+					if(existingStartPlusDurationTmeInMInutes > potentionalStartTimeInMinutes) {
+						return availability = false;
+					}
+				}
+				else {
+					if(potentionalStartPlusDurationTimeInMinutes > existingStartTimeInMinutes) {
+						return availability = false;
+					}
+			}
+			}
+		}
+		return availability;
+	}
 	
 //	public void updateReservedTableInfoList(ArrayList<ReservedTableInfo> reservedTableInfoList) {
 //		this.reservedTableInfoList = reservedTableInfoList;
 //	}
 	
-	public void addReservedTableInfoToMap(ReservedTableInfo rti, int tableId) {
+	public void addReservedTableInfoToMap(ReservedTableInfo rti, long tableId) {
+		System.out.println("RTI AFTER ADDING TO RTImap:"+ rti.toString());
 		reservedTableInfoMap.put(tableId, reservedTableInfoList);
 	}
 	
-	public void setReservedTableInfoMap(HashMap<Integer, ArrayList<ReservedTableInfo>> reservedTableInfoMap) {
+	public void setReservedTableInfoMap(HashMap<Long, ArrayList<ReservedTableInfo>> reservedTableInfoMap) {
 		this.reservedTableInfoMap = reservedTableInfoMap;
 	}
 	
