@@ -17,6 +17,7 @@ import java.time.Duration;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 
 import javax.swing.DefaultListModel;
 import javax.swing.DefaultListSelectionModel;
@@ -73,7 +74,7 @@ public class CreateReservationFrame extends JFrame {
 
 	private ReservationController reservationController;
 
-	private JTextField guestsField;
+	private JSpinner guestsSpinner;
 	private JFormattedTextField dateField;
 	private JSpinner spinnerH;
 	private JSpinner spinnerM;
@@ -189,13 +190,19 @@ public class CreateReservationFrame extends JFrame {
 		gbc.insets = new Insets(25, 30, 5, 30);
 		firstCard.add(guestsLabel, gbc);
 
-		guestsField = new JTextField();
-		guestsField.setFont(font);
-		guestsField.setBorder(new CompoundBorder(new LineBorder(darkGray, 1), new EmptyBorder(0, 10, 0, 0)));
-		guestsField.setBackground(Color.WHITE);
+		
+		SpinnerNumberModel guestsNumberModel = new SpinnerNumberModel(2, 1, 100, 1);
+		guestsSpinner = new JSpinner(guestsNumberModel);
+		NumberEditor guestsEditor = new NumberEditor(guestsSpinner);
+		NumberFormatter guestsformatter = (NumberFormatter) guestsEditor.getTextField().getFormatter();
+		guestsformatter.setOverwriteMode(true);
+		guestsformatter.setAllowsInvalid(false);
+		guestsSpinner.setEditor(guestsEditor);
+		guestsSpinner.setFont(font);
+		guestsSpinner.setBorder(new CompoundBorder(new LineBorder(darkGray, 1), new EmptyBorder(0, 10, 0, 0)));
 		gbc.gridy++;
 		gbc.insets = new Insets(5, 30, 25, 30);
-		firstCard.add(guestsField, gbc);
+		firstCard.add(guestsSpinner, gbc);
 
 		JLabel dateLabel = new JLabel("Date:");
 		dateLabel.setForeground(darkGray);
@@ -305,33 +312,14 @@ public class CreateReservationFrame extends JFrame {
 		nextButton.setPreferredSize(new Dimension((int) (getWidth() * 0.3), 40));
 		nextButton.setFocusable(false);
 		nextButton.addActionListener(e -> {
-			if (guestsField.getText().isEmpty() || guestsField.getText().isBlank()) {
-				JOptionPane.showConfirmDialog(null,
-						"The number of guests field must be filled!\nPlease fill the field in order to continue!",
-						"Guests field", JOptionPane.OK_OPTION, JOptionPane.WARNING_MESSAGE);
-				return;
-			}
-			try {
-				guests = Integer.parseInt(guestsField.getText());
-			} catch (Exception e2) {
-				JOptionPane.showConfirmDialog(null,
-						"The input value of the number of guests incorrect!\nPlease correct the information in the field!",
-						"Number of guests", JOptionPane.OK_OPTION, JOptionPane.WARNING_MESSAGE);
-				return;
-			}
-			if (guests <= 0) {
-				JOptionPane.showConfirmDialog(null,
-						"The number of guests cannot be zero or lower!\nPlease correct the information in the field!",
-						"Number of guests", JOptionPane.OK_OPTION, JOptionPane.WARNING_MESSAGE);
-				return;
-			}
-
+			
+			guests = (int) guestsSpinner.getValue();
 			duration = (int) durationSpinner.getValue();
 
 			Calendar date = Calendar.getInstance();
 			date.setTime((Date) dateField.getValue());
 			int year = date.get(Calendar.YEAR);
-			int month = date.get(Calendar.MONTH) + 1;
+			int month = date.get(Calendar.MONTH);
 			int day = date.get(Calendar.DAY_OF_MONTH);
 			date.setTime((Date) spinnerH.getValue());
 			int hour = date.get(Calendar.HOUR_OF_DAY);
@@ -386,7 +374,7 @@ public class CreateReservationFrame extends JFrame {
 		secondCard.add(titleLabel, gbc);
 
 		JLabel reservationLabel = new JLabel("For " + guests + " guest" + (guests > 1 ? "s" : "") + " on "
-				+ reservationTimeDate.get(Calendar.DATE) + ". " + reservationTimeDate.get(Calendar.MONTH) + ". "
+				+ reservationTimeDate.get(Calendar.DATE) + ". " + (reservationTimeDate.get(Calendar.MONTH) + 1) + ". "
 				+ reservationTimeDate.get(Calendar.YEAR) + " at " + reservationTimeDate.get(Calendar.HOUR_OF_DAY) + ":"
 				+ (reservationTimeDate.get(Calendar.MINUTE) < 10 ? "0" + reservationTimeDate.get(Calendar.MINUTE)
 						: reservationTimeDate.get(Calendar.MINUTE)),
@@ -505,7 +493,7 @@ public class CreateReservationFrame extends JFrame {
 						"Table selection", JOptionPane.OK_CANCEL_OPTION, JOptionPane.WARNING_MESSAGE);
 				return;
 			}
-			
+
 			if (tCapacity >= 2 * guests) {
 				int option = JOptionPane.showConfirmDialog(null,
 						"The capacity of selected tables is more then the number of guest!\nAre you sure you want to select these tables?",
@@ -563,7 +551,7 @@ public class CreateReservationFrame extends JFrame {
 		thirdCard.add(titleLabel, gbc);
 
 		JLabel reservationLabel = new JLabel("For " + guests + " guest" + (guests > 1 ? "s" : "") + " on "
-				+ reservationTimeDate.get(Calendar.DATE) + ". " + reservationTimeDate.get(Calendar.MONTH) + ". "
+				+ reservationTimeDate.get(Calendar.DATE) + ". " + (reservationTimeDate.get(Calendar.MONTH) + 1) + ". "
 				+ reservationTimeDate.get(Calendar.YEAR) + " at " + reservationTimeDate.get(Calendar.HOUR_OF_DAY) + ":"
 				+ (reservationTimeDate.get(Calendar.MINUTE) < 10 ? "0" + reservationTimeDate.get(Calendar.MINUTE)
 						: reservationTimeDate.get(Calendar.MINUTE)));
@@ -800,7 +788,7 @@ public class CreateReservationFrame extends JFrame {
 		fourthCard.add(titleLabel, gbc);
 
 		JLabel reservationLabel = new JLabel("For " + guests + " guest" + (guests > 1 ? "s" : "") + " on "
-				+ reservationTimeDate.get(Calendar.DATE) + ". " + reservationTimeDate.get(Calendar.MONTH) + ". "
+				+ reservationTimeDate.get(Calendar.DATE) + ". " + (reservationTimeDate.get(Calendar.MONTH) + 1) + ". "
 				+ reservationTimeDate.get(Calendar.YEAR) + " at " + reservationTimeDate.get(Calendar.HOUR_OF_DAY) + ":"
 				+ (reservationTimeDate.get(Calendar.MINUTE) < 10 ? "0" + reservationTimeDate.get(Calendar.MINUTE)
 						: reservationTimeDate.get(Calendar.MINUTE)));
@@ -851,7 +839,6 @@ public class CreateReservationFrame extends JFrame {
 		}
 
 		ArrayList<JComboBox<String>> menuComboBoxes = new ArrayList<>();
-
 		for (int i = 1; i <= guests; i++) {
 			JLabel label = new JLabel("Menu for person " + i + ":");
 			label.setForeground(darkGray);
@@ -955,7 +942,7 @@ public class CreateReservationFrame extends JFrame {
 		finalCard.add(guestFinalLabel, gbc);
 
 		JLabel dateFinalLabel = new JLabel("Date: " + reservationTimeDate.get(Calendar.DATE) + "."
-				+ reservationTimeDate.get(Calendar.MONTH) + "." + reservationTimeDate.get(Calendar.YEAR));
+				+ (reservationTimeDate.get(Calendar.MONTH) + 1) + "." + reservationTimeDate.get(Calendar.YEAR));
 		dateFinalLabel.setFont(font);
 		gbc.gridy++;
 		finalCard.add(dateFinalLabel, gbc);
@@ -1039,16 +1026,22 @@ public class CreateReservationFrame extends JFrame {
 
 	private void populateTables() {
 		ArrayList<Table> availableTables = dbTables;
+		List<Long> ids = new ArrayList<Long>(dbTables.parallelStream().map(t -> t.getId()).toList());
 		if (!dbReservations.isEmpty()) {
 			for (Reservation r : dbReservations) {
-				if (Math.abs(r.getTimestamp().getTimeInMillis() - reservationTimeDate.getTimeInMillis()) > r
-						.getDuration() * 3600000) {
+				if (Math.max(r.getTimestamp().getTimeInMillis(), reservationTimeDate.getTimeInMillis()) < Math.min(
+						r.getTimestamp().getTimeInMillis() + (r.getDuration() * 3600000),
+						reservationTimeDate.getTimeInMillis() + (duration * 3600000))) {
 					for (Table t : r.getTables()) {
-						availableTables.remove(t);
+						if (ids.contains(t.getId())) {
+							availableTables.remove(ids.indexOf(t.getId()));
+							ids.remove(t.getId());
+						}
 					}
 				}
 			}
 		}
+
 		DefaultListModel<String> listModel = new DefaultListModel<String>();
 		if (availableTables.isEmpty()) {
 			listModel.addElement("No tables");

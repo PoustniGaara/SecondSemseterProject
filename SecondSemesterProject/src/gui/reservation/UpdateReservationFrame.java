@@ -11,6 +11,8 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
+import java.util.List;
 
 import javax.swing.DefaultListModel;
 import javax.swing.DefaultListSelectionModel;
@@ -20,16 +22,17 @@ import javax.swing.JFormattedTextField;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JList;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JSpinner;
+import javax.swing.JSpinner.NumberEditor;
 import javax.swing.JTextField;
 import javax.swing.ScrollPaneConstants;
 import javax.swing.SpinnerDateModel;
 import javax.swing.SpinnerNumberModel;
 import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
-import javax.swing.JSpinner.NumberEditor;
 import javax.swing.border.CompoundBorder;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.LineBorder;
@@ -43,6 +46,7 @@ import database.ReservationConcreteDAO;
 import database.TableConcreteDAO;
 import gui.tools.Fonts;
 import gui.tools.ProjectColors;
+import model.Customer;
 import model.Menu;
 import model.Reservation;
 import model.Table;
@@ -56,8 +60,10 @@ public class UpdateReservationFrame extends JFrame {
 
 	private JPanel contentPane;
 	private JList<String> tables;
+
 	private static ArrayList<Table> dbTables;
 	private static ArrayList<Reservation> dbReservations;
+	private static ArrayList<Menu> dbMenus;
 
 	private final Font font = Fonts.FONT20.get();
 
@@ -75,6 +81,7 @@ public class UpdateReservationFrame extends JFrame {
 		try {
 			dbReservations = ReservationConcreteDAO.getInstance().read();
 			dbTables = TableConcreteDAO.getInstance().read();
+			dbMenus = MenuConcreteDAO.getInstance().read();
 		} catch (SQLException e1) {
 			e1.printStackTrace();
 		}
@@ -122,14 +129,19 @@ public class UpdateReservationFrame extends JFrame {
 		gbc.insets = new Insets(20, 30, 5, 30);
 		contentPane.add(guestsLabel, gbc);
 
-		JTextField guestsField = new JTextField();
-		guestsField.setFont(font);
-		guestsField.setBorder(new CompoundBorder(new LineBorder(darkGray, 1), new EmptyBorder(0, 10, 0, 0)));
-		guestsField.setBackground(Color.WHITE);
-		guestsField.setText(reservation.getGuests() + "");
+		SpinnerNumberModel guestsNumberModel = new SpinnerNumberModel(2, 1, 100, 1);
+		JSpinner guestsSpinner = new JSpinner(guestsNumberModel);
+		NumberEditor guestsEditor = new NumberEditor(guestsSpinner);
+		NumberFormatter guestsformatter = (NumberFormatter) guestsEditor.getTextField().getFormatter();
+		guestsformatter.setOverwriteMode(true);
+		guestsformatter.setAllowsInvalid(false);
+		guestsSpinner.setEditor(guestsEditor);
+		guestsSpinner.setFont(Fonts.FONT20.get());
+		guestsSpinner.setBorder(new CompoundBorder(new LineBorder(darkGray, 1), new EmptyBorder(0, 10, 0, 0)));
+		guestsSpinner.setValue(reservation.getGuests());
 		gbc.gridy++;
 		gbc.insets = new Insets(5, 30, 20, 30);
-		contentPane.add(guestsField, gbc);
+		contentPane.add(guestsSpinner, gbc);
 
 		JLabel dateLabel = new JLabel("Date:");
 		dateLabel.setForeground(darkGray);
@@ -216,14 +228,18 @@ public class UpdateReservationFrame extends JFrame {
 		ArrayList<Table> availableTables = dbTables;
 		if (!dbReservations.isEmpty()) {
 			for (Reservation r : dbReservations) {
-				if (Math.abs(r.getTimestamp().getTimeInMillis() - reservation.getTimestamp().getTimeInMillis()) > r
-						.getDuration() * 3600000) {
-					for (Table t : r.getTables()) {
-						availableTables.remove(t);
+				if (r != reservation) {
+					if (Math.abs(r.getTimestamp().getTimeInMillis() - reservation.getTimestamp().getTimeInMillis()) > r
+							.getDuration() * 3600000) {
+						for (Table t : r.getTables()) {
+							availableTables.remove(t);
+						}
 					}
 				}
 			}
 		}
+
+		List<String> tableNames = reservation.getTables().parallelStream().map(n -> n.getName()).toList();
 		DefaultListModel<String> listModel = new DefaultListModel<String>();
 		if (availableTables.isEmpty()) {
 			listModel.addElement("No tables");
@@ -233,6 +249,7 @@ public class UpdateReservationFrame extends JFrame {
 				listModel.addElement(t.getName());
 			}
 		}
+
 		tables.setModel(listModel);
 		tables.setSelectionModel(new DefaultListSelectionModel() {
 			@Override
@@ -246,14 +263,18 @@ public class UpdateReservationFrame extends JFrame {
 			}
 		});
 
+		for (int i = 0; i < listModel.getSize(); i++) {
+			if (tableNames.contains(listModel.get(i))) {
+				tables.addSelectionInterval(i, i);
+			}
+		}
+
 		JScrollPane tablesScrollPane = new JScrollPane(tables);
 		tablesScrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
 		tablesScrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
 		tablesScrollPane.setBackground(Color.WHITE);
-		// tablesScrollPane.setPreferredSize(new Dimension(contentPane.getWidth() / 100
-		// * 35, contentPane.getHeight() / 100 * 20));
 		gbc.gridy++;
-		gbc.ipady = 100;
+		gbc.ipady = 120;
 		gbc.gridwidth = 3;
 		gbc.weighty = 0;
 		gbc.fill = GridBagConstraints.BOTH;
@@ -318,13 +339,6 @@ public class UpdateReservationFrame extends JFrame {
 		gbc.insets = new Insets(5, 30, 20, 30);
 		contentPane.add(noteField, gbc);
 
-		ArrayList<Menu> dbMenus = new ArrayList<>();
-		try {
-			dbMenus = MenuConcreteDAO.getInstance().read();
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-
 		JPanel menuPanel = new JPanel();
 		menuPanel.setLayout(new GridBagLayout());
 		menuPanel.setBackground(Color.WHITE);
@@ -334,7 +348,7 @@ public class UpdateReservationFrame extends JFrame {
 		gbcM.fill = GridBagConstraints.HORIZONTAL;
 		gbcM.gridy = 0;
 		gbcM.gridx = 0;
-		gbcM.insets = new Insets(10, 10, 20, 10);
+		gbcM.insets = new Insets(10, 10, 10, 10);
 
 		String[] menus = new String[dbMenus.size()];
 		for (int x = 0; x < dbMenus.size(); x++) {
@@ -342,6 +356,7 @@ public class UpdateReservationFrame extends JFrame {
 		}
 
 		ArrayList<JComboBox<String>> menuComboBoxes = new ArrayList<>();
+		ArrayList<Integer> selectedMenusIndexes = new ArrayList<>();
 
 		for (int i = 1; i < reservation.getGuests() + 1; i++) {
 			JLabel label = new JLabel("Menu for person " + i + ":");
@@ -355,13 +370,15 @@ public class UpdateReservationFrame extends JFrame {
 
 			JComboBox<String> menuBox = new JComboBox<String>(menus);
 			menuBox.setFont(font);
-
-			// menuBox.setBorder(new CompoundBorder(new LineBorder(darkGray, 1), new
-			// EmptyBorder(0, 10, 0, 0)));
 			menuBox.setBackground(Color.WHITE);
 			menuBox.addItem("No menu");
 			if (reservation.getMenus() != null) {
-				menuBox.setSelectedItem(reservation.getMenus().get(i).getName());
+				if (reservation.getMenus().size() >= i) {
+					menuBox.setSelectedItem(reservation.getMenus().get(i - 1).getName());
+				} else {
+					menuBox.setSelectedItem("No menu");
+				}
+				selectedMenusIndexes.add(menuBox.getSelectedIndex());
 			}
 			menuComboBoxes.add(menuBox);
 			gbcM.gridx = 1;
@@ -381,7 +398,6 @@ public class UpdateReservationFrame extends JFrame {
 		menuScrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
 		menuScrollPane
 				.setMinimumSize(new Dimension(contentPane.getWidth() / 100 * 35, contentPane.getHeight() / 100 * 20));
-		// scrollPane.setBorder(null);
 		menuScrollPane.setBackground(Color.WHITE);
 		gbc.gridy++;
 		gbc.ipady = 120;
@@ -416,10 +432,148 @@ public class UpdateReservationFrame extends JFrame {
 		nextButton.setPreferredSize(new Dimension((int) (getWidth() * 0.2), 40));
 		nextButton.addActionListener(e -> {
 
-//			if(guestsField.getText() == reservation.getGuests())
-//			JOptionPane.showConfirmDialog(null,
-//					"The number of guests cannot be zero or lower!\nPlease correct the information in the field!",
-//					"Number of guests", JOptionPane.OK_OPTION, JOptionPane.WARNING_MESSAGE);
+			boolean changedGuests;
+			boolean changedDuration;
+			boolean changedDateTime;
+			boolean changedTables;
+			boolean changedMenus;
+			boolean changedCustomer;
+			boolean noteChanged;
+
+			int guests = (int) guestsSpinner.getValue();
+			if (guests != reservation.getGuests()) {
+				changedGuests = true;
+				reservation.setGuests(guests);
+			}
+
+			int duration = (int) durationSpinner.getValue();
+			if (duration != reservation.getDuration()) {
+				changedDuration = true;
+				reservation.setDuration(duration);
+			}
+
+			// Date date = (Date) dateField.getValue();
+
+			Calendar calendarDate = Calendar.getInstance();
+			calendarDate.setTime((Date) dateField.getValue());
+			int year = calendarDate.get(Calendar.YEAR);
+			int month = calendarDate.get(Calendar.MONTH);
+			int day = calendarDate.get(Calendar.DAY_OF_MONTH);
+			calendarDate.setTime((Date) spinnerH.getValue());
+			int hour = calendarDate.get(Calendar.HOUR_OF_DAY);
+			calendarDate.setTime((Date) spinnerM.getValue());
+			int minute = calendarDate.get(Calendar.MINUTE);
+
+			Calendar reservationTimeDate = (Calendar) Calendar.getInstance();
+			reservationTimeDate.set(year, month, day, hour, minute, 0);
+			reservationTimeDate.set(Calendar.MILLISECOND, 0);
+
+			Calendar ogTime = (Calendar) Calendar.getInstance();
+			ogTime.setTime(reservation.getTimestamp().getTime());
+
+			if (reservationTimeDate.compareTo(ogTime) != 0) {
+				changedDateTime = true;
+				reservation.setTimestamp(reservationTimeDate);
+			}
+
+			if (tableNames.equals(tables.getSelectedValuesList())) {
+				changedTables = true;
+				ArrayList<Table> reservedTables = new ArrayList<>();
+				int tCapacity = 0;
+				for (Table t : dbTables) {
+					for (String s : tables.getSelectedValuesList()) {
+						if (t.getName().equals(s)) {
+							reservedTables.add(t);
+							tCapacity += t.getCapacity();
+						}
+					}
+				}
+
+				if (tCapacity < guests) {
+					JOptionPane.showConfirmDialog(null,
+							"The capacity of selected tables is less then the number of guest!\nPlease select more tables.",
+							"Table selection", JOptionPane.OK_CANCEL_OPTION, JOptionPane.WARNING_MESSAGE);
+					return;
+				}
+
+				if (tCapacity >= 2 * guests) {
+					int option = JOptionPane.showConfirmDialog(null,
+							"The capacity of selected tables is more then the number of guest!\nAre you sure you want to select these tables?",
+							"Table selection", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE);
+					if (option != JOptionPane.YES_OPTION)
+						return;
+
+				}
+				reservation.setTables(reservedTables);
+			}
+
+			if (phoneField.getText() != reservation.getCustomer().getPhone()) {
+				changedCustomer = true;
+				if (phoneField.getText() != null && !phoneField.getText().isEmpty()
+						&& !phoneField.getText().isBlank()) {
+					try {
+						Long.parseLong(phoneField.getText());
+					} catch (Exception ex) {
+						JOptionPane.showConfirmDialog(null, "The input value in the phone number field is incorect!",
+								"Incorrect phone number", JOptionPane.WARNING_MESSAGE);
+						return;
+					}
+					String phone = phoneField.getText();
+					Customer customer = null;
+
+					try {
+						customer = reservationController.checkCustomer(phone);
+					} catch (SQLException e1) {
+						e1.printStackTrace();
+					}
+
+					if (customer == null) {
+						JOptionPane.showConfirmDialog(null,
+								"The phone number of a customer is not registered in the system!", "Phone number",
+								JOptionPane.OK_CANCEL_OPTION, JOptionPane.WARNING_MESSAGE);
+						return;
+					}
+					reservation.setCustomer(customer);
+
+				} else {
+					JOptionPane.showConfirmDialog(null, "The phone number field must be filled!", "Phone number",
+							JOptionPane.OK_CANCEL_OPTION, JOptionPane.WARNING_MESSAGE);
+					return;
+				}
+			}
+
+			if (noteField.getText() != reservation.getNote()) {
+				noteChanged = true;
+				reservation.setNote(noteField.getText());
+			}
+
+			ArrayList<Menu> newMenus = new ArrayList<>();
+			for (int i = 0; i < menuComboBoxes.size(); i++) {
+				if (menuComboBoxes.get(i).getSelectedIndex() != selectedMenusIndexes.get(i)) {
+					changedMenus = true;
+					for (Menu m : dbMenus) {
+						if (m.getName().equalsIgnoreCase(menuComboBoxes.get(i).getSelectedItem().toString())) {
+							newMenus.add(m);
+						}
+					}
+				}
+			}
+
+			reservation.setMenus(newMenus);
+			new Thread(() -> {
+				try {
+					reservationController.updateReservation(reservation);
+					JOptionPane.showConfirmDialog(null, "The reservation was updated successfully!",
+							"Reservation update", JOptionPane.OK_CANCEL_OPTION, JOptionPane.INFORMATION_MESSAGE);
+					ReservationsPanel.repopulateTable();
+				} catch (SQLException e1) {
+					JOptionPane.showConfirmDialog(null,
+							"An error occured while creating the reservation.\nPlease try again.", "Error",
+							JOptionPane.OK_CANCEL_OPTION, JOptionPane.WARNING_MESSAGE);
+					return;
+				}
+			}).start();
+			cancel();
 		});
 		gbc.gridx = 3;
 		gbc.gridwidth = 3;
@@ -428,5 +582,10 @@ public class UpdateReservationFrame extends JFrame {
 
 	private void cancel() {
 		this.dispose();
+		
+		new Thread(() -> {
+			System.out.print("lambda thread");
+		});
+	
 	}
 }

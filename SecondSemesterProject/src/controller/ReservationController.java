@@ -27,14 +27,6 @@ public class ReservationController {
 		reservation = new Reservation(timestamp, tables);
 		return reservation;
 	}
-	
-	public ArrayList<ReservedTableInfo> getReservedTableInfo(int layoutItemId, Calendar calendar) throws SQLException{
-		try {
-			return ReservedTablesConcreteDAO.getInstance().getReservedTableInfoByTime(layoutItemId, calendar);
-		} catch (SQLException e) {
-			throw new SQLException("Error getting Info from DB:" + e.getMessage());
-		}
-	}
 
 	public void confirmReservation(Customer customer, int guests, int duration, ArrayList<Menu> menus, String note)
 			throws SQLException {
@@ -42,7 +34,7 @@ public class ReservationController {
 		reservation.setMenus(menus);
 		reservation.setNote(note);
 		reservation.setDuration(duration);
-		
+
 		if (!isCustomer) {
 			control.createCustomer(customer);
 		}
@@ -58,7 +50,7 @@ public class ReservationController {
 	public Reservation getReservationById(long id) throws SQLException {
 		return reservationDAO.read(id);
 	}
-	
+
 	public ArrayList<Reservation> getReservationByCustomer(String customerName) throws SQLException {
 		return reservationDAO.readByCustomer(customerName);
 	}
@@ -104,14 +96,26 @@ public class ReservationController {
 		}
 
 		for (Reservation r : reservations) {
-			//LocalDateTime rtime = LocalDateTime.ofEpochSecond(r.getTimestamp(), 0, null)
+			// LocalDateTime rtime = LocalDateTime.ofEpochSecond(r.getTimestamp(), 0, null)
 			if (Math.abs(r.getTimestamp().getTimeInMillis() - time.getTimeInMillis()) > r.getDuration() * 3600000) {
+				System.out.println("Reservation " + r.getId() + ": " + r.getTimestamp().getTimeInMillis() + " - "
+						+ time.getTimeInMillis() + " = "
+						+ Math.abs(r.getTimestamp().getTimeInMillis() - time.getTimeInMillis()) + " vs "
+						+ r.getDuration() * 3600000);
 				for (Table t : r.getTables()) {
 					tables.remove(t);
 				}
 			}
 		}
 		return tables;
+	}
+
+	public ArrayList<ReservedTableInfo> getReservedTableInfo(int layoutItemId, Calendar calendar) throws SQLException {
+		try {
+			return ReservedTablesConcreteDAO.getInstance().getReservedTableInfoByTime(layoutItemId, calendar);
+		} catch (SQLException e) {
+			throw new SQLException("Error getting Info from DB:" + e.getMessage());
+		}
 	}
 
 }
