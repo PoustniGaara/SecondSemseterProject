@@ -72,7 +72,7 @@ public class MenuPanel extends JPanel {
 		gbcTool.fill = GridBagConstraints.NONE;
 		gbcTool.anchor = GridBagConstraints.CENTER;
 		gbcTool.weightx = 0.5;
-		gbcTool.weighty = 0;
+		gbcTool.weighty = 0.2;
 
 		// search bar
 		searchBar = new JTextField();

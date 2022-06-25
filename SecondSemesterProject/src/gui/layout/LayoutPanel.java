@@ -84,29 +84,28 @@ public class LayoutPanel extends JPanel implements ComponentListener {
 	public void setAvailabilityOfTables(int noOfPerson, Calendar calendar, int duration) {
 		for(LayoutMiniPanel miniPanel : miniPanelMap.values()) {
 			if(miniPanel.hasTable()) {
-				if(miniPanel.getTableCapacity() < noOfPerson ) {
-					miniPanel.setUnavailable();
+				if(miniPanel.getTableCapacity() >= noOfPerson && miniPanel.getTimeAvailability(calendar, duration) == true) {
+					miniPanel.setAvailable();
 					}
-				}
 				else  { // if capacity is okay test for timeAvailability
 //					System.out.println("Availability is "+miniPanel.getTimeAvailability(calendar, duration));
-					if(miniPanel.getTimeAvailability(calendar, duration) == false) {
 						System.out.println("Table is unavailable");
 						miniPanel.setUnavailable();
-				}
+				}	
 			}
+
 		}
 	}
 	// DEBUG NOTE: program can get into every part of the method if condition are met
-	HashMap<Integer,ArrayList<ReservedTableInfo>> layoutItemReservedTableInfoMap;
 	public void updateReservedTablesByTime(RestaurantLayout rl, ArrayList<ReservedTableInfo> reservedTableInfoList) {
-		for(LayoutMiniPanel miniPanel : miniPanelMap.values()) {
+		for(LayoutMiniPanel miniPanel : miniPanelMap.values()) { 
 				if(miniPanel.getLayoutItem() != null) {
 					for(ReservedTableInfo rti : reservedTableInfoList) {
 //						System.out.println("RTI GET ID:" +rti.getId() );
 //						System.out.println("miniPanel ID" +miniPanel.getLayoutItem().getId() );
 						if(rti.getLayoutItemId() == miniPanel.getLayoutItem().getId()) {
-							miniPanel.addReservedTableInfoToMap(rti, rti.getLayoutItemId()); // checking this out
+							miniPanel.addToTableInfoList(rti);
+//							miniPanel.addReservedTableInfoToMap(rti, rti.getLayoutItemId()); // checking this out
 						}
 					}
 				}

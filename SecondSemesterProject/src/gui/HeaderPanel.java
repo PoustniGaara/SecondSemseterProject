@@ -86,7 +86,7 @@ public class HeaderPanel extends JPanel {
 		optionButton.setIcon(endIcon);
 		optionButton.setText("Layout editor");
 		optionButton.setFont(font2);
-		optionButton.setPreferredSize(new Dimension((int) (mainWidth * 0.12), (int) (panelHeight * 0.65)));
+		optionButton.setPreferredSize(new Dimension((int) (mainWidth * 0.18), panelHeight));
 		gbc.anchor = GridBagConstraints.LINE_END;
 		gbc.gridheight = 1;
 		gbc.weighty = 0.5;

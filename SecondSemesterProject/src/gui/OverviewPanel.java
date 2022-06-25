@@ -494,6 +494,15 @@ public class OverviewPanel extends JPanel {
 		calendar.set(Calendar.YEAR, calendarModel.getYear());
 		calendar.set(Calendar.MONTH, calendarModel.getMonth());
 		calendar.set(Calendar.DAY_OF_MONTH, calendarModel.getDay());
+		try {
+			getLayoutsReservedTableInfoListByTime(calendar);
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		loadUpdatedReservedTableInfo();
+		setAvailabilityOfRestaurantLayout((Integer) personCB.getSelectedItem(), calendar,
+				(Integer) durationSpinner.getValue());
 	}
 
 	private void setAutomaticTime(boolean state) { // for now set label also
@@ -526,7 +535,6 @@ public class OverviewPanel extends JPanel {
 		if(hourSpinner != null && durationSpinner != null  ) {
 		setAutomaticTime(false);
 		calendar.set(Calendar.HOUR_OF_DAY, (int) hourSpinner.getValue());
-		System.out.println("Calendar value from Hspinner:"+ calendar.toString());
 		try {
 			getLayoutsReservedTableInfoListByTime(calendar);
 		} catch (SQLException e) {
@@ -577,14 +585,6 @@ public class OverviewPanel extends JPanel {
 					loadUpdatedReservedTableInfo();
 					setAvailabilityOfRestaurantLayout((Integer) personCB.getSelectedItem(), calendar,
 							(Integer) durationSpinner.getValue());
-//					try {
-////						wait(10000);// 10 seconds
-//						setAvailabilityOfRestaurantLayout((Integer) personCB.getSelectedItem(), calendar,
-//								(Integer) durationSpinner.getValue());
-//					} catch (InterruptedException e) {
-//						// TODO Auto-generated catch block
-//						e.printStackTrace();
-//					}
 				}
 
 			}// end of run
@@ -594,6 +594,13 @@ public class OverviewPanel extends JPanel {
 	}
 
 	private void PersonComboBoxAction() {
+		try {
+			getLayoutsReservedTableInfoListByTime(calendar);
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		loadUpdatedReservedTableInfo();
 		setAvailabilityOfRestaurantLayout((Integer) personCB.getSelectedItem(), calendar,
 				(Integer) durationSpinner.getValue());
 	}
@@ -636,6 +643,12 @@ public class OverviewPanel extends JPanel {
 		setValueOfMinuteSpinner();
 		setValueOfHourSpinner();
 		setDateOfDatePicker();
+		try {
+			getLayoutsReservedTableInfoListByTime(calendar);
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		loadUpdatedReservedTableInfo();
 		setAvailabilityOfRestaurantLayout((Integer) personCB.getSelectedItem(), calendar,
 				(Integer) durationSpinner.getValue());
@@ -677,15 +690,15 @@ public class OverviewPanel extends JPanel {
 	}
 
 	private void getLayoutsReservedTableInfoListByTime(Calendar calendar) throws SQLException {
-		System.out.println("calendar from loadLoayouts :"+ calendar.toString());
+//		System.out.println("calendar from loadLoayouts :"+ calendar.toString());
 		Thread dbThread = new Thread(new Runnable() {
 		    public void run() {
 		    	try {
 					for(RestaurantLayout rl : layoutList) {
-						if(reservedTableInfoMap.values().size() != 0)
+						if(reservedTableInfoMap.values().size() != 0 && durationSpinner != null )
 					reservedTableInfoMap.get(rl.getName()).clear();
 					reservedTableInfoMap.get(rl.getName())
-							.addAll(reservationController.getReservedTableInfo((int) rl.getId(), calendar));
+							.addAll(reservationController.getReservedTableInfo((int) rl.getId(), calendar, (int) durationSpinner.getValue()));
 					}
 				} catch (SQLException e) {
 					e.printStackTrace();
@@ -700,19 +713,6 @@ public class OverviewPanel extends JPanel {
 			e.printStackTrace();
 		}
 
-//		t.start();
-//		Thread dbThread new Thread() (() -> {
-//			try {
-//				Thread.join();
-//				for(RestaurantLayout rl : layoutList) {
-//				reservedTableInfoMap.get(rl.getName()).clear();
-//				reservedTableInfoMap.get(rl.getName())
-//						.addAll(reservationController.getReservedTableInfo((int) rl.getId(), calendar));
-//				}
-//			} catch (SQLException e) {
-//				e.printStackTrace();
-//			}
-//		}).start();
 	}
 
 	private void loadLayouts(int noOfPerson, Calendar calendar, int duration) {
@@ -728,7 +728,7 @@ public class OverviewPanel extends JPanel {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-			System.out.println("reservedTableInfoMap from loading:"+ reservedTableInfoMap.toString());
+//			System.out.println("reservedTableInfoMap from loading:"+ reservedTableInfoMap.toString());
 			LayoutPanel layoutPanel = new LayoutPanel();
 			layoutPanel.loadExistingMiniPanels(rl);
 			layoutPanel.updateReservedTablesByTime(rl, reservedTableInfoMap.get(rl.getName())); 

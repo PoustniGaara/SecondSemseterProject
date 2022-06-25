@@ -110,9 +110,9 @@ public class ReservationController {
 		return tables;
 	}
 
-	public ArrayList<ReservedTableInfo> getReservedTableInfo(int layoutItemId, Calendar calendar) throws SQLException {
+	public ArrayList<ReservedTableInfo> getReservedTableInfo(int layoutItemId, Calendar calendar, int duration) throws SQLException {
 		try {
-			return ReservedTablesConcreteDAO.getInstance().getReservedTableInfoByTime(layoutItemId, calendar);
+			return ReservedTablesConcreteDAO.getInstance().getReservedTableInfoByTime(layoutItemId, calendar, duration);
 		} catch (SQLException e) {
 			throw new SQLException("Error getting Info from DB:" + e.getMessage());
 		}

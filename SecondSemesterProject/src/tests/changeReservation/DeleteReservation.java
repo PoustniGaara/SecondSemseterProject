@@ -81,7 +81,7 @@ public class DeleteReservation {
 		reservation.setMenus(menus);
 
 		// Act
-		reservationCntrl.confirmReservation(customer1, 4, menus, note);
+		reservationCntrl.confirmReservation(customer1, 4,2, menus, note);
 		id = reservation.getId().intValue();
 	}
 

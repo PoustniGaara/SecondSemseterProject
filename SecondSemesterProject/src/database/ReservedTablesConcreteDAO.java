@@ -94,8 +94,7 @@ public class ReservedTablesConcreteDAO implements ReservedTablesDAO {
 
 	@Override
 	public synchronized ArrayList<ReservedTableInfo> getReservedTableInfoByTime(int restaurantLayoutId,
-			Calendar calendar) throws SQLException {
-//		calendar.add(Calendar.MONTH, -1);
+			Calendar calendar, int duration) throws SQLException {
 		Connection con = DBConnection.getInstance().getDBcon();
 		ArrayList<ReservedTableInfo> list = new ArrayList<>();
 		try {
@@ -106,8 +105,10 @@ public class ReservedTablesConcreteDAO implements ReservedTablesDAO {
 					+ "where restaurantLayoutID = ? AND timestamp BETWEEN ? AND ?");
 
 			ps.setInt(1, restaurantLayoutId);
-
-			java.util.Date dateTime = calendar.getTime();
+			
+			Calendar calendar1 = (Calendar) calendar.clone();
+			calendar1.add(Calendar.HOUR_OF_DAY, -duration);
+			java.util.Date dateTime = calendar1.getTime();
 			java.sql.Timestamp timestamp = new java.sql.Timestamp(dateTime.getTime());
 			ps.setTimestamp(2, timestamp);
 			System.out.println("timestamp 1 :" + timestamp.toString());
@@ -125,14 +126,14 @@ public class ReservedTablesConcreteDAO implements ReservedTablesDAO {
 				String name = rs.getString("name");
 				String note = rs.getString("note");
 				String phone = rs.getString("phone");
-				int duration = rs.getInt("duration");
+				int durationDB = rs.getInt("duration");
 				int id = rs.getInt("reservationID");
 				int layoutItemId = rs.getInt("layoutItemID");
 
 				Calendar cal = new GregorianCalendar();
 				cal.setTimeInMillis(timestampDB.getTime());
 
-				ReservedTableInfo reservedTableInfo = new ReservedTableInfo(cal, name, phone, note, duration, id,
+				ReservedTableInfo reservedTableInfo = new ReservedTableInfo(cal, name, phone, note, durationDB, id,
 						layoutItemId);
 				list.add(reservedTableInfo);
 			}

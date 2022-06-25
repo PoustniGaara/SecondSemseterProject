@@ -18,6 +18,6 @@ public interface ReservedTablesDAO {
 	
 	ArrayList<Table> getReservationTables(long reservationid) throws SQLException;
 	
-	ArrayList<ReservedTableInfo> getReservedTableInfoByTime(int restaurantLayoutId, Calendar calendar) throws SQLException;
+	ArrayList<ReservedTableInfo> getReservedTableInfoByTime(int restaurantLayoutId, Calendar calendar, int duration) throws SQLException;
 
 }

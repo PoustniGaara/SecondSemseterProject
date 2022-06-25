@@ -27,6 +27,7 @@ import gui.tools.ProjectColors;
 import model.LayoutItem;
 import model.RestaurantLayout;
 
+@SuppressWarnings("serial")
 public class LayoutEditorFrame extends JFrame {
 	
 	private int width,height;

@@ -40,7 +40,7 @@ public class LayoutMiniPanel extends JPanel implements MouseListener {
 	private boolean isAvailable;
 	private int tableCapacity;
 	private boolean hasTable = false;
-	private HashMap<Long, ArrayList<ReservedTableInfo>> reservedTableInfoMap;
+	private HashMap<Integer, ArrayList<ReservedTableInfo>> reservedTableInfoMap;
 	
 	public LayoutMiniPanel(int sizeOfMiniPanel) {
 		
@@ -57,6 +57,7 @@ public class LayoutMiniPanel extends JPanel implements MouseListener {
 		setPreferredSize(new Dimension(sizeOfMiniPanel,sizeOfMiniPanel));
 		
 		// reservedTableInfoMap setup
+		reservedTableInfoList = new ArrayList<>(); // I don't need map I need an Array
 		reservedTableInfoMap = new HashMap<>();
 		
 		//capacity label setup
@@ -95,15 +96,35 @@ public class LayoutMiniPanel extends JPanel implements MouseListener {
 
 	} // end of constructor
 	
+	public ArrayList<ReservedTableInfo> getReservedTableInfoList(){
+		return this.reservedTableInfoList;
+	}
+	
+	public void clearTableInfoList() {
+		this.reservedTableInfoList.clear();
+	}
+	
+	public void addToTableInfoList(ReservedTableInfo rti) {
+		reservedTableInfoList.add(rti);
+	}
+	
 	public boolean getTimeAvailability(Calendar calendar, int duration) {
 		boolean availability = true;
 		int	potentionalStartTimeInMinutes = calendar.get(Calendar.HOUR_OF_DAY) * 60;
 		int potentionalStartPlusDurationTimeInMinutes = calendar.get(Calendar.HOUR_OF_DAY) * 60 + duration;
-//		System.out.println("ReservedTableInfoMap"+reservedTableInfoMap.toString());
-		if(layoutItem != null && reservedTableInfoMap.get((layoutItem.getId())) != null) {
+		
+		if(layoutItem != null)
+		System.out.println("LAYOUT ITEM CHECK AVAILABILITY ID "+ layoutItem.getId());
+		
+		System.out.println(reservedTableInfoMap.values().toString());
+		if(reservedTableInfoMap.get(((int) layoutItem.getId())) != null)
+		System.out.println("RTI ID CHECK AVAILABILITY  "+ reservedTableInfoMap.get(((int) layoutItem.getId())));
+
+
+		if(layoutItem != null ) {
 			System.out.println(layoutItem);
-			System.out.println(reservedTableInfoMap.get((layoutItem.getId())));
-			for(ReservedTableInfo rti : reservedTableInfoMap.get((layoutItem.getId()))) {
+			System.out.println(reservedTableInfoMap.get(((int) layoutItem.getId())));
+			for(ReservedTableInfo rti : reservedTableInfoList) {
 				int existingStartTimeInMinutes = rti.getCalendar().get(Calendar.HOUR_OF_DAY) * 60;
 				int existingStartPlusDurationTmeInMInutes = 
 						rti.getCalendar().get(Calendar.HOUR_OF_DAY) * 60 + rti.getDuration();
@@ -126,12 +147,13 @@ public class LayoutMiniPanel extends JPanel implements MouseListener {
 //		this.reservedTableInfoList = reservedTableInfoList;
 //	}
 	
-	public void addReservedTableInfoToMap(ReservedTableInfo rti, long tableId) {
+	public void addReservedTableInfoToMap(ReservedTableInfo rti, int tableId) {
 		System.out.println("RTI AFTER ADDING TO RTImap:"+ rti.toString());
+		
 		reservedTableInfoMap.put(tableId, reservedTableInfoList);
 	}
 	
-	public void setReservedTableInfoMap(HashMap<Long, ArrayList<ReservedTableInfo>> reservedTableInfoMap) {
+	public void setReservedTableInfoMap(HashMap<Integer, ArrayList<ReservedTableInfo>> reservedTableInfoMap) {
 		this.reservedTableInfoMap = reservedTableInfoMap;
 	}
 	

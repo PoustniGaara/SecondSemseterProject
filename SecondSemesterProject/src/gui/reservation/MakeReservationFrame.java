@@ -35,6 +35,7 @@ import javax.swing.ScrollPaneLayout;
 import javax.swing.SpinnerDateModel;
 import javax.swing.SpinnerNumberModel;
 import javax.swing.SwingConstants;
+import javax.swing.JSpinner.NumberEditor;
 import javax.swing.border.CompoundBorder;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.LineBorder;
@@ -55,12 +56,7 @@ import model.Reservation;
 import model.Table;
 
 public class MakeReservationFrame extends JFrame {
-	
-	private JTextField guestTxtField,timeTxtField,durationTxtField,nameTxtField,phoneTxtField,noteTxtField;
-	private JComboBox<String> tableCB;
-	private FancyButtonOneClick createBtn, cancelBtn;
 
-	
 	//matej
 	private JPanel contentPane;
 	private CardLayout cardLayout;
@@ -88,7 +84,7 @@ public class MakeReservationFrame extends JFrame {
 	private static boolean resourcesLoaded = true; // was false
 
 	private Calendar reservationTimeDate;
-	private int guests;
+	private int guests, duration;
 	private String phone;
 	private Table reservedTable;
 	private String note;
@@ -248,6 +244,21 @@ public class MakeReservationFrame extends JFrame {
 		spinnerM.setBorder(new CompoundBorder(new LineBorder(darkGray, 1), new EmptyBorder(0, 10, 0, 0)));
 		gbc.gridx++;
 		firstCard.add(spinnerM, gbc);
+		
+		SpinnerNumberModel numberModelDuration = new SpinnerNumberModel(2, 1, 10, 1);
+		JSpinner durationSpinner = new JSpinner(numberModelDuration);
+		NumberEditor editorDuration = new NumberEditor(durationSpinner);
+		NumberFormatter formatterDuration = (NumberFormatter) editorDuration.getTextField().getFormatter();
+		formatterDuration.setOverwriteMode(true);
+		formatterDuration.setAllowsInvalid(false);
+		durationSpinner.setEditor(editorDuration);
+		durationSpinner.setFont(Fonts.FONT20.get());
+		durationSpinner.setBorder(new CompoundBorder(new LineBorder(darkGray, 1), new EmptyBorder(0, 10, 0, 0)));
+		gbc.insets = new Insets(5, 30, 25, 30);
+		gbc.gridy++;
+		firstCard.add(durationSpinner, gbc);
+		
+		duration = (int) durationSpinner.getValue();
 
 		JButton cancelButton = new JButton("Cancel");
 		cancelButton.setFont(font);
@@ -881,7 +892,7 @@ public class MakeReservationFrame extends JFrame {
 
 			new Thread(() -> {
 				try {
-					reservationController.confirmReservation(customer, guests, reservedMenus, note);
+					reservationController.confirmReservation(customer, guests, duration, reservedMenus, note);
 					JOptionPane.showConfirmDialog(null, "New reservation was created successfully", "New reservtaion",
 							JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE);
 					ReservationsPanel.repopulateTable();

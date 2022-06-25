@@ -1,5 +1,6 @@
 package gui.layout;
 
+
 import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Dimension;
@@ -33,6 +34,7 @@ import model.Meal;
 import model.Menu;
 import model.ReservedTableInfo;
 
+@SuppressWarnings("serial")
 public class TableInfoFrame extends JFrame{
 	
 	private JTable table;

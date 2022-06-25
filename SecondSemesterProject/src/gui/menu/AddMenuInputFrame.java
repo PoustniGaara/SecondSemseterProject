@@ -4,6 +4,7 @@ import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.awt.Insets;
 import java.util.ArrayList;
 
 import javax.swing.BorderFactory;
@@ -11,6 +12,7 @@ import javax.swing.DefaultComboBoxModel;
 import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.border.EmptyBorder;
@@ -53,13 +55,14 @@ public class AddMenuInputFrame extends JFrame {
 		JLabel nameLbl = new JLabel("Name");
 		nameLbl.setFont(Fonts.FONT20.get());
 		gbc.weightx = 1;
-		gbc.weighty = 1;
+		gbc.weighty = 0.25;
 		gbc.anchor = GridBagConstraints.LAST_LINE_START;
 		gbc.gridx = 0;
 		gbc.gridy = 0;
 		contentPane.add(nameLbl, gbc);
 
-		nameTxtField = new JTextField(10);
+		nameTxtField = new JTextField();
+		nameTxtField.setPreferredSize(new Dimension(300,30));
 		nameTxtField.setFont(Fonts.FONT20.get());
 //		gbc.gridwidth = 2;
 		gbc.anchor = GridBagConstraints.FIRST_LINE_START;
@@ -77,8 +80,8 @@ public class AddMenuInputFrame extends JFrame {
 
 		meal1CB = new JComboBox(new DefaultComboBoxModel());
 		meal1CB.setMaximumRowCount(3);
+		meal1CB.setPreferredSize(new Dimension(300,30));
 		meal1CB.setFont(Fonts.FONT18.get());
-		meal1CB.setPreferredSize(new Dimension(100, 30));
 		gbc.anchor = GridBagConstraints.FIRST_LINE_START;
 		gbc.gridx = 0;
 		gbc.gridy = 3;
@@ -93,8 +96,8 @@ public class AddMenuInputFrame extends JFrame {
 
 		meal2CB = new JComboBox(new DefaultComboBoxModel());
 		meal2CB.setMaximumRowCount(3);
+		meal2CB.setPreferredSize(new Dimension(300,30));
 		meal2CB.setFont(Fonts.FONT18.get());
-		meal2CB.setPreferredSize(new Dimension(100, 30));
 		gbc.anchor = GridBagConstraints.FIRST_LINE_START;
 		gbc.gridx = 0;
 		gbc.gridy = 5;
@@ -109,8 +112,8 @@ public class AddMenuInputFrame extends JFrame {
 
 		meal3CB = new JComboBox(new DefaultComboBoxModel());
 		meal3CB.setMaximumRowCount(3);
+		meal3CB.setPreferredSize(new Dimension(300,30));
 		meal3CB.setFont(Fonts.FONT18.get());
-		meal3CB.setPreferredSize(new Dimension(100, 30));
 		gbc.anchor = GridBagConstraints.FIRST_LINE_START;
 		gbc.gridx = 0;
 		gbc.gridy = 7;
@@ -133,6 +136,12 @@ public class AddMenuInputFrame extends JFrame {
 
 	private void createMenu() {
 		String menuName = nameTxtField.getText(); // check from invalid input **
+		if(menuName.length() > 20) {
+			JOptionPane.showMessageDialog(null,
+					"Menu name is too long! \nMaximum name length is 20 characters", "Action denied",
+					JOptionPane.WARNING_MESSAGE);
+			return;
+		}
 		ArrayList<Meal> selectedMeals = new ArrayList<>();
 		String meal1 = meal1CB.getSelectedItem().toString();
 		String meal2 = meal2CB.getSelectedItem().toString();
@@ -143,7 +152,7 @@ public class AddMenuInputFrame extends JFrame {
 				selectedMeals.add(meal);
 			if (meal2.equals(meal.getName()))
 				selectedMeals.add(meal);
-			if (meal2.equals(meal.getName()))
+			if (meal3.equals(meal.getName()))
 				selectedMeals.add(meal);
 		}
 		Menu menu = new Menu(menuName, selectedMeals);

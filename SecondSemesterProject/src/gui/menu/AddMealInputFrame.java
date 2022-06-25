@@ -1,13 +1,17 @@
 package gui.menu;
 
 import java.awt.BorderLayout;
+import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.awt.Insets;
 
 import javax.swing.BorderFactory;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.border.EmptyBorder;
 
@@ -19,8 +23,9 @@ import model.Meal;
 
 public class AddMealInputFrame extends JFrame {
 	
-	private JTextField nameTxtField,priceTxtField,descriptionTxtField;
+	private JTextField nameTxtField,priceTxtField;
 	private FancyButtonOneClick createBtn;
+	private JTextArea descriptionTxtArea;
 	
 	public AddMealInputFrame(){
 		//frame setup
@@ -45,15 +50,15 @@ public class AddMealInputFrame extends JFrame {
 		JLabel nameLbl = new JLabel("Name");
 		nameLbl.setFont(Fonts.FONT20.get());
 		gbc.weightx = 1;
-		gbc.weighty = 1;
+		gbc.weighty = 0.3;
 		gbc.anchor = GridBagConstraints.LAST_LINE_START;
 		gbc.gridx = 0;
 		gbc.gridy = 0;
 		contentPane.add(nameLbl,gbc);
 		
-		nameTxtField = new JTextField(10);
+		nameTxtField = new JTextField();
+		nameTxtField.setPreferredSize(new Dimension(300,30));
 		nameTxtField.setFont(Fonts.FONT20.get());
-//		gbc.gridwidth = 2;
 		gbc.anchor = GridBagConstraints.FIRST_LINE_START;
 		gbc.gridx = 0;
 		gbc.gridy = 1;
@@ -66,9 +71,9 @@ public class AddMealInputFrame extends JFrame {
 		gbc.gridy = 2;
 		contentPane.add(priceLbl,gbc);
 		
-		priceTxtField = new JTextField(10);
+		priceTxtField = new JTextField();
 		priceTxtField.setFont(Fonts.FONT20.get());
-//		gbc.gridwidth = 2;
+		priceTxtField.setPreferredSize(new Dimension(300,30));
 		gbc.anchor = GridBagConstraints.FIRST_LINE_START;
 		gbc.gridx = 0;
 		gbc.gridy = 3;
@@ -81,13 +86,13 @@ public class AddMealInputFrame extends JFrame {
 		gbc.gridy = 4;
 		contentPane.add(descriptionLbl,gbc);
 		
-		descriptionTxtField = new JTextField(10);
-		descriptionTxtField.setFont(Fonts.FONT20.get());
-//		gbc.gridwidth = 2;
+		descriptionTxtArea = new JTextArea();
+		descriptionTxtArea.setFont(Fonts.FONT20.get());
+		descriptionTxtArea.setPreferredSize(new Dimension(300,60));
 		gbc.anchor = GridBagConstraints.FIRST_LINE_START;
 		gbc.gridx = 0;
 		gbc.gridy = 5;
-		contentPane.add(descriptionTxtField,gbc);
+		contentPane.add(descriptionTxtArea,gbc);
 		
 		// Create button
 		createBtn = new FancyButtonOneClick(ProjectColors.BLACK.get(), ProjectColors.RED.get(), ProjectColors.RED.get());
@@ -101,9 +106,36 @@ public class AddMealInputFrame extends JFrame {
 	}
 	
 	private void createMeal() {
+		float price = -1;
 		String mealName = nameTxtField.getText(); // check input
-		float price = Float.valueOf(priceTxtField.getText());
-		String description = descriptionTxtField.getText();
+		if(mealName.length() > 20) {
+			JOptionPane.showMessageDialog(null,
+					"Menu name is too long! \nMaximum name length is 20 characters", "Action denied",
+					JOptionPane.WARNING_MESSAGE);
+			return;
+		}
+		if(mealName.length() == 0) {
+			JOptionPane.showMessageDialog(null,
+					"Name field is empty! \nYou have to set some name", "Action denied",
+					JOptionPane.WARNING_MESSAGE);
+			return;
+		}
+		try {
+		price = Float.valueOf(priceTxtField.getText());
+		}
+		catch(NumberFormatException e) {
+			JOptionPane.showMessageDialog(null,
+					"Price has to be a number! \nPlease, input number in the field price", "Action denied",
+					JOptionPane.WARNING_MESSAGE);
+			return;
+		}
+		if(price == -1) {
+			JOptionPane.showMessageDialog(null,
+					"Price field is empty! \n You have to set some price", "Action denied",
+					JOptionPane.WARNING_MESSAGE);
+			return;
+		}
+		String description = descriptionTxtArea.getText();
 		MenuPanel.getInstance().createMeal(new Meal(mealName,description,price));
 		dispose();
 	}
