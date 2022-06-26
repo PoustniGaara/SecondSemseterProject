@@ -17,5 +17,7 @@ public interface LayoutItemDAO {
 	
 	void createLayoutItems(HashMap<Point,LayoutItem> itemMap, long restaurantLayoutID) throws SQLException;
 	
+	LayoutItem read(String name) throws SQLException;
+	
 
 }

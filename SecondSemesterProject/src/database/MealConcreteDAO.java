@@ -51,7 +51,7 @@ public class MealConcreteDAO implements MealDAO {
 		Connection con = DBConnection.getInstance().getDBcon();
 		try {
 			Statement statement = con.createStatement();
-			ResultSet rs = statement.executeQuery("SELECT * FROM Meals WHERE menuID = " + id);
+			ResultSet rs = statement.executeQuery("SELECT * FROM Meals WHERE mealID = " + id);
 			while (rs.next()) {
 				String name = rs.getString("name");
 				String description = rs.getString("description");
@@ -91,8 +91,16 @@ public class MealConcreteDAO implements MealDAO {
 	}
 
 	@Override
-	public void delete(Meal meal) {
-		// TODO Auto-generated method stub
+	public void delete(Meal meal) throws SQLException {
+		Connection con = DBConnection.getInstance().getDBcon();
+		try {
+			PreparedStatement ps = con.prepareStatement("DELETE FROM dbo.Meals WHERE mealID = ?");
+			ps.setLong(1, meal.getId());
+			ps.execute();
+		} catch (SQLException e) {
+			e.printStackTrace();
+			throw new SQLException("Error deleting Menu from DB:" + e.getMessage());
+		}
 
 	}
 }

@@ -125,19 +125,21 @@ public class AddMealInputFrame extends JFrame {
 		}
 		catch(NumberFormatException e) {
 			JOptionPane.showMessageDialog(null,
-					"Price has to be a number! \nPlease, input number in the field price", "Action denied",
+					"Price has to be a number! \nPlease, input number in the price field", "Action denied",
 					JOptionPane.WARNING_MESSAGE);
 			return;
 		}
-		if(price == -1) {
+		if(price <= 0 || Float.valueOf(price) == null) {
 			JOptionPane.showMessageDialog(null,
-					"Price field is empty! \n You have to set some price", "Action denied",
+					"Incorrent price value! \n Set price field correctly", "Action denied",
 					JOptionPane.WARNING_MESSAGE);
 			return;
 		}
 		String description = descriptionTxtArea.getText();
 		MenuPanel.getInstance().createMeal(new Meal(mealName,description,price));
 		dispose();
+		JOptionPane.showConfirmDialog(null, "Meal was create", "Creation of meal",
+				JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE);
 	}
 
 }

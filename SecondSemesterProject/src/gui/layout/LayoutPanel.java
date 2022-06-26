@@ -1,6 +1,7 @@
 package gui.layout;
 
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
@@ -37,7 +38,7 @@ public class LayoutPanel extends JPanel implements ComponentListener {
 		int width = MainFrame.width;
 		int height = (int) (MainFrame.height*0.84);
 		setLayout(new BorderLayout());
-		setBackground(ProjectColors.WHITE.get());
+		setBackground(Color.white);
 //		widthOfMiniPanel = Math.round(width/sizeX);
 //		heightOfMiniPanel =  Math.round(height/sizeY);
 //		sizeOfMiniPanel = widthOfMiniPanel-heightOfMiniPanel;
@@ -89,7 +90,6 @@ public class LayoutPanel extends JPanel implements ComponentListener {
 					}
 				else  { // if capacity is okay test for timeAvailability
 //					System.out.println("Availability is "+miniPanel.getTimeAvailability(calendar, duration));
-						System.out.println("Table is unavailable");
 						miniPanel.setUnavailable();
 				}	
 			}

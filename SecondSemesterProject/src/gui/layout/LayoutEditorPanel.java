@@ -1,6 +1,7 @@
 package gui.layout;
 
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
@@ -14,6 +15,7 @@ import javax.swing.JScrollPane;
 import javax.swing.ScrollPaneConstants;
 
 import gui.MainFrame;
+import gui.tools.ProjectColors;
 import model.RestaurantLayout;
 
 public class LayoutEditorPanel extends JPanel implements ComponentListener {
@@ -37,7 +39,8 @@ public class LayoutEditorPanel extends JPanel implements ComponentListener {
 		
 		contentPane = new JPanel();
 		contentPane.setLayout(new GridBagLayout());
-		
+		contentPane.setBackground(Color.white);
+
 		//gbc setup
 		gbc = new GridBagConstraints();
 		gbc.anchor = GridBagConstraints.CENTER;

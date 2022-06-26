@@ -151,7 +151,6 @@ public class MenuConcreteDAO implements MenuDAO {
 			e.printStackTrace();
 			throw new SQLException("Error deleting Menu from DB:" + e.getMessage());
 		}
-
 	}
 
 }

@@ -11,6 +11,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 import model.LayoutItem;
+import model.RestaurantLayout;
 
 public class LayoutItemConcreteDAO implements LayoutItemDAO {
 	
@@ -140,6 +141,31 @@ public class LayoutItemConcreteDAO implements LayoutItemDAO {
 	public static LayoutItemDAO getInstance() {
 		if(instance == null) return instance = new LayoutItemConcreteDAO();
 		else return instance;
+	}
+
+	@Override
+	public LayoutItem read(String name) throws SQLException {
+		long id = 0;
+		String lIName = "";
+		String type = "";
+		Connection con = DBConnection.getInstance().getDBcon();
+		try(PreparedStatement ps = con.prepareStatement(" select * from dbo.LayoutItems where name = ?");
+			){
+			ps.setString(1, name);
+			ResultSet rs = ps.executeQuery();
+			while(rs.next()) {
+				id = rs.getLong("LayoutItemID");
+				lIName = rs.getString("name"); 
+				type = rs.getString("type");
+			}
+			LayoutItem layoutItem = new LayoutItem(lIName, type);
+			layoutItem.setId(id);
+		return layoutItem;
+		}
+		catch(Exception e) {
+			e.printStackTrace();
+			throw new SQLException("Error in getting RestaurantLayout:"+ e.getMessage());
+		}
 	}
 
 }

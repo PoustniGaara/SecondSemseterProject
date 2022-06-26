@@ -48,7 +48,7 @@ public class LayoutMiniPanel extends JPanel implements MouseListener {
 		int height = (int) (MainFrame.height*0.84);
 		int width = MainFrame.width;
 		addMouseListener(this);
-		setBackground(ProjectColors.WHITE.get());
+		setBackground(Color.white);
 		
 		setLayout(new GridBagLayout());
 		GridBagConstraints gbc = new GridBagConstraints();
@@ -112,18 +112,7 @@ public class LayoutMiniPanel extends JPanel implements MouseListener {
 		boolean availability = true;
 		int	potentionalStartTimeInMinutes = calendar.get(Calendar.HOUR_OF_DAY) * 60;
 		int potentionalStartPlusDurationTimeInMinutes = calendar.get(Calendar.HOUR_OF_DAY) * 60 + duration;
-		
-		if(layoutItem != null)
-		System.out.println("LAYOUT ITEM CHECK AVAILABILITY ID "+ layoutItem.getId());
-		
-		System.out.println(reservedTableInfoMap.values().toString());
-		if(reservedTableInfoMap.get(((int) layoutItem.getId())) != null)
-		System.out.println("RTI ID CHECK AVAILABILITY  "+ reservedTableInfoMap.get(((int) layoutItem.getId())));
-
-
 		if(layoutItem != null ) {
-			System.out.println(layoutItem);
-			System.out.println(reservedTableInfoMap.get(((int) layoutItem.getId())));
 			for(ReservedTableInfo rti : reservedTableInfoList) {
 				int existingStartTimeInMinutes = rti.getCalendar().get(Calendar.HOUR_OF_DAY) * 60;
 				int existingStartPlusDurationTmeInMInutes = 
@@ -142,19 +131,10 @@ public class LayoutMiniPanel extends JPanel implements MouseListener {
 		}
 		return availability;
 	}
-	
-//	public void updateReservedTableInfoList(ArrayList<ReservedTableInfo> reservedTableInfoList) {
-//		this.reservedTableInfoList = reservedTableInfoList;
-//	}
+
 	
 	public void addReservedTableInfoToMap(ReservedTableInfo rti, int tableId) {
-		System.out.println("RTI AFTER ADDING TO RTImap:"+ rti.toString());
-		
 		reservedTableInfoMap.put(tableId, reservedTableInfoList);
-	}
-	
-	public void setReservedTableInfoMap(HashMap<Integer, ArrayList<ReservedTableInfo>> reservedTableInfoMap) {
-		this.reservedTableInfoMap = reservedTableInfoMap;
 	}
 	
 	public void setLayoutItem(LayoutItem layoutItem) {

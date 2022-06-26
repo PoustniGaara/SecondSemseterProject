@@ -286,7 +286,7 @@ public class MenuPanel extends JPanel {
 		deleteButton.setForeground(new Color(195, 70, 70));
 		deleteButton.setBackground(new Color(252, 232, 232));
 		deleteButton.setBorder(new LineBorder(new Color(220, 48, 48), 1));
-		deleteButton.setPreferredSize(new Dimension((int) (getWidth() * 0.15), 40));
+		deleteButton.setPreferredSize(new Dimension(FooterPanel.panelWidth / 6, (int) (FooterPanel.panelHeight * 0.6)));
 		deleteButton.setFocusable(false);
 		gbcFooter.insets = new Insets(10, 15, 10, 15);
 		gbcFooter.anchor = GridBagConstraints.EAST;
@@ -297,7 +297,7 @@ public class MenuPanel extends JPanel {
 		modifyButton.setFont(Fonts.FONT18.get());
 		modifyButton.setBackground(ProjectColors.BLUE1.get());
 		modifyButton.setBorder(new LineBorder(ProjectColors.LIGHT_BLUE.get(), 1));
-		modifyButton.setPreferredSize(new Dimension((int) (getWidth() * 0.15), 40));
+		modifyButton.setPreferredSize(new Dimension(FooterPanel.panelWidth / 6, (int) (FooterPanel.panelHeight * 0.6)));
 		modifyButton.setFocusable(false);
 		// modifyButton.addActionListener(e -> change());
 		gbcFooter.gridx = 2;
@@ -308,7 +308,7 @@ public class MenuPanel extends JPanel {
 		addButton.setFont(Fonts.FONT18.get());
 		addButton.setBackground(ProjectColors.BLUE.get());
 		addButton.setForeground(Color.white);
-		addButton.setPreferredSize(new Dimension((int) (getWidth() * 0.15), 40));
+		addButton.setPreferredSize(new Dimension(FooterPanel.panelWidth / 6, (int) (FooterPanel.panelHeight * 0.6)));
 		addButton.setFocusable(false);
 		addButton.addActionListener(e -> create());
 		gbcFooter.gridx = 3;
@@ -328,15 +328,42 @@ public class MenuPanel extends JPanel {
 						if (menuController.getMenuById(id) != null) {
 							Menu menu = menuController.getMenuById(id);
 							menuController.deleteMenu(menu);
+							JOptionPane.showConfirmDialog(null, "Menu was deleted", "Deletion of menu",
+									JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE);
 						}
 					}
 				} else {
-					JOptionPane.showMessageDialog(null, "You must select a menu in the list you want to delete!",
+					JOptionPane.showMessageDialog(null, "You must select a menu from the list you want to delete!",
 							"Error", JOptionPane.WARNING_MESSAGE);
 				}
 			} catch (SQLException e) {
 				JOptionPane.showMessageDialog(null,
 						"An error occured, while getting menu information! \nTry refreshing the table", "Error",
+						JOptionPane.WARNING_MESSAGE);
+			}
+		}
+		else {
+			try {
+				if (mealTable.getSelectedRow() != -1) {
+					if (JOptionPane.showConfirmDialog(null,
+							"Are you sure you want to delete the meal?\nThis action is permanent!", "Meal deletion",
+							JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE) == JOptionPane.YES_OPTION) {
+						int id = Integer.parseInt(mealTable.getValueAt(mealTable.getSelectedRow(), 0).toString());
+						mealTableModel.removeRow(mealTable.getSelectedRow());
+						if (menuController.getMealById(id) != null) {
+							Meal meal = menuController.getMealById(id);
+							menuController.deleteMeal(meal);
+							JOptionPane.showConfirmDialog(null, "Meal was deleted successfuly", "Deletion of meal",
+									JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE);
+						}
+					}
+				} else {
+					JOptionPane.showMessageDialog(null, "You must select a meal from the list you want to delete!",
+							"Error", JOptionPane.WARNING_MESSAGE);
+				}
+			} catch (SQLException e) {
+				JOptionPane.showMessageDialog(null,
+						"An error occured, while getting meal information! \nTry refreshing the table", "Error",
 						JOptionPane.WARNING_MESSAGE);
 			}
 		}

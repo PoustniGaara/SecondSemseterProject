@@ -14,17 +14,31 @@ import model.Menu;
 
 public class MenuController {
 	
-	private MealConcreteDAO mealDAO;
-	private MenuMealsConcreteDAO menuMealDAO;
-	private MenuConcreteDAO menuDAO;
+	private MealDAO mealDAO;
+	private MenuMealsDAO menuMealDAO;
+	private MenuDAO menuDAO;
 	
 	public MenuController() {
-		menuDAO = (MenuConcreteDAO) MenuConcreteDAO.getInstance();
-		menuMealDAO = (MenuMealsConcreteDAO) MenuMealsConcreteDAO.getInstance();
-		mealDAO = (MealConcreteDAO) MealConcreteDAO.getInstance();
+		menuDAO = MenuConcreteDAO.getInstance();
+		menuMealDAO = MenuMealsConcreteDAO.getInstance();
+		mealDAO =  MealConcreteDAO.getInstance();
 	}
 	
+	public void deleteMeal(Meal meal) throws SQLException {
+		try {
+			mealDAO.delete(meal);
+		} catch (SQLException e) {
+			throw new SQLException("Error in deleting meal from DB:" + e.getMessage());
+		}
+	}
 	
+	public Meal getMealById(int id) throws SQLException {
+		try {
+			return mealDAO.read(id);
+		} catch (SQLException e) {
+			throw new SQLException("Error in getting meal from DB:" + e.getMessage());
+		}
+	}
 	
 	public void createMeal(Meal meal) throws SQLException{
 		try {

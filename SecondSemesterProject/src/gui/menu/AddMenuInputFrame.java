@@ -62,7 +62,7 @@ public class AddMenuInputFrame extends JFrame {
 		contentPane.add(nameLbl, gbc);
 
 		nameTxtField = new JTextField();
-		nameTxtField.setPreferredSize(new Dimension(300,30));
+		nameTxtField.setPreferredSize(new Dimension(300, 30));
 		nameTxtField.setFont(Fonts.FONT20.get());
 //		gbc.gridwidth = 2;
 		gbc.anchor = GridBagConstraints.FIRST_LINE_START;
@@ -80,7 +80,7 @@ public class AddMenuInputFrame extends JFrame {
 
 		meal1CB = new JComboBox(new DefaultComboBoxModel());
 		meal1CB.setMaximumRowCount(3);
-		meal1CB.setPreferredSize(new Dimension(300,30));
+		meal1CB.setPreferredSize(new Dimension(300, 30));
 		meal1CB.setFont(Fonts.FONT18.get());
 		gbc.anchor = GridBagConstraints.FIRST_LINE_START;
 		gbc.gridx = 0;
@@ -96,7 +96,7 @@ public class AddMenuInputFrame extends JFrame {
 
 		meal2CB = new JComboBox(new DefaultComboBoxModel());
 		meal2CB.setMaximumRowCount(3);
-		meal2CB.setPreferredSize(new Dimension(300,30));
+		meal2CB.setPreferredSize(new Dimension(300, 30));
 		meal2CB.setFont(Fonts.FONT18.get());
 		gbc.anchor = GridBagConstraints.FIRST_LINE_START;
 		gbc.gridx = 0;
@@ -112,7 +112,7 @@ public class AddMenuInputFrame extends JFrame {
 
 		meal3CB = new JComboBox(new DefaultComboBoxModel());
 		meal3CB.setMaximumRowCount(3);
-		meal3CB.setPreferredSize(new Dimension(300,30));
+		meal3CB.setPreferredSize(new Dimension(300, 30));
 		meal3CB.setFont(Fonts.FONT18.get());
 		gbc.anchor = GridBagConstraints.FIRST_LINE_START;
 		gbc.gridx = 0;
@@ -136,10 +136,9 @@ public class AddMenuInputFrame extends JFrame {
 
 	private void createMenu() {
 		String menuName = nameTxtField.getText(); // check from invalid input **
-		if(menuName.length() > 20) {
-			JOptionPane.showMessageDialog(null,
-					"Menu name is too long! \nMaximum name length is 20 characters", "Action denied",
-					JOptionPane.WARNING_MESSAGE);
+		if (menuName.length() > 20) {
+			JOptionPane.showMessageDialog(null, "Menu name is too long! \nMaximum name length is 20 characters",
+					"Action denied", JOptionPane.WARNING_MESSAGE);
 			return;
 		}
 		ArrayList<Meal> selectedMeals = new ArrayList<>();
@@ -158,6 +157,8 @@ public class AddMenuInputFrame extends JFrame {
 		Menu menu = new Menu(menuName, selectedMeals);
 		MenuPanel.getInstance().createMenu(menu);
 		dispose();
+		JOptionPane.showConfirmDialog(null, "Menu was create", "Creation of menu", JOptionPane.OK_CANCEL_OPTION,
+				JOptionPane.PLAIN_MESSAGE);
 	}
 
 	private void populateMealComboBox() {

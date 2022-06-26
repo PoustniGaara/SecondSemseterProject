@@ -203,7 +203,7 @@ public class ReservationsPanel extends JPanel {
 		// -----------------------------------------------
 
 		FooterPanel footerPanel = new FooterPanel();
-		footerPanel.setBackground(Color.WHITE);
+//		footerPanel.setBackground(Color.WHITE);
 		add(footerPanel, BorderLayout.SOUTH);
 		GridBagLayout footergbl = new GridBagLayout();
 		footergbl.columnWidths = new int[] { 550, 170, 170, 170 };
@@ -230,7 +230,7 @@ public class ReservationsPanel extends JPanel {
 		deleteButton.setForeground(new Color(195, 70, 70));
 		deleteButton.setBackground(new Color(252, 232, 232));
 		deleteButton.setBorder(new LineBorder(new Color(220, 48, 48), 1));
-		deleteButton.setPreferredSize(new Dimension((int) (getWidth() * 0.15), 40));
+		deleteButton.setPreferredSize(new Dimension(FooterPanel.panelWidth / 6, (int) (FooterPanel.panelHeight * 0.6)));
 		deleteButton.setFocusable(false);
 		deleteButton.addActionListener(e -> new Thread(() -> {
 			delete();
@@ -245,7 +245,7 @@ public class ReservationsPanel extends JPanel {
 		modifyButton.setFont(Fonts.FONT18.get());
 		modifyButton.setBackground(ProjectColors.BLUE1.get());
 		modifyButton.setBorder(new LineBorder(ProjectColors.LIGHT_BLUE.get(), 1));
-		modifyButton.setPreferredSize(new Dimension((int) (getWidth() * 0.15), 40));
+		modifyButton.setPreferredSize(new Dimension(FooterPanel.panelWidth / 6, (int) (FooterPanel.panelHeight * 0.6)));
 		modifyButton.setFocusable(false);
 		modifyButton.addActionListener(e -> change());
 		gbcFooter.gridx = 2;
@@ -257,7 +257,7 @@ public class ReservationsPanel extends JPanel {
 		addButton.setFont(Fonts.FONT18.get());
 		addButton.setBackground(ProjectColors.BLUE.get());
 		addButton.setForeground(Color.white);
-		addButton.setPreferredSize(new Dimension((int) (getWidth() * 0.15), 40));
+		addButton.setPreferredSize(new Dimension(FooterPanel.panelWidth / 6, (int) (FooterPanel.panelHeight * 0.6)));
 		addButton.setFocusable(false);
 		addButton.addActionListener(e -> add());
 		gbcFooter.gridx = 3;

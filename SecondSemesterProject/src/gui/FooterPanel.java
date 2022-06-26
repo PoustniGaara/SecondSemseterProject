@@ -1,5 +1,6 @@
 package gui;
 
+import java.awt.Color;
 import java.awt.Dimension;
 
 import javax.swing.JPanel;
@@ -21,7 +22,7 @@ public class FooterPanel extends JPanel {
 		
 		
 		setPreferredSize(new Dimension(panelWidth, panelHeight));
-		setBackground(ProjectColors.GREEN.get());
+		setBackground(Color.WHITE);
 		setVisible(true);
 	}
 

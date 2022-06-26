@@ -40,7 +40,7 @@ import model.RestaurantLayout;
 		}
 		catch(SQLException e){
 			e.printStackTrace();
-			throw new SQLException("Error in getting RestaurantLayouts from DB:"+ e.getMessage());
+			throw new SQLException("Error in getting RestaurantLayout from DB:"+ e.getMessage());
 		}
 	}
 	

@@ -44,9 +44,8 @@ public class LayoutEditorMiniPanel extends JPanel implements MouseListener {
 		GridBagConstraints gbc = new GridBagConstraints();
 		
 		capacityBorder = BorderFactory.createLineBorder(ProjectColors.BLACK.get(), 1);
-//		setBorder(borderBlack);
+		setBackground(Color.white);
 		setPreferredSize(new Dimension(sizeOfMiniPanel,sizeOfMiniPanel));
-//		System.out.println(this.getPreferredSize());
 		
 		//capacity label setup
 		capacityLabel = new JLabel("");

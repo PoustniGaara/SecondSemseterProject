@@ -15,6 +15,6 @@ public interface MealDAO {
 
 	void update(Meal meal);
 
-	void delete(Meal meal);
+	void delete(Meal meal) throws SQLException;
 
 } 
