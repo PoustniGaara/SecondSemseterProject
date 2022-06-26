@@ -76,41 +76,8 @@ public class ReservationController {
 		return c;
 	}
 
-	/**
-	 * Returns a list of tables available in the 2 hour window of the date and time
-	 * in the time parameter.
-	 *
-	 * @param time Calendar object with the date and time of reservation.
-	 *
-	 * @return Arraylist of Tables
-	 */
-	public ArrayList<Table> getAvailableTables(Calendar time) {
-		ArrayList<Table> tables = null;
-		ArrayList<Reservation> reservations = null;
-
-		try {
-			tables = TableConcreteDAO.getInstance().read();
-			reservations = reservationDAO.read();
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-
-		for (Reservation r : reservations) {
-			// LocalDateTime rtime = LocalDateTime.ofEpochSecond(r.getTimestamp(), 0, null)
-			if (Math.abs(r.getTimestamp().getTimeInMillis() - time.getTimeInMillis()) > r.getDuration() * 3600000) {
-				System.out.println("Reservation " + r.getId() + ": " + r.getTimestamp().getTimeInMillis() + " - "
-						+ time.getTimeInMillis() + " = "
-						+ Math.abs(r.getTimestamp().getTimeInMillis() - time.getTimeInMillis()) + " vs "
-						+ r.getDuration() * 3600000);
-				for (Table t : r.getTables()) {
-					tables.remove(t);
-				}
-			}
-		}
-		return tables;
-	}
-
-	public ArrayList<ReservedTableInfo> getReservedTableInfo(int layoutItemId, Calendar calendar, int duration) throws SQLException {
+	public ArrayList<ReservedTableInfo> getReservedTableInfo(int layoutItemId, Calendar calendar, int duration)
+			throws SQLException {
 		try {
 			return ReservedTablesConcreteDAO.getInstance().getReservedTableInfoByTime(layoutItemId, calendar, duration);
 		} catch (SQLException e) {

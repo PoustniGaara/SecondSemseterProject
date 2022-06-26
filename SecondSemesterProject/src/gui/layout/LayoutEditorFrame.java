@@ -229,7 +229,7 @@ public class LayoutEditorFrame extends JFrame {
 		Thread dbThread = new Thread(new Runnable() {
 			public void run() {
 				try {
-					//check for DB values
+					// check for DB values
 					String rLName = nameTxtField.getText();
 					RestaurantLayout rl = rsController.read(rLName);
 					if (rLName.equals(rl.getName())) {
@@ -285,7 +285,6 @@ public class LayoutEditorFrame extends JFrame {
 		if (currentComponent != null) {
 			mainPanel.remove(currentComponent);
 			currentComponent = editorPanelMap.get(layoutsCB.getSelectedItem().toString());
-			System.out.println(editorPanelMap.get(layoutsCB.getSelectedItem().toString()));
 			mainPanel.add(currentComponent, BorderLayout.CENTER); // add editor panel
 			mainPanel.repaint();
 			mainPanel.revalidate();
@@ -379,8 +378,8 @@ public class LayoutEditorFrame extends JFrame {
 	public void deleteItemFromCurrentLayoutItemMap(Point point) {
 		currentRestaurantLayout.getItemMap().remove(point);
 	}
-	
-	public HashMap<String, RestaurantLayout> getRestaurantLayoutMap(){
+
+	public HashMap<String, RestaurantLayout> getRestaurantLayoutMap() {
 		return this.restaurantLayoutMap;
 	}
 

@@ -128,7 +128,7 @@ public class OverviewPanel extends JPanel {
 		add(toolPanel, BorderLayout.NORTH);
 
 		// Calendar border panel
-		calendarBorderPanel = new ToolBorderPanel(panelWidth/3, ToolPanel.getPanelHeight(), true);
+		calendarBorderPanel = new ToolBorderPanel(panelWidth / 3, ToolPanel.getPanelHeight(), true);
 //		calendarBorderPanel.setBackground(Color.blue);
 //		calendarBorderPanel.setPreferredSize(new Dimension(panelWidth / 3, ToolPanel.getPanelHeight()));
 		calendarBorderPanel.setLayout(new GridBagLayout());
@@ -224,12 +224,8 @@ public class OverviewPanel extends JPanel {
 		gbcCalendarBP.anchor = GridBagConstraints.PAGE_END;
 		calendarBorderPanel.add(dateLbl, gbcCalendarBP);
 
-		System.out.println("3 : " + calendarBorderPanel.getPreferredSize().getWidth());
-
 		// Time border panel
 		timeBorderPanel = new ToolBorderPanel(panelWidth / 4, ToolPanel.getPanelHeight(), true);
-//		timeBorderPanel.setBackground(Color.red);
-//		timeBorderPanel.setPreferredSize(new Dimension(panelWidth / 4, ToolPanel.getPanelHeight()));
 		timeBorderPanel.setLayout(new GridBagLayout());
 		GridBagConstraints gbcTimeBP = new GridBagConstraints();
 		gbcTimeBP.weightx = 1;
@@ -242,7 +238,6 @@ public class OverviewPanel extends JPanel {
 		// Hour label
 		JLabel hourLabel = new JLabel("Hours");
 		hourLabel.setFont(Fonts.FONT15.get());
-//		gbcTimeBP.insets = new Insets(0,(panelWidth/4)/5,0,0);
 		gbcTimeBP.anchor = GridBagConstraints.LAST_LINE_START;
 		gbcTimeBP.gridx = 0;
 		gbcTimeBP.gridy = 0;
@@ -259,7 +254,6 @@ public class OverviewPanel extends JPanel {
 		hourSpinner.setEditor(editorHours);
 		hourSpinner.setFont(Fonts.FONT20.get());
 		hourSpinner.setPreferredSize(new Dimension(panelWidth / 19, ToolPanel.getPanelHeight() / 3));
-//		hourSpinner.setBorder(new CompoundBorder(new LineBorder(darkGray, 1), new EmptyBorder(0, 10, 0, 0)));
 		gbcTimeBP.anchor = GridBagConstraints.FIRST_LINE_START;
 		gbcTimeBP.gridx = 0;
 		gbcTimeBP.gridy = 1;
@@ -294,7 +288,6 @@ public class OverviewPanel extends JPanel {
 		formatterMinutes.setOverwriteMode(true);
 		minuteSpinner.setFont(Fonts.FONT20.get());
 		minuteSpinner.setPreferredSize(new Dimension(panelWidth / 19, ToolPanel.getPanelHeight() / 3));
-//		minuteSpinner.setBorder(new CompoundBorder(new LineBorder(darkGray, 1), new EmptyBorder(0, 10, 0, 0)));
 		gbcTimeBP.anchor = GridBagConstraints.FIRST_LINE_START;
 		gbcTimeBP.gridx = 2;
 		gbcTimeBP.gridy = 1;
@@ -312,12 +305,8 @@ public class OverviewPanel extends JPanel {
 		gbcTimeBP.gridy = 2;
 		timeBorderPanel.add(timeLabel, gbcTimeBP);
 
-		System.out.println("1 : " + timeBorderPanel.getPreferredSize().getWidth());
-
 		// Duration Border panel
 		durationBorderPanel = new ToolBorderPanel(panelWidth / 8, ToolPanel.getPanelHeight(), true);
-//		durationBorderPanel.setBackground(Color.yellow);
-//		durationBorderPanel.setPreferredSize(new Dimension(panelWidth / 4, ToolPanel.getPanelHeight()));
 		durationBorderPanel.setLayout(new GridBagLayout());
 		GridBagConstraints gbcDurationBP = new GridBagConstraints();
 		gbcDurationBP.weightx = 1;
@@ -326,7 +315,7 @@ public class OverviewPanel extends JPanel {
 		gbcTool.gridy = 0;
 		gbcTool.fill = GridBagConstraints.BOTH;
 		toolPanel.add(durationBorderPanel, gbcTool);
-		
+
 		// Duration label2
 		JLabel durationLabel2 = new JLabel("");
 		durationLabel2.setFont(Fonts.FONT15.get());
@@ -345,7 +334,6 @@ public class OverviewPanel extends JPanel {
 		durationSpinner.setEditor(editorDuration);
 		durationSpinner.setFont(Fonts.FONT20.get());
 		durationSpinner.setPreferredSize(new Dimension(panelWidth / 19, ToolPanel.getPanelHeight() / 3));
-//		durationSpinner.setBorder(new CompoundBorder(new LineBorder(darkGray, 1), new EmptyBorder(0, 10, 0, 0)));
 		gbcDurationBP.anchor = GridBagConstraints.FIRST_LINE_START;
 		gbcDurationBP.gridx = 0;
 		gbcDurationBP.gridy = 1;
@@ -359,11 +347,8 @@ public class OverviewPanel extends JPanel {
 		gbcDurationBP.gridy = 2;
 		durationBorderPanel.add(durationLabel, gbcDurationBP);
 
-		System.out.println("2 : " + durationBorderPanel.getPreferredSize().getWidth());
-
 		// Person border panel
 		personBorderPanel = new ToolBorderPanel(panelWidth / 8, ToolPanel.getPanelHeight(), true);
-//		personBorderPanel.setPreferredSize(new Dimension(panelWidth / 8, ToolPanel.getPanelHeight()));
 		personBorderPanel.setLayout(new GridBagLayout());
 		GridBagConstraints gbcPersonBP = new GridBagConstraints();
 		gbcPersonBP.weightx = 1;
@@ -404,12 +389,8 @@ public class OverviewPanel extends JPanel {
 		gbcPersonBP.gridy = 2;
 		personBorderPanel.add(guestLabel, gbcPersonBP);
 
-		System.out.println("4 : " + personBorderPanel.getPreferredSize().getWidth());
-
 		// Layout border panel
 		layoutBorderPanel = new ToolBorderPanel(panelWidth / 8, ToolPanel.getPanelHeight(), false);
-//		layoutBorderPanel.setBackground(Color.yellow);
-//		layoutBorderPanel.setPreferredSize(new Dimension(panelWidth / 12, ToolPanel.getPanelHeight()));
 		layoutBorderPanel.setLayout(new GridBagLayout());
 		GridBagConstraints gbclayoutBP = new GridBagConstraints();
 		gbclayoutBP.weightx = 1;
@@ -672,7 +653,6 @@ public class OverviewPanel extends JPanel {
 
 	private void setCalendarCurrentTime() {
 		calendar = Calendar.getInstance();
-		System.out.println("Fresh instance of calendar:" + calendar.toString());
 		int minute = calendar.get(Calendar.MINUTE);
 		minute = (int) (Math.round(minute / 10.0) * 10);
 		calendar.set(Calendar.MINUTE, minute);
