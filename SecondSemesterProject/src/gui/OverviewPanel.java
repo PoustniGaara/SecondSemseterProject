@@ -111,10 +111,6 @@ public class OverviewPanel extends JPanel {
 		setCalendarCurrentTime();
 		loadLayouts(1, calendar, 2);
 
-		// Panel support classes
-		Border borderBlack = BorderFactory.createLineBorder(ProjectColors.BLACK.get(), 2);
-		Font font1 = new Font("Monaco", Font.BOLD, 20);
-
 		// -----------------------------------------------
 		// ------------------ TOOL ---------------------
 		// -----------------------------------------------
@@ -128,7 +124,7 @@ public class OverviewPanel extends JPanel {
 		add(toolPanel, BorderLayout.NORTH);
 
 		// Calendar border panel
-		calendarBorderPanel = new ToolBorderPanel(panelWidth/3, ToolPanel.getPanelHeight(), true);
+		calendarBorderPanel = new ToolBorderPanel(panelWidth / 3, ToolPanel.getPanelHeight(), true);
 //		calendarBorderPanel.setBackground(Color.blue);
 //		calendarBorderPanel.setPreferredSize(new Dimension(panelWidth / 3, ToolPanel.getPanelHeight()));
 		calendarBorderPanel.setLayout(new GridBagLayout());
@@ -326,7 +322,7 @@ public class OverviewPanel extends JPanel {
 		gbcTool.gridy = 0;
 		gbcTool.fill = GridBagConstraints.BOTH;
 		toolPanel.add(durationBorderPanel, gbcTool);
-		
+
 		// Duration label2
 		JLabel durationLabel2 = new JLabel("");
 		durationLabel2.setFont(Fonts.FONT15.get());

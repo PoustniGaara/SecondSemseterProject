@@ -141,6 +141,11 @@ public class AddMenuInputFrame extends JFrame {
 					"Action denied", JOptionPane.WARNING_MESSAGE);
 			return;
 		}
+		if (menuName.length() == 0) {
+			JOptionPane.showMessageDialog(null, "The name field is empty! \nPlease, input some name",
+					"Action denied", JOptionPane.WARNING_MESSAGE);
+			return;
+		}
 		ArrayList<Meal> selectedMeals = new ArrayList<>();
 		String meal1 = meal1CB.getSelectedItem().toString();
 		String meal2 = meal2CB.getSelectedItem().toString();
