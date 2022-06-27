@@ -136,8 +136,8 @@ public class OverviewPanel extends JPanel {
 		toolPanel.add(calendarBorderPanel, gbcTool);
 
 		// DayBack button
-		dayBackBtn = new FancyButtonMoreClick(ProjectColors.BLUE3.get(), ProjectColors.BLUE3.get(),
-				ProjectColors.BLUE3.get(), ProjectColors.BLUE3.get(), ProjectColors.BLUE3.get());
+		dayBackBtn = new FancyButtonMoreClick(Color.white, ProjectColors.BLUE.get(), ProjectColors.BG.get(),
+				ProjectColors.LIGHT_BLUE.get(), ProjectColors.BG.get());
 		FontIcon leftArrowIcon = FontIcon.of(CoreUiFree.ARROW_LEFT);
 		leftArrowIcon.setIconSize(100);
 		dayBackBtn.setIcon(leftArrowIcon);
@@ -157,7 +157,6 @@ public class OverviewPanel extends JPanel {
 		calendarLabel.setIcon(calendarIcon);
 		calendarLabel.setVerticalAlignment(SwingConstants.CENTER);
 		calendarLabel.setHorizontalAlignment(SwingConstants.CENTER);
-//	    gbcCalendarBP.insets = new Insets(0,0,-panelWidth/80,0);
 		gbcCalendarBP.gridx = 1;
 		calendarBorderPanel.add(calendarLabel, gbcCalendarBP);
 
@@ -176,7 +175,7 @@ public class OverviewPanel extends JPanel {
 		datePicker.getComponent(0).setPreferredSize(new Dimension(panelWidth / 8, ToolPanel.getPanelHeight() / 3)); // JFormattedTextField
 		datePicker.getComponent(1).setPreferredSize(new Dimension(40, ToolPanel.getPanelHeight() / 3));// JButton
 
-		gbcCalendarBP.insets = new Insets(0, -panelWidth / 200, 0, 0);
+		gbcCalendarBP.insets = new Insets(0, -panelWidth / 190, 0, 0);
 
 		gbcCalendarBP.gridx = 2;
 		calendarBorderPanel.add(datePicker, gbcCalendarBP);
@@ -197,8 +196,8 @@ public class OverviewPanel extends JPanel {
 		gbcCalendarBP.gridx = 3;
 		calendarBorderPanel.add(nowBtn, gbcCalendarBP);
 
-		dayForwardBtn = new FancyButtonMoreClick(Color.white, ProjectColors.BLUE.get(), ProjectColors.BLUE.get(),
-				ProjectColors.LIGHT_BLUE.get(), Color.white);
+		dayForwardBtn = new FancyButtonMoreClick(Color.white, ProjectColors.BLUE.get(), ProjectColors.BG.get(),
+				ProjectColors.LIGHT_BLUE.get(), ProjectColors.BG.get());
 		FontIcon rightArrowIcon = FontIcon.of(CoreUiFree.ARROW_RIGHT);
 		rightArrowIcon.setIconSize(100);
 		dayForwardBtn.setIcon(rightArrowIcon);

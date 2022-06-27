@@ -77,7 +77,7 @@ public class HeaderPanel extends JPanel {
 		gbc.gridx = 2;
 		add(menuButton, gbc);
 
-		optionButton = new FancyButtonOneClick(ProjectColors.RED.get(), new Color(7, 100, 90),
+		optionButton = new FancyButtonOneClick(ProjectColors.RED.get(), ProjectColors.LIGHT_BLUE.get(),
 				ProjectColors.GREEN.get());
 		optionButton.setState(true);
 		optionButton.addActionListener(e -> openLayoutEditor());
