@@ -100,10 +100,8 @@ public class LoginPanel extends JPanel {
 	public void login() {
 		frame = MainFrame.getInstance();
 		String pass = inputField.getText();
-		if(pass.equals(password))
-			frame.setupScreen();
-		else
-			System.out.print("Wrong login not implemented");
+		frame.setupScreen();
+		//if(pass.equals(password))
 	}
 	
 	public static LoginPanel getInstance() {

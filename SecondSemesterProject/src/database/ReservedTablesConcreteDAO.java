@@ -120,7 +120,6 @@ public class ReservedTablesConcreteDAO implements ReservedTablesDAO {
 			System.out.println("timestamp 2 :" + timestamp2.toString());
 
 			ResultSet rs = ps.executeQuery();
-			System.out.println("Resulset is :" + rs.next());
 			while (rs.next()) {
 				Timestamp timestampDB = rs.getTimestamp("timestamp");
 				String name = rs.getString("name");

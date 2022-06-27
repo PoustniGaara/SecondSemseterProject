@@ -185,7 +185,6 @@ public class UpdateReservationFrame extends JFrame {
 		spinnerH.setBorder(new CompoundBorder(new LineBorder(darkGray, 1), new EmptyBorder(0, 10, 0, 0)));
 		gbc.gridy++;
 		gbc.gridwidth = 1;
-		// gbc.anchor = GridBagConstraints.NORTH;
 		gbc.insets = new Insets(5, 30, 20, 30);
 		contentPane.add(spinnerH, gbc);
 
@@ -221,8 +220,6 @@ public class UpdateReservationFrame extends JFrame {
 
 		tables = new JList<String>();
 		tables.setFont(font);
-		// tables.setBorder(new CompoundBorder(new LineBorder(darkGray, 1), new
-		// EmptyBorder(0, 10, 0, 0)));
 		tables.setBackground(Color.WHITE);
 
 		ArrayList<Table> availableTables = dbTables;
@@ -582,10 +579,5 @@ public class UpdateReservationFrame extends JFrame {
 
 	private void cancel() {
 		this.dispose();
-		
-		new Thread(() -> {
-			System.out.print("lambda thread");
-		});
-	
 	}
 }
