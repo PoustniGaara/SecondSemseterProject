@@ -111,13 +111,11 @@ public class ReservedTablesConcreteDAO implements ReservedTablesDAO {
 			java.util.Date dateTime = calendar1.getTime();
 			java.sql.Timestamp timestamp = new java.sql.Timestamp(dateTime.getTime());
 			ps.setTimestamp(2, timestamp);
-			System.out.println("timestamp 1 :" + timestamp.toString());
 			Calendar calendar2 = (Calendar) calendar.clone(); // Get just 1 day in advance info
 			calendar2.add(Calendar.DAY_OF_MONTH, +1);
 			java.util.Date dateTime2 = calendar2.getTime();
 			java.sql.Timestamp timestamp2 = new java.sql.Timestamp(dateTime2.getTime());
 			ps.setTimestamp(3, timestamp2);
-			System.out.println("timestamp 2 :" + timestamp2.toString());
 
 			ResultSet rs = ps.executeQuery();
 			while (rs.next()) {

@@ -35,7 +35,6 @@ public class ReservedMenusConcreteDAO implements ReservedMenusDAO {
 				ps.setLong(1, reservation.getId());
 				ps.setInt(2, m.getID());
 				ps.setInt(3, groupedMenus.get(m));
-				System.out.println("Insert groupedd menus: " + m.getName() + " x" + groupedMenus.get(m));
 				ps.addBatch();
 			}
 			try {
@@ -83,10 +82,8 @@ public class ReservedMenusConcreteDAO implements ReservedMenusDAO {
 		for (Menu m : menus) {
 			if (groupedMenus.containsKey(m)) {
 				groupedMenus.put(m, groupedMenus.get(m) + 1);
-				System.out.println("Grouped menu " + groupedMenus.get(m) + ": " + m.getName());
 			} else {
 				groupedMenus.put(m, 1);
-				System.out.println("Grouped menu 1st: " + m.getName());
 			}
 		}
 		return groupedMenus;
@@ -94,14 +91,11 @@ public class ReservedMenusConcreteDAO implements ReservedMenusDAO {
 
 	@Override
 	public void update(Reservation reservation) {
-		// TODO Auto-generated method stub
 
 	}
 
 	@Override
 	public void delete(Reservation reservation) {
-		// TODO Auto-generated method stub
 
 	}
-
 }

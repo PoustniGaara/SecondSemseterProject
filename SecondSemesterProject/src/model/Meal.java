@@ -8,7 +8,6 @@ public class Meal {
 	private int id;
 
 	public Meal(String name, String description, float price) {
-		super();
 		this.name = name;
 		this.description = description;
 		this.price = price;

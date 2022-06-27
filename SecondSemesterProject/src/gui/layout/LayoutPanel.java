@@ -39,9 +39,6 @@ public class LayoutPanel extends JPanel implements ComponentListener {
 		int height = (int) (MainFrame.height*0.84);
 		setLayout(new BorderLayout());
 		setBackground(Color.white);
-//		widthOfMiniPanel = Math.round(width/sizeX);
-//		heightOfMiniPanel =  Math.round(height/sizeY);
-//		sizeOfMiniPanel = widthOfMiniPanel-heightOfMiniPanel;
 		sizeOfMiniPanel = 60;
 		
 		contentPane = new JPanel();
@@ -50,7 +47,6 @@ public class LayoutPanel extends JPanel implements ComponentListener {
 		//gbc setup
 		gbc = new GridBagConstraints();
 		gbc.anchor = GridBagConstraints.CENTER;
-//		gbc.fill = GridBagConstraints.BOTH;
 		gbc.ipadx = sizeOfMiniPanel;
 		gbc.ipady = sizeOfMiniPanel;  
 		gbc.weightx = 1;
@@ -89,7 +85,6 @@ public class LayoutPanel extends JPanel implements ComponentListener {
 					miniPanel.setAvailable();
 					}
 				else  { // if capacity is okay test for timeAvailability
-//					System.out.println("Availability is "+miniPanel.getTimeAvailability(calendar, duration));
 						miniPanel.setUnavailable();
 				}	
 			}
@@ -101,8 +96,6 @@ public class LayoutPanel extends JPanel implements ComponentListener {
 		for(LayoutMiniPanel miniPanel : miniPanelMap.values()) { 
 				if(miniPanel.getLayoutItem() != null) {
 					for(ReservedTableInfo rti : reservedTableInfoList) {
-//						System.out.println("RTI GET ID:" +rti.getId() );
-//						System.out.println("miniPanel ID" +miniPanel.getLayoutItem().getId() );
 						if(rti.getLayoutItemId() == miniPanel.getLayoutItem().getId()) {
 							miniPanel.addToTableInfoList(rti);
 //							miniPanel.addReservedTableInfoToMap(rti, rti.getLayoutItemId()); // checking this out
