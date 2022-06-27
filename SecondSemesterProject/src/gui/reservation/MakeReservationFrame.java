@@ -1,6 +1,5 @@
 package gui.reservation;
 
-import java.awt.BorderLayout;
 import java.awt.CardLayout;
 import java.awt.Color;
 import java.awt.Component;
@@ -14,20 +13,25 @@ import java.awt.event.FocusListener;
 import java.sql.SQLException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.time.Duration;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 
-import javax.swing.BorderFactory;
+import javax.swing.DefaultListModel;
+import javax.swing.DefaultListSelectionModel;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JFormattedTextField;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JList;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JSpinner;
+import javax.swing.JSpinner.NumberEditor;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.ScrollPaneConstants;
@@ -35,7 +39,7 @@ import javax.swing.ScrollPaneLayout;
 import javax.swing.SpinnerDateModel;
 import javax.swing.SpinnerNumberModel;
 import javax.swing.SwingConstants;
-import javax.swing.JSpinner.NumberEditor;
+import javax.swing.SwingUtilities;
 import javax.swing.border.CompoundBorder;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.LineBorder;
@@ -43,10 +47,11 @@ import javax.swing.border.MatteBorder;
 import javax.swing.text.DateFormatter;
 import javax.swing.text.NumberFormatter;
 
-import controller.CustomerController;
 import controller.ReservationController;
 import database.MenuConcreteDAO;
-import gui.tools.FancyButtonOneClick;
+import database.ReservationConcreteDAO;
+import database.TableConcreteDAO;
+import gui.ToolPanel;
 import gui.tools.Fonts;
 import gui.tools.ProjectColors;
 import gui.tools.Validator;
@@ -55,9 +60,9 @@ import model.Menu;
 import model.Reservation;
 import model.Table;
 
+@SuppressWarnings("serial")
 public class MakeReservationFrame extends JFrame {
 
-	//matej
 	private JPanel contentPane;
 	private CardLayout cardLayout;
 	private JPanel firstCard;
@@ -68,67 +73,81 @@ public class MakeReservationFrame extends JFrame {
 	private int currentCard;
 
 	private ReservationController reservationController;
-	private CustomerController customerController;
 
-	private JTextField guestsField;
+	private JSpinner guestsSpinner;
 	private JFormattedTextField dateField;
 	private JSpinner spinnerH;
 	private JSpinner spinnerM;
 	private JTextField phoneField;
 	private JTextField noteField;
-	private JComboBox<String> tables;
+	private JList<String> tables;
 
-	private static ArrayList<Table> dbTables;
-	private static ArrayList<Reservation> dbReservations;
+	private ArrayList<Table> tableList;
+//	private static ArrayList<Reservation> dbReservations;
 	private static ArrayList<Menu> dbMenus;
-	private static boolean resourcesLoaded = true; // was false
+//	private static boolean resourcesLoaded = false;
+
+	private boolean card2Created = false;
+	private boolean card3Created = false;
+	private boolean card4Created = false;
+	private boolean card5Created = false;
 
 	private Calendar reservationTimeDate;
-	private int guests, duration;
+	private int guests;
+	private int duration;
 	private String phone;
-	private Table reservedTable;
+	private ArrayList<Table> reservedTables;
 	private String note;
 	private Customer customer;
 	private ArrayList<Menu> reservedMenus;
-	
-	private final Font font = new Font("Segoe UI Semibold", Font.PLAIN, 20);
-	private final Font italics = new Font("Segoe UI Semibold", Font.ITALIC, 20);
-	private final Font placeholderFont = new Font("Segoe UI", Font.ITALIC, 18);
+
+	private final Font font = Fonts.FONT20.get();
+	private final Font italics = new Font("Dialog", Font.ITALIC, 20);
+	private final Font placeholderFont = new Font("Dialog", Font.ITALIC, 20);
 
 	private final Color darkGray = new Color(18, 18, 18);
 	private final Color lightGray = new Color(89, 89, 89);
-	
+
+	public static void open() {
+		SwingUtilities.invokeLater((Runnable) new Runnable() {
+			public void run() {
+//				MakeReservationFrame frame = new MakeReservationFrame();
+//				frame.setVisible(true);
+			}
+		});
+		new Thread(() -> loadResources()).start();
+	}
+
+	private static void loadResources() {
+		try {
+//			dbReservations = ReservationConcreteDAO.getInstance().read();
+//			tableList = TableConcreteDAO.getInstance().read();
+			dbMenus = MenuConcreteDAO.getInstance().read();
+//			resourcesLoaded = true;
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
 	public MakeReservationFrame(ArrayList<Table> tableList, Calendar calendar, int guestsNo, int duration) {
-		
 		reservationController = new ReservationController();
-		customerController = new CustomerController();
 		currentCard = 1;
 
-		setTitle("New Reservation");
+		setTitle("Make reservation");
 		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		setBounds(0, 0, 600, 900);
 		setUndecorated(false);
 		setResizable(false);
+		
+		this.tableList = tableList;
 
 		contentPane = new JPanel();
 		setContentPane(contentPane);
 
 		cardLayout = new CardLayout();
 		contentPane.setLayout(cardLayout);
-		
-		try {
-			dbMenus = MenuConcreteDAO.getInstance().read();
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
 
-
-		// FIRST CARD
 		firstCard = new JPanel();
-		createFirstCard(calendar, guestsNo, tableList, duration);
-		
-		// SECOND CARD
 		secondCard = new JPanel();
 		thirdCard = new JPanel();
 		fourthCard = new JPanel();
@@ -141,14 +160,13 @@ public class MakeReservationFrame extends JFrame {
 		contentPane.add(fourthCard, "4");
 		contentPane.add(finalCard, "5");
 		cardLayout.first(contentPane);
-		
 
-		
-	}// end of constructor
-	
-	private void createFirstCard(Calendar calendar, int guestsNo,ArrayList<Table> tableList, int duration) {
+		createFirstCard();
+	}
+
+	private void createFirstCard() {
 		firstCard.setLayout(new GridBagLayout());
-		firstCard.setBackground(Color.WHITE);
+		firstCard.setBackground(ProjectColors.BG.get());
 
 		GridBagConstraints gbc = new GridBagConstraints();
 		gbc.insets = new Insets(20, 20, 60, 20);
@@ -161,7 +179,7 @@ public class MakeReservationFrame extends JFrame {
 		gbc.fill = GridBagConstraints.HORIZONTAL;
 
 		JLabel titleLabel = new JLabel("Creating new reservation", JLabel.CENTER);
-		titleLabel.setFont(new Font("Segoe UI Semibold", Font.BOLD, 28));
+		titleLabel.setFont(new Font("Dialog", Font.BOLD, 28));
 		titleLabel.setForeground(darkGray);
 		firstCard.add(titleLabel, gbc);
 
@@ -171,23 +189,27 @@ public class MakeReservationFrame extends JFrame {
 		gbc.gridy++;
 		gbc.gridheight = 1;
 		gbc.anchor = GridBagConstraints.WEST;
-		gbc.insets = new Insets(25, 30, 10, 30);
+		gbc.insets = new Insets(25, 30, 5, 30);
 		firstCard.add(guestsLabel, gbc);
 
-		guestsField = new JTextField();
-		guestsField.setFont(font);
-		guestsField.setText(String.valueOf(guestsNo));
-		guestsField.setBorder(new CompoundBorder(new LineBorder(darkGray, 1), new EmptyBorder(0, 10, 0, 0)));
-		guestsField.setBackground(Color.WHITE);
+		SpinnerNumberModel guestsNumberModel = new SpinnerNumberModel(2, 1, 100, 1);
+		guestsSpinner = new JSpinner(guestsNumberModel);
+		NumberEditor guestsEditor = new NumberEditor(guestsSpinner);
+		NumberFormatter guestsformatter = (NumberFormatter) guestsEditor.getTextField().getFormatter();
+		guestsformatter.setOverwriteMode(true);
+		guestsformatter.setAllowsInvalid(false);
+		guestsSpinner.setEditor(guestsEditor);
+		guestsSpinner.setFont(font);
+		guestsSpinner.setBorder(new CompoundBorder(new LineBorder(darkGray, 1), new EmptyBorder(0, 10, 0, 0)));
 		gbc.gridy++;
-		gbc.insets = new Insets(10, 30, 25, 30);
-		firstCard.add(guestsField, gbc);
+		gbc.insets = new Insets(5, 30, 25, 30);
+		firstCard.add(guestsSpinner, gbc);
 
 		JLabel dateLabel = new JLabel("Date:");
 		dateLabel.setForeground(darkGray);
 		dateLabel.setFont(font);
 		gbc.gridy++;
-		gbc.insets = new Insets(25, 30, 10, 30);
+		gbc.insets = new Insets(25, 30, 5, 30);
 		firstCard.add(dateLabel, gbc);
 
 		DateFormat format = new SimpleDateFormat("dd.MM.yyyy");
@@ -197,33 +219,35 @@ public class MakeReservationFrame extends JFrame {
 		dateField.setFont(font);
 		dateField.setBorder(new CompoundBorder(new LineBorder(darkGray, 1), new EmptyBorder(0, 10, 0, 0)));
 		gbc.gridy++;
-		gbc.insets = new Insets(10, 30, 25, 30);
+		gbc.insets = new Insets(5, 30, 25, 30);
 		firstCard.add(dateField, gbc);
-		
-		setDateTxtFieldTxt(calendar);
 
 		JLabel timeLabel = new JLabel("Time:");
 		timeLabel.setForeground(darkGray);
 		timeLabel.setFont(font);
 		gbc.gridy++;
-		gbc.insets = new Insets(25, 30, 10, 30);
+		gbc.insets = new Insets(25, 30, 5, 30);
 		firstCard.add(timeLabel, gbc);
-		
 
-		SpinnerNumberModel numberModelHours = new SpinnerNumberModel(17,0,23,1);
-		spinnerH = new JSpinner(numberModelHours);
-		JSpinner.NumberEditor editorHours = new JSpinner.NumberEditor(spinnerH);
-		NumberFormatter formatterHours = (NumberFormatter) editorHours.getTextField().getFormatter();
-		formatterHours.setAllowsInvalid(false);
-		formatterHours.setOverwriteMode(true);
-		numberModelHours.setValue(calendar.get(Calendar.HOUR_OF_DAY));
-		spinnerH.setEditor(editorHours);
+		Calendar calendar = Calendar.getInstance();
+		calendar.set(Calendar.HOUR_OF_DAY, 12);
+		calendar.set(Calendar.MINUTE, 0);
+
+		SpinnerDateModel model = new SpinnerDateModel();
+		model.setValue(calendar.getTime());
+
+		spinnerH = new JSpinner(model);
+		JSpinner.DateEditor editorH = new JSpinner.DateEditor(spinnerH, "HH");
+		DateFormatter formatterH = (DateFormatter) editorH.getTextField().getFormatter();
+		formatterH.setAllowsInvalid(false);
+		formatterH.setOverwriteMode(true);
+		spinnerH.setEditor(editorH);
 		spinnerH.setFont(font);
 		spinnerH.setBorder(new CompoundBorder(new LineBorder(darkGray, 1), new EmptyBorder(0, 10, 0, 0)));
 		gbc.gridy++;
 		gbc.gridwidth = 1;
 		gbc.anchor = GridBagConstraints.NORTH;
-		gbc.insets = new Insets(10, 30, 25, 30);
+		gbc.insets = new Insets(5, 30, 25, 30);
 		firstCard.add(spinnerH, gbc);
 
 		JLabel separator = new JLabel(":", JLabel.CENTER);
@@ -231,20 +255,29 @@ public class MakeReservationFrame extends JFrame {
 		separator.setFont(font);
 		gbc.gridx++;
 		firstCard.add(separator, gbc);
-		
-		SpinnerNumberModel numberModelMinutes = new SpinnerNumberModel(0,0,50,10);
-		spinnerM = new JSpinner(numberModelMinutes);
-		JSpinner.NumberEditor editorMinutes = new JSpinner.NumberEditor(spinnerM);
-		NumberFormatter formatterMinutes = (NumberFormatter) editorMinutes.getTextField().getFormatter();
-		spinnerM.setValue(calendar.get(Calendar.MINUTE));
-		spinnerM.setEditor(editorMinutes);
-		formatterMinutes.setAllowsInvalid(false);
-		formatterMinutes.setOverwriteMode(true);
+
+		SpinnerDateModel model2 = new SpinnerDateModel();
+		model2.setValue(calendar.getTime());
+
+		spinnerM = new JSpinner(model2);
+		JSpinner.DateEditor editorM = new JSpinner.DateEditor(spinnerM, "mm");
+		DateFormatter formatterM = (DateFormatter) editorM.getTextField().getFormatter();
+		formatterM.setAllowsInvalid(false);
+		formatterM.setOverwriteMode(true);
+		spinnerM.setEditor(editorM);
 		spinnerM.setFont(font);
 		spinnerM.setBorder(new CompoundBorder(new LineBorder(darkGray, 1), new EmptyBorder(0, 10, 0, 0)));
 		gbc.gridx++;
 		firstCard.add(spinnerM, gbc);
-		
+
+		JLabel durationLabel = new JLabel("Duration:");
+		durationLabel.setFont(font);
+		gbc.gridy++;
+		gbc.gridx = 0;
+		gbc.weightx = 1;
+		gbc.insets = new Insets(25, 30, 5, 30);
+		firstCard.add(durationLabel, gbc);
+
 		SpinnerNumberModel numberModelDuration = new SpinnerNumberModel(2, 1, 10, 1);
 		JSpinner durationSpinner = new JSpinner(numberModelDuration);
 		NumberEditor editorDuration = new NumberEditor(durationSpinner);
@@ -257,49 +290,42 @@ public class MakeReservationFrame extends JFrame {
 		gbc.insets = new Insets(5, 30, 25, 30);
 		gbc.gridy++;
 		firstCard.add(durationSpinner, gbc);
-		
-		duration = (int) durationSpinner.getValue();
 
 		JButton cancelButton = new JButton("Cancel");
 		cancelButton.setFont(font);
-		cancelButton.setBackground(new Color(242, 233, 228));
+		cancelButton.setForeground(new Color(195, 70, 70));
+		cancelButton.setBackground(new Color(252, 232, 232));
+		cancelButton.setBorder(new LineBorder(new Color(220, 48, 48), 1));
+		cancelButton.setPreferredSize(new Dimension((int) (getWidth() * 0.3), 40));
 		cancelButton.setFocusable(false);
 		cancelButton.addActionListener(e -> cancel());
 		gbc.gridy++;
 		gbc.gridx = 0;
 		gbc.weightx = 1;
 		gbc.anchor = GridBagConstraints.SOUTH;
-		gbc.insets = new Insets(80, 30, 25, 30);
+		gbc.insets = new Insets(40, 30, 25, 30);
 		firstCard.add(cancelButton, gbc);
 
 		JButton nextButton = new JButton("Next >");
 		nextButton.setFont(font);
-		nextButton.setBackground(new Color(242, 233, 228));
+		nextButton.setBackground(ProjectColors.BLUE.get());
+		nextButton.setForeground(Color.white);
+		nextButton.setPreferredSize(new Dimension((int) (getWidth() * 0.3), 40));
 		nextButton.setFocusable(false);
 		nextButton.addActionListener(e -> {
-			if (guestsField.getText().isEmpty() || guestsField.getText().isBlank()) {
-				JOptionPane.showConfirmDialog(null,
-						"The number of guests field must be filled!\nPlease fill the field in order to continue!",
-						"Guests field", JOptionPane.OK_OPTION, JOptionPane.WARNING_MESSAGE);
-				return;
-			}
-			guests = Integer.parseInt(guestsField.getText());
-			if (guests <= 0) {
-				JOptionPane.showConfirmDialog(null,
-						"The number of guests cannot be zero or lower!\nPlease correct the information in the field!",
-						"Number of guests", JOptionPane.OK_OPTION, JOptionPane.WARNING_MESSAGE);
-				return;
-			}
+
+			guests = (int) guestsSpinner.getValue();
+			duration = (int) durationSpinner.getValue();
 
 			Calendar date = Calendar.getInstance();
 			date.setTime((Date) dateField.getValue());
 			int year = date.get(Calendar.YEAR);
-			int month = date.get(Calendar.MONTH) + 1;
+			int month = date.get(Calendar.MONTH);
 			int day = date.get(Calendar.DAY_OF_MONTH);
-//			date.setTime((Date) spinnerH.getValue());
-			int hour = Integer.valueOf(spinnerH.getValue().toString());
-//			date.setTime((Date) spinnerM.getValue());
-			int minute = Integer.valueOf(spinnerM.getValue().toString());
+			date.setTime((Date) spinnerH.getValue());
+			int hour = date.get(Calendar.HOUR_OF_DAY);
+			date.setTime((Date) spinnerM.getValue());
+			int minute = date.get(Calendar.MINUTE);
 
 			reservationTimeDate = (Calendar) Calendar.getInstance();
 			reservationTimeDate.set(year, month, day, hour, minute, 0);
@@ -312,25 +338,24 @@ public class MakeReservationFrame extends JFrame {
 				return;
 			}
 
-			if (resourcesLoaded) {
-				createSecondCard(tableList);
+				if (!card2Created)
+					createSecondCard();
+				populateTables();
 				next();
-			} else {
-				JOptionPane.showConfirmDialog(null,
-						"The resources needed for cration of reservtaion hasn't been loaded!\nPlease, wait a bit and try again.",
-						"Resources not loaded", JOptionPane.OK_CANCEL_OPTION, JOptionPane.WARNING_MESSAGE);
-			}
+				
 		});
 		gbc.gridx = 2;
 		firstCard.add(nextButton, gbc);
 	}
-	
-	private void createSecondCard(ArrayList<Table> tableList) {
+
+	private void createSecondCard() {
 		secondCard.setLayout(new GridBagLayout());
-		secondCard.setBackground(Color.WHITE);
+		secondCard.setBackground(ProjectColors.BG.get());
+		card2Created = true;
+		reservedTables = new ArrayList<>();
 
 		GridBagConstraints gbc = new GridBagConstraints();
-		gbc.insets = new Insets(20, 20, 40, 20);
+		gbc.insets = new Insets(20, 20, 20, 20);
 		gbc.gridx = 0;
 		gbc.gridy = 0;
 		gbc.ipadx = 0;
@@ -345,39 +370,48 @@ public class MakeReservationFrame extends JFrame {
 		secondCard.add(titleLabel, gbc);
 
 		JLabel reservationLabel = new JLabel("For " + guests + " guest" + (guests > 1 ? "s" : "") + " on "
-				+ reservationTimeDate.get(Calendar.DATE) + ". " + reservationTimeDate.get(Calendar.MONTH) + ". "
+				+ reservationTimeDate.get(Calendar.DATE) + ". " + (reservationTimeDate.get(Calendar.MONTH) + 1) + ". "
 				+ reservationTimeDate.get(Calendar.YEAR) + " at " + reservationTimeDate.get(Calendar.HOUR_OF_DAY) + ":"
 				+ (reservationTimeDate.get(Calendar.MINUTE) < 10 ? "0" + reservationTimeDate.get(Calendar.MINUTE)
-						: reservationTimeDate.get(Calendar.MINUTE)));
+						: reservationTimeDate.get(Calendar.MINUTE)),
+				JLabel.CENTER);
 		reservationLabel.setForeground(darkGray);
 		reservationLabel.setFont(italics);
 		reservationLabel.setBorder(new MatteBorder(0, 0, 1, 0, darkGray));
 		gbc.gridy++;
 		gbc.anchor = GridBagConstraints.WEST;
-		gbc.insets = new Insets(20, 30, 25, 30);
+		gbc.insets = new Insets(20, 30, 20, 30);
 		secondCard.add(reservationLabel, gbc);
 
 		JLabel tablesLabel = new JLabel("Table(s):");
 		tablesLabel.setForeground(darkGray);
 		tablesLabel.setFont(font);
 		gbc.gridy++;
-		gbc.insets = new Insets(25, 30, 10, 30);
+		gbc.insets = new Insets(20, 30, 5, 30);
 		secondCard.add(tablesLabel, gbc);
 
-		tables = new JComboBox<String>();
+		tables = new JList<String>();
 		tables.setFont(font);
 		tables.setBorder(new CompoundBorder(new LineBorder(darkGray, 1), new EmptyBorder(0, 10, 0, 0)));
 		tables.setBackground(Color.WHITE);
+
+		JScrollPane scrollPane = new JScrollPane(tables);
+		scrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+		scrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
+		scrollPane.setBackground(Color.WHITE);
 		gbc.gridy++;
-		gbc.insets = new Insets(10, 30, 25, 30);
-		secondCard.add(tables, gbc);
-		populateTableCB(tableList);
+		gbc.gridheight = 1;
+		gbc.ipady = 100;
+		gbc.insets = new Insets(5, 30, 20, 30);
+		secondCard.add(scrollPane, gbc);
 
 		JLabel phoneLabel = new JLabel("Customer phone:");
 		phoneLabel.setForeground(darkGray);
 		phoneLabel.setFont(font);
+		gbc.ipady = 0;
 		gbc.gridy++;
-		gbc.insets = new Insets(25, 30, 10, 30);
+		gbc.fill = GridBagConstraints.HORIZONTAL;
+		gbc.insets = new Insets(20, 30, 5, 30);
 		secondCard.add(phoneLabel, gbc);
 
 		phoneField = new JTextField();
@@ -385,14 +419,14 @@ public class MakeReservationFrame extends JFrame {
 		phoneField.setBorder(new CompoundBorder(new LineBorder(darkGray, 1), new EmptyBorder(0, 10, 0, 0)));
 		phoneField.setBackground(Color.WHITE);
 		gbc.gridy++;
-		gbc.insets = new Insets(10, 30, 25, 30);
+		gbc.insets = new Insets(5, 30, 20, 30);
 		secondCard.add(phoneField, gbc);
 
 		JLabel noteLabel = new JLabel("Note:");
 		noteLabel.setForeground(darkGray);
 		noteLabel.setFont(font);
 		gbc.gridy++;
-		gbc.insets = new Insets(25, 30, 10, 30);
+		gbc.insets = new Insets(20, 30, 5, 30);
 		secondCard.add(noteLabel, gbc);
 
 		noteField = new JTextField();
@@ -400,12 +434,16 @@ public class MakeReservationFrame extends JFrame {
 		noteField.setBorder(new CompoundBorder(new LineBorder(darkGray, 1), new EmptyBorder(0, 10, 0, 0)));
 		noteField.setBackground(Color.WHITE);
 		gbc.gridy++;
-		gbc.insets = new Insets(10, 30, 40, 30);
+		gbc.insets = new Insets(5, 30, 40, 30);
 		secondCard.add(noteField, gbc);
 
 		JButton cancelButton = new JButton("Cancel");
 		cancelButton.setFont(font);
-		cancelButton.setBackground(new Color(242, 233, 228));
+		cancelButton.setForeground(new Color(195, 70, 70));
+		cancelButton.setBackground(new Color(252, 232, 232));
+		cancelButton.setBorder(new LineBorder(new Color(220, 48, 48), 1));
+		cancelButton.setPreferredSize(new Dimension((int) (getWidth() * 0.2), 40));
+		cancelButton.setFocusable(false);
 		cancelButton.addActionListener(e -> cancel());
 		gbc.gridy++;
 		gbc.anchor = GridBagConstraints.SOUTH;
@@ -415,27 +453,52 @@ public class MakeReservationFrame extends JFrame {
 
 		JButton prevButton = new JButton("< Back");
 		prevButton.setFont(font);
-		prevButton.setBackground(new Color(242, 233, 228));
-		// prevButton.addActionListener();
+		prevButton.setBackground(ProjectColors.BLUE1.get());
+		prevButton.setBorder(new LineBorder(ProjectColors.LIGHT_BLUE.get(), 1));
+		prevButton.setPreferredSize(new Dimension((int) (getWidth() * 0.2), 40));
+		prevButton.addActionListener(e -> back(1));
 		gbc.gridx = 1;
 		gbc.insets = new Insets(40, 20, 20, 20);
 		secondCard.add(prevButton, gbc);
 
 		JButton nextButton = new JButton("Next >");
 		nextButton.setFont(font);
-		nextButton.setBackground(new Color(242, 233, 228));
+		nextButton.setBackground(ProjectColors.BLUE.get());
+		nextButton.setForeground(Color.white);
+		nextButton.setFocusable(false);
+		nextButton.setPreferredSize(new Dimension((int) (getWidth() * 0.2), 40));
 		nextButton.addActionListener(e -> {
-			for (Table t : tableList) { // was dbtTables
-				if (tables.getSelectedItem().equals(t.getName())) {
-					reservedTable = t;
+			if (tables.getSelectedValue() == null) {
+				JOptionPane.showConfirmDialog(null,
+						"No table was selected!\nPlease, select a table from the drop down menu!", "Table selection",
+						JOptionPane.OK_CANCEL_OPTION, JOptionPane.WARNING_MESSAGE);
+				return;
+			}
+			reservedTables.clear();
+			int tCapacity = 0;
+			for (Table t : tableList) {
+				for (String s : tables.getSelectedValuesList()) {
+					if (t.getName().equals(s)) {
+						reservedTables.add(t);
+						tCapacity += t.getCapacity();
+					}
 				}
 			}
 
-			if (reservedTable == null) {
+			if (tCapacity < guests) {
 				JOptionPane.showConfirmDialog(null,
-						"No table was selected!\nPlease, try selecting a table from the drop down menu!",
+						"The capacity of selected tables is less then the number of guest!\nPlease select more tables.",
 						"Table selection", JOptionPane.OK_CANCEL_OPTION, JOptionPane.WARNING_MESSAGE);
 				return;
+			}
+
+			if (tCapacity >= 2 * guests) {
+				int option = JOptionPane.showConfirmDialog(null,
+						"The capacity of selected tables is more then the number of guest!\nAre you sure you want to select these tables?",
+						"Table selection", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE);
+				if (option != JOptionPane.YES_OPTION)
+					return;
+
 			}
 
 			String input = phoneField.getText();
@@ -444,7 +507,7 @@ public class MakeReservationFrame extends JFrame {
 					Long.parseLong(input);
 				} catch (Exception ex) {
 					JOptionPane.showConfirmDialog(null, "The input value in the phone number field is incorect!",
-							"Customer's phone number", JOptionPane.OK_CANCEL_OPTION, JOptionPane.WARNING_MESSAGE);
+							"Incorrect phone number", JOptionPane.WARNING_MESSAGE);
 					return;
 				}
 				phone = input;
@@ -455,21 +518,20 @@ public class MakeReservationFrame extends JFrame {
 			}
 			note = noteField.getText();
 
-			ArrayList<Table> rt = new ArrayList<>();
-			rt.add(reservedTable);
-			reservationController.startReservation(reservationTimeDate, rt);
-
-			createThirdCard();
+			reservationController.startReservation(reservationTimeDate, reservedTables);
+			if (!card3Created)
+				createThirdCard();
 			next();
 		});
 		gbc.gridx = 2;
 		gbc.insets = new Insets(40, 20, 20, 30);
 		secondCard.add(nextButton, gbc);
 	}
-	
+
 	private void createThirdCard() {
 		thirdCard.setLayout(new GridBagLayout());
-		thirdCard.setBackground(Color.WHITE);
+		thirdCard.setBackground(ProjectColors.BG.get());
+		card3Created = true;
 
 		GridBagConstraints gbc = new GridBagConstraints();
 		gbc.insets = new Insets(20, 20, 30, 20);
@@ -487,7 +549,7 @@ public class MakeReservationFrame extends JFrame {
 		thirdCard.add(titleLabel, gbc);
 
 		JLabel reservationLabel = new JLabel("For " + guests + " guest" + (guests > 1 ? "s" : "") + " on "
-				+ reservationTimeDate.get(Calendar.DATE) + ". " + reservationTimeDate.get(Calendar.MONTH) + ". "
+				+ reservationTimeDate.get(Calendar.DATE) + ". " + (reservationTimeDate.get(Calendar.MONTH) + 1) + ". "
 				+ reservationTimeDate.get(Calendar.YEAR) + " at " + reservationTimeDate.get(Calendar.HOUR_OF_DAY) + ":"
 				+ (reservationTimeDate.get(Calendar.MINUTE) < 10 ? "0" + reservationTimeDate.get(Calendar.MINUTE)
 						: reservationTimeDate.get(Calendar.MINUTE)));
@@ -525,6 +587,7 @@ public class MakeReservationFrame extends JFrame {
 		thirdCard.add(phoneField, gbc);
 
 		JLabel nameLabel = new JLabel("Name:");
+		nameLabel.setName("name");
 		nameLabel.setForeground(darkGray);
 		nameLabel.setFont(font);
 		gbc.gridy++;
@@ -552,6 +615,7 @@ public class MakeReservationFrame extends JFrame {
 		thirdCard.add(surnameLabel, gbc);
 
 		JTextField surnameField = new JTextField();
+		surnameField.setName("surname");
 		surnameField.setFont(font);
 		surnameField.setBorder(new CompoundBorder(new LineBorder(darkGray, 1), new EmptyBorder(0, 10, 0, 0)));
 		surnameField.setBackground(Color.WHITE);
@@ -572,7 +636,7 @@ public class MakeReservationFrame extends JFrame {
 		thirdCard.add(addressLabel, gbc);
 
 		JTextField streetField = new JTextField("Street");
-		streetField.setFont(placeholderFont);
+		streetField.setFont(font);
 		streetField.setBorder(new CompoundBorder(new LineBorder(darkGray, 1), new EmptyBorder(0, 10, 0, 0)));
 		streetField.setBackground(Color.WHITE);
 		streetField.setForeground(lightGray);
@@ -589,7 +653,7 @@ public class MakeReservationFrame extends JFrame {
 		thirdCard.add(streetField, gbc);
 
 		JTextField streetNoField = new JTextField("Street number");
-		streetNoField.setFont(placeholderFont);
+		streetNoField.setFont(font);
 		streetNoField.setForeground(lightGray);
 		streetNoField.setBorder(new CompoundBorder(new LineBorder(darkGray, 1), new EmptyBorder(0, 10, 0, 0)));
 		streetNoField.setBackground(Color.WHITE);
@@ -605,7 +669,7 @@ public class MakeReservationFrame extends JFrame {
 		thirdCard.add(streetNoField, gbc);
 
 		JTextField townField = new JTextField("Town");
-		townField.setFont(placeholderFont);
+		townField.setFont(font);
 		townField.setForeground(lightGray);
 		townField.setBorder(new CompoundBorder(new LineBorder(darkGray, 1), new EmptyBorder(0, 10, 0, 0)));
 		townField.setBackground(Color.WHITE);
@@ -622,7 +686,7 @@ public class MakeReservationFrame extends JFrame {
 		thirdCard.add(townField, gbc);
 
 		JTextField zipField = new JTextField("Zip code");
-		zipField.setFont(placeholderFont);
+		zipField.setFont(font);
 		zipField.setForeground(lightGray);
 		zipField.setBorder(new CompoundBorder(new LineBorder(darkGray, 1), new EmptyBorder(0, 10, 0, 0)));
 		zipField.setBackground(Color.WHITE);
@@ -639,7 +703,11 @@ public class MakeReservationFrame extends JFrame {
 
 		JButton cancelButton = new JButton("Cancel");
 		cancelButton.setFont(font);
-		cancelButton.setBackground(new Color(242, 233, 228));
+		cancelButton.setForeground(new Color(195, 70, 70));
+		cancelButton.setBackground(new Color(252, 232, 232));
+		cancelButton.setBorder(new LineBorder(new Color(220, 48, 48), 1));
+		cancelButton.setPreferredSize(new Dimension((int) (getWidth() * 0.2), 40));
+		cancelButton.setFocusable(false);
 		cancelButton.addActionListener(e -> cancel());
 		gbc.gridy++;
 		gbc.gridx = 0;
@@ -650,21 +718,26 @@ public class MakeReservationFrame extends JFrame {
 
 		JButton prevButton = new JButton("< Back");
 		prevButton.setFont(font);
-		prevButton.setBackground(new Color(242, 233, 228));
-		// prevButton.addActionListener();
+		prevButton.setBackground(ProjectColors.BLUE1.get());
+		prevButton.setBorder(new LineBorder(ProjectColors.LIGHT_BLUE.get(), 1));
+		prevButton.setPreferredSize(new Dimension((int) (getWidth() * 0.2), 40));
+		prevButton.addActionListener(e -> back(2));
 		gbc.gridx = 1;
 		gbc.insets = new Insets(30, 20, 20, 20);
 		thirdCard.add(prevButton, gbc);
 
 		JButton nextButton = new JButton("Next >");
 		nextButton.setFont(font);
-		nextButton.setBackground(new Color(242, 233, 228));
+		nextButton.setBackground(ProjectColors.BLUE.get());
+		nextButton.setForeground(Color.white);
+		nextButton.setPreferredSize(new Dimension((int) (getWidth() * 0.2), 40));
+
+		nextButton.setFocusable(false);
 		nextButton.addActionListener(e -> {
 
 			for (Component c : thirdCard.getComponents()) {
 				if (c instanceof JTextField) {
 					if (!Validator.isFilled((JTextField) c)) {
-						((JTextField) c).setBorder(new LineBorder(Color.RED));
 						JOptionPane.showConfirmDialog(null, "The " + c.getName() + " field must be filled!",
 								"Empty field", JOptionPane.OK_CANCEL_OPTION, JOptionPane.WARNING_MESSAGE);
 						return;
@@ -672,8 +745,8 @@ public class MakeReservationFrame extends JFrame {
 				}
 			}
 
-			if (!Validator.isNumber(phoneField) && !Validator.isNumber(streetNoField)
-					&& !Validator.isNumber(zipField)) {
+			if (!Validator.isNumber(phoneField) || !Validator.isNumber(streetNoField)
+					|| !Validator.isNumber(zipField)) {
 				JOptionPane.showConfirmDialog(null, "The input value in number input fields is incorect!",
 						"Wrong number input", JOptionPane.OK_CANCEL_OPTION, JOptionPane.WARNING_MESSAGE);
 				return;
@@ -681,18 +754,20 @@ public class MakeReservationFrame extends JFrame {
 
 			customer = new Customer(nameField.getText(), surnameField.getText(), phone, "", townField.getText(),
 					zipField.getText(), streetField.getText(), streetNoField.getText());
-			createFourthCard();
+			if (!card4Created)
+				createFourthCard();
 			next();
 		});
 		gbc.gridx = 2;
 		gbc.insets = new Insets(30, 20, 20, 30);
 		thirdCard.add(nextButton, gbc);
-		
+
 	}
-	
+
 	private void createFourthCard() {
 		fourthCard.setLayout(new GridBagLayout());
-		fourthCard.setBackground(Color.WHITE);
+		fourthCard.setBackground(ProjectColors.BG.get());
+		card4Created = true;
 		reservedMenus = new ArrayList<>();
 
 		GridBagConstraints gbc = new GridBagConstraints();
@@ -711,7 +786,7 @@ public class MakeReservationFrame extends JFrame {
 		fourthCard.add(titleLabel, gbc);
 
 		JLabel reservationLabel = new JLabel("For " + guests + " guest" + (guests > 1 ? "s" : "") + " on "
-				+ reservationTimeDate.get(Calendar.DATE) + ". " + reservationTimeDate.get(Calendar.MONTH) + ". "
+				+ reservationTimeDate.get(Calendar.DATE) + ". " + (reservationTimeDate.get(Calendar.MONTH) + 1) + ". "
 				+ reservationTimeDate.get(Calendar.YEAR) + " at " + reservationTimeDate.get(Calendar.HOUR_OF_DAY) + ":"
 				+ (reservationTimeDate.get(Calendar.MINUTE) < 10 ? "0" + reservationTimeDate.get(Calendar.MINUTE)
 						: reservationTimeDate.get(Calendar.MINUTE)));
@@ -733,8 +808,6 @@ public class MakeReservationFrame extends JFrame {
 		JScrollPane scrollPane = new JScrollPane();
 		scrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
 		scrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
-		// scrollPane.setPreferredSize(new Dimension(fourthCard.getWidth() / 100 * 70,
-		// fourthCard.getHeight() / 100 * 50));
 		scrollPane.setMinimumSize(new Dimension(fourthCard.getWidth() / 100 * 40, fourthCard.getHeight() / 100 * 30));
 		scrollPane.setBorder(null);
 		scrollPane.setLayout(new ScrollPaneLayout());
@@ -764,7 +837,6 @@ public class MakeReservationFrame extends JFrame {
 		}
 
 		ArrayList<JComboBox<String>> menuComboBoxes = new ArrayList<>();
-
 		for (int i = 1; i <= guests; i++) {
 			JLabel label = new JLabel("Menu for person " + i + ":");
 			label.setForeground(darkGray);
@@ -791,7 +863,11 @@ public class MakeReservationFrame extends JFrame {
 
 		JButton cancelButton = new JButton("Cancel");
 		cancelButton.setFont(font);
-		cancelButton.setBackground(new Color(242, 233, 228));
+		cancelButton.setForeground(new Color(195, 70, 70));
+		cancelButton.setBackground(new Color(252, 232, 232));
+		cancelButton.setBorder(new LineBorder(new Color(220, 48, 48), 1));
+		cancelButton.setPreferredSize(new Dimension((int) (getWidth() * 0.2), 40));
+		cancelButton.setFocusable(false);
 		cancelButton.addActionListener(e -> cancel());
 		gbc.gridy++;
 		gbc.gridx = 0;
@@ -802,16 +878,22 @@ public class MakeReservationFrame extends JFrame {
 
 		JButton prevButton = new JButton("< Back");
 		prevButton.setFont(font);
-		prevButton.setBackground(new Color(242, 233, 228));
-		// prevButton.addActionListener();
+		prevButton.setBackground(ProjectColors.BLUE1.get());
+		prevButton.setBorder(new LineBorder(ProjectColors.LIGHT_BLUE.get(), 1));
+		prevButton.setPreferredSize(new Dimension((int) (getWidth() * 0.2), 40));
+		prevButton.addActionListener(e -> back(3));
 		gbc.gridx = 1;
 		gbc.insets = new Insets(20, 20, 20, 20);
 		fourthCard.add(prevButton, gbc);
 
 		JButton nextButton = new JButton("Next >");
 		nextButton.setFont(font);
-		nextButton.setBackground(new Color(242, 233, 228));
+		nextButton.setBackground(ProjectColors.BLUE.get());
+		nextButton.setForeground(Color.white);
+		nextButton.setPreferredSize(new Dimension((int) (getWidth() * 0.2), 40));
+		nextButton.setFocusable(false);
 		nextButton.addActionListener(e -> {
+			reservedMenus.clear();
 			for (JComboBox<String> j : menuComboBoxes) {
 				String selMenu = j.getSelectedItem().toString();
 				if (!selMenu.equalsIgnoreCase("No menu")) {
@@ -822,19 +904,19 @@ public class MakeReservationFrame extends JFrame {
 					}
 				}
 			}
-
-			createFinalCard();
+			if (!card5Created)
+				createFinalCard();
 			next();
 		});
 		gbc.gridx = 2;
 		gbc.insets = new Insets(20, 20, 20, 30);
 		fourthCard.add(nextButton, gbc);
-		
 	}
-	
+
 	private void createFinalCard() {
 		finalCard.setLayout(new GridBagLayout());
-		finalCard.setBackground(Color.WHITE);
+		finalCard.setBackground(ProjectColors.BG.get());
+		card5Created = true;
 
 		GridBagConstraints gbc = new GridBagConstraints();
 		gbc.insets = new Insets(20, 20, 60, 20);
@@ -851,45 +933,76 @@ public class MakeReservationFrame extends JFrame {
 		titleLabel.setForeground(darkGray);
 		finalCard.add(titleLabel, gbc);
 
-		JTextArea reservationLabel = new JTextArea("Guest" + (guests > 1 ? "s" : "") + ": " + guests + "\nDate: "
-				+ reservationTimeDate.get(Calendar.DATE) + ". " + reservationTimeDate.get(Calendar.MONTH) + "."
-				+ reservationTimeDate.get(Calendar.YEAR) + "\nTime: " + reservationTimeDate.get(Calendar.HOUR_OF_DAY)
-				+ ":"
-				+ (reservationTimeDate.get(Calendar.MINUTE) < 10 ? "0" + reservationTimeDate.get(Calendar.MINUTE)
-						: reservationTimeDate.get(Calendar.MINUTE))
-				+ "\nCustomer: " + customer.getName() + " " + customer.getSurname() + " (" + customer.getPhone()
-				+ ")\nTable: " + reservedTable.getName() + " (" + reservedTable.getCapacity() + ")\nNote: " + note);
-		reservationLabel.setForeground(darkGray);
-		reservationLabel.setFont(italics);
-		reservationLabel.setLineWrap(true);
-		reservationLabel.setEditable(false);
+		JLabel guestFinalLabel = new JLabel("Guest" + (guests > 1 ? "s" : "") + ": " + guests);
+		guestFinalLabel.setFont(font);
+		gbc.insets = new Insets(10, 30, 10, 30);
 		gbc.gridy++;
-		finalCard.add(reservationLabel, gbc);
+		finalCard.add(guestFinalLabel, gbc);
+
+		JLabel dateFinalLabel = new JLabel("Date: " + reservationTimeDate.get(Calendar.DATE) + "."
+				+ (reservationTimeDate.get(Calendar.MONTH) + 1) + "." + reservationTimeDate.get(Calendar.YEAR));
+		dateFinalLabel.setFont(font);
+		gbc.gridy++;
+		finalCard.add(dateFinalLabel, gbc);
+
+		JLabel timeFinalLabel = new JLabel("Time: " + reservationTimeDate.get(Calendar.HOUR_OF_DAY) + ":"
+				+ (reservationTimeDate.get(Calendar.MINUTE) < 10 ? "0" + reservationTimeDate.get(Calendar.MINUTE)
+						: reservationTimeDate.get(Calendar.MINUTE)));
+		timeFinalLabel.setFont(font);
+		gbc.gridy++;
+		finalCard.add(timeFinalLabel, gbc);
+
+		JLabel durationFinalLabel = new JLabel("Duration: " + duration + " h");
+		durationFinalLabel.setFont(font);
+		gbc.gridy++;
+		finalCard.add(durationFinalLabel, gbc);
+
+		JLabel customerFinalLabel = new JLabel(
+				"Customer: " + customer.getName() + " " + customer.getSurname() + " (" + customer.getPhone() + ")");
+		customerFinalLabel.setFont(font);
+		gbc.gridy++;
+		finalCard.add(customerFinalLabel, gbc);
+
+		JLabel tablesFinalLabel = new JLabel("Table(s): " + tableNames(reservedTables));
+		tablesFinalLabel.setFont(font);
+		gbc.gridy++;
+		finalCard.add(tablesFinalLabel, gbc);
+
+		JLabel noteFinalLabel = new JLabel("Note: " + note);
+		noteFinalLabel.setFont(font);
+		gbc.gridy++;
+		finalCard.add(noteFinalLabel, gbc);
 
 		JButton cancelButton = new JButton("Cancel");
 		cancelButton.setFont(font);
-		cancelButton.setBackground(new Color(242, 233, 228));
+		cancelButton.setForeground(new Color(195, 70, 70));
+		cancelButton.setBackground(new Color(252, 232, 232));
+		cancelButton.setBorder(new LineBorder(new Color(220, 48, 48), 1));
+		cancelButton.setPreferredSize(new Dimension((int) (getWidth() * 0.2), 40));
+		cancelButton.setFocusable(false);
 		cancelButton.addActionListener(e -> cancel());
 		gbc.gridy++;
 		gbc.gridx = 0;
 		gbc.anchor = GridBagConstraints.SOUTH;
 		gbc.gridwidth = 1;
-		gbc.insets = new Insets(20, 30, 20, 20);
+		gbc.insets = new Insets(40, 30, 20, 20);
 		finalCard.add(cancelButton, gbc);
 
 		JButton prevButton = new JButton("< Back");
 		prevButton.setFont(font);
-		prevButton.setBackground(new Color(242, 233, 228));
-		// prevButton.addActionListener();
+		prevButton.setBackground(ProjectColors.BLUE1.get());
+		prevButton.setBorder(new LineBorder(ProjectColors.LIGHT_BLUE.get(), 1));
+		prevButton.setPreferredSize(new Dimension((int) (getWidth() * 0.2), 40));
+		prevButton.addActionListener(e -> back(4));
 		gbc.gridx = 1;
-		gbc.insets = new Insets(20, 20, 20, 20);
 		finalCard.add(prevButton, gbc);
 
 		JButton createButton = new JButton("Create");
 		createButton.setFont(font);
-		createButton.setBackground(new Color(242, 233, 228));
+		createButton.setBackground(ProjectColors.BLUE.get());
+		createButton.setForeground(Color.white);
+		createButton.setPreferredSize(new Dimension((int) (getWidth() * 0.2), 40));
 		createButton.addActionListener(e -> {
-
 			new Thread(() -> {
 				try {
 					reservationController.confirmReservation(customer, guests, duration, reservedMenus, note);
@@ -898,7 +1011,7 @@ public class MakeReservationFrame extends JFrame {
 					ReservationsPanel.repopulateTable();
 				} catch (SQLException e1) {
 					JOptionPane.showConfirmDialog(null,
-							"An error eccured while creating the reservation.\nPlease try again.", "Error",
+							"An error occured while creating the reservation.\nPlease try again.", "Error",
 							JOptionPane.OK_CANCEL_OPTION, JOptionPane.WARNING_MESSAGE);
 					return;
 				}
@@ -906,10 +1019,49 @@ public class MakeReservationFrame extends JFrame {
 			cancel();
 		});
 		gbc.gridx = 2;
-		gbc.insets = new Insets(20, 20, 30, 20);
 		finalCard.add(createButton, gbc);
 	}
-	
+
+	private void populateTables() {
+		ArrayList<Table> availableTables = tableList;
+
+		DefaultListModel<String> listModel = new DefaultListModel<String>();
+		if (availableTables.isEmpty()) {
+			listModel.addElement("No tables");
+			tables.setEnabled(false);
+		} else {
+			for (Table t : availableTables) {
+				listModel.addElement(t.getName());
+			}
+		}
+		tables.setModel(listModel);
+		tables.setSelectionModel(new DefaultListSelectionModel() {
+			@Override
+			public void setSelectionInterval(int index0, int index1) {
+				if (super.isSelectedIndex(index0)) {
+					super.removeSelectionInterval(index0, index1);
+				} else {
+					super.addSelectionInterval(index0, index1);
+				}
+				fireValueChanged(index0, index1);
+			}
+		});
+	}
+
+	private void next() {
+		if (currentCard == 5) {
+			cardLayout.show(contentPane, "1");
+			currentCard = 1;
+		} else {
+			currentCard++;
+			cardLayout.show(contentPane, "" + currentCard);
+		}
+	}
+
+	private void cancel() {
+		this.dispose();
+	}
+
 	private void addPlaceholder(JTextField field, String placeholder) {
 		field.addFocusListener(new FocusListener() {
 			@Override
@@ -932,50 +1084,16 @@ public class MakeReservationFrame extends JFrame {
 		});
 	}
 
-	
-	private void cancel() {
-		this.dispose();
-	}
-	
-	private void next() {
-		if (currentCard == 5) {
-			cardLayout.show(contentPane, "1");
-			currentCard = 1;
-		} else {
-			currentCard++;
-			cardLayout.show(contentPane, "" + currentCard);
-		}
-	}
-	
-//	private void makeReservationClicked() {
-//		// dont forget to deselected after :) 
-//	}
-//	
-//	private void setTimeTxtFieldTxt(Calendar calendar) {
-//		String time;
-//		if(calendar.get(Calendar.MINUTE) == 0) {
-//			time = String.valueOf(calendar.get(Calendar.HOUR_OF_DAY)) + ":" +
-//					String.valueOf(calendar.get(Calendar.MINUTE)) +"0";
-//			timeTxtField.setText(time);
-//		}
-//		else {
-//			time = String.valueOf(calendar.get(Calendar.HOUR_OF_DAY)) + ":" +
-//				String.valueOf(calendar.get(Calendar.MINUTE));
-//			timeTxtField.setText(time);
-//		}
-//	}
-	
-	private void setDateTxtFieldTxt(Calendar calendar) {
-		String date = String.valueOf(calendar.get(Calendar.DAY_OF_MONTH)) + "." +
-				String.valueOf(calendar.get(Calendar.MONTH) +1) + "." +
-				String.valueOf(calendar.get(Calendar.YEAR));
-		dateField.setText(date);
-	}
-	
-	private void populateTableCB(ArrayList<Table> tableList) {
-		for(Table table : tableList) {
-			tables.addItem(table.getName());
-		}
+	private void back(int card) {
+		cardLayout.show(contentPane, card + "");
+		currentCard = card;
 	}
 
+	private String tableNames(ArrayList<Table> tables) {
+		String s = "";
+		for (Table t : tables) {
+			s += t.getName() + (tables.get(tables.size() - 1) != t ? ", " : "");
+		}
+		return s;
+	}
 }
