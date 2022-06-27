@@ -111,10 +111,6 @@ public class OverviewPanel extends JPanel {
 		setCalendarCurrentTime();
 		loadLayouts(1, calendar, 2);
 
-		// Panel support classes
-		Border borderBlack = BorderFactory.createLineBorder(ProjectColors.BLACK.get(), 2);
-		Font font1 = new Font("Monaco", Font.BOLD, 20);
-
 		// -----------------------------------------------
 		// ------------------ TOOL ---------------------
 		// -----------------------------------------------
