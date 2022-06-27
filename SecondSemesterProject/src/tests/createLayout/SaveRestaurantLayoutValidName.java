@@ -30,7 +30,6 @@ class SaveRestaurantLayoutValidName {
 	@Test
 	public void test() {
 		// Arrange
-		System.out.println(rlc);
 		HashMap<Point, LayoutItem> itemMap = new HashMap<>();
 		itemMap.put(new Point(0, 1), new Table("test", "table", 5));
 		itemMap.put(new Point(0, 2), new Table("test1", "table", 6));

@@ -1,15 +1,12 @@
 package controller;
 
 import java.sql.SQLException;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Calendar;
 
-import javax.swing.JComponent;
-
 import database.ReservationConcreteDAO;
+import database.ReservationDAO;
 import database.ReservedTablesConcreteDAO;
-import database.TableConcreteDAO;
 import model.Customer;
 import model.Menu;
 import model.Reservation;
@@ -18,7 +15,7 @@ import model.Table;
 
 public class ReservationController {
 
-	private ReservationConcreteDAO reservationDAO;
+	private ReservationDAO reservationDAO;
 	private Reservation reservation;
 	private boolean isCustomer = false;
 	private CustomerController control = new CustomerController();
