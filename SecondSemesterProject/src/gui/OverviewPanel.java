@@ -124,7 +124,7 @@ public class OverviewPanel extends JPanel {
 		add(toolPanel, BorderLayout.NORTH);
 
 		// Calendar border panel
-		calendarBorderPanel = new ToolBorderPanel(panelWidth / 3, ToolPanel.getPanelHeight(), true);
+		calendarBorderPanel = new ToolBorderPanel(  (int) ((int) panelWidth * 0.4), ToolPanel.getPanelHeight(), true);
 //		calendarBorderPanel.setBackground(Color.blue);
 //		calendarBorderPanel.setPreferredSize(new Dimension(panelWidth / 3, ToolPanel.getPanelHeight()));
 		calendarBorderPanel.setLayout(new GridBagLayout());
@@ -142,7 +142,7 @@ public class OverviewPanel extends JPanel {
 		leftArrowIcon.setIconSize(100);
 		dayBackBtn.setIcon(leftArrowIcon);
 		dayBackBtn.addActionListener(e -> dayBackClicked());
-		dayBackBtn.setPreferredSize(new Dimension(panelWidth / 12, (int) (ToolPanel.getPanelHeight() * 0.80)));
+		dayBackBtn.setPreferredSize(new Dimension(panelWidth / 14, (int) (ToolPanel.getPanelHeight() * 0.80)));
 		gbcCalendarBP.anchor = GridBagConstraints.CENTER;
 		gbcCalendarBP.gridheight = 2;
 		gbcCalendarBP.gridx = 0;
@@ -172,8 +172,8 @@ public class OverviewPanel extends JPanel {
 		datePicker.getComponent(0).setFont(Fonts.FONT20.get());
 		datePicker.addActionListener(e -> DateChangeFromDatePicker());
 		datePicker.setButtonFocusable(false);
-		datePicker.setPreferredSize(new Dimension(panelWidth / 12, ToolPanel.getPanelHeight() / 3));
-		datePicker.getComponent(0).setPreferredSize(new Dimension(panelWidth / 12, ToolPanel.getPanelHeight() / 3)); // JFormattedTextField
+		datePicker.setPreferredSize(new Dimension(panelWidth / 8, ToolPanel.getPanelHeight() / 3));
+		datePicker.getComponent(0).setPreferredSize(new Dimension(panelWidth / 8, ToolPanel.getPanelHeight() / 3)); // JFormattedTextField
 		datePicker.getComponent(1).setPreferredSize(new Dimension(40, ToolPanel.getPanelHeight() / 3));// JButton
 
 		gbcCalendarBP.insets = new Insets(0, -panelWidth / 200, 0, 0);
@@ -189,7 +189,7 @@ public class OverviewPanel extends JPanel {
 		nowBtn.setBackground(ProjectColors.BLUE.get());
 		nowBtn.setForeground(Color.white);
 		nowBtn.setBorderPainted(true);
-		nowBtn.setPreferredSize(new Dimension(panelWidth / 26, ToolPanel.getPanelHeight() / 3));
+		nowBtn.setPreferredSize(new Dimension(panelWidth / 18, ToolPanel.getPanelHeight() / 3));
 		nowBtn.setText("Now");
 		nowBtn.addActionListener(e -> nowBtnClicked());
 		gbcCalendarBP.insets = new Insets(0, -panelWidth / 160, 0, 0);
@@ -203,7 +203,7 @@ public class OverviewPanel extends JPanel {
 		rightArrowIcon.setIconSize(100);
 		dayForwardBtn.setIcon(rightArrowIcon);
 		dayForwardBtn.addActionListener(e -> dayForwardClicked());
-		dayForwardBtn.setPreferredSize(new Dimension(panelWidth / 12, (int) (ToolPanel.getPanelHeight() * 0.80)));
+		dayForwardBtn.setPreferredSize(new Dimension(panelWidth / 14, (int) (ToolPanel.getPanelHeight() * 0.80)));
 		gbcCalendarBP.anchor = GridBagConstraints.CENTER;
 		gbcCalendarBP.insets = new Insets(0, 0, 0, 0);
 		gbcCalendarBP.gridy = 0;
@@ -307,6 +307,7 @@ public class OverviewPanel extends JPanel {
 		GridBagConstraints gbcDurationBP = new GridBagConstraints();
 		gbcDurationBP.weightx = 1;
 		gbcDurationBP.weighty = 1;
+		gbcDurationBP.insets = new Insets(0, (panelWidth / 8) / 3, 0, 0);
 		gbcTool.gridx = 2;
 		gbcTool.gridy = 0;
 		gbcTool.fill = GridBagConstraints.BOTH;
@@ -329,6 +330,7 @@ public class OverviewPanel extends JPanel {
 		formatterDuration.setOverwriteMode(true);
 		durationSpinner.setEditor(editorDuration);
 		durationSpinner.setFont(Fonts.FONT20.get());
+		durationSpinner.addChangeListener(e -> durationChanged());
 		durationSpinner.setPreferredSize(new Dimension(panelWidth / 19, ToolPanel.getPanelHeight() / 3));
 		gbcDurationBP.anchor = GridBagConstraints.FIRST_LINE_START;
 		gbcDurationBP.gridx = 0;
@@ -338,9 +340,11 @@ public class OverviewPanel extends JPanel {
 		// Duration label
 		JLabel durationLabel = new JLabel("Duration");
 		durationLabel.setFont(Fonts.FONT15.get());
-		gbcDurationBP.anchor = GridBagConstraints.CENTER;
+		gbcDurationBP.weighty = 0.1;
+		gbcDurationBP.anchor = GridBagConstraints.PAGE_END;
+		gbcDurationBP.insets = new Insets(0,0,0,0);
 		gbcDurationBP.gridx = 0;
-		gbcDurationBP.gridy = 2;
+		gbcDurationBP.gridy = 1;
 		durationBorderPanel.add(durationLabel, gbcDurationBP);
 
 		// Person border panel
@@ -349,7 +353,6 @@ public class OverviewPanel extends JPanel {
 		GridBagConstraints gbcPersonBP = new GridBagConstraints();
 		gbcPersonBP.weightx = 1;
 		gbcPersonBP.weighty = 1;
-		gbcPersonBP.insets = new Insets(0, (panelWidth / 8) / 3, 0, 0);
 		gbcTool.gridx = 3;
 		gbcTool.gridy = 0;
 		gbcTool.fill = GridBagConstraints.BOTH;
@@ -358,6 +361,7 @@ public class OverviewPanel extends JPanel {
 		// Number of guest label
 		JLabel noOfGuestLabel = new JLabel("");
 		noOfGuestLabel.setFont(Fonts.FONT15.get());
+		gbcPersonBP.insets = new Insets(0, (panelWidth / 8) / 3, 0, 0);
 		gbcPersonBP.anchor = GridBagConstraints.LAST_LINE_START;
 		gbcPersonBP.gridx = 0;
 		gbcPersonBP.gridy = 0;
@@ -382,7 +386,7 @@ public class OverviewPanel extends JPanel {
 		gbcPersonBP.weighty = 0.1;
 		gbcPersonBP.anchor = GridBagConstraints.PAGE_END;
 		gbcPersonBP.gridx = 0;
-		gbcPersonBP.gridy = 2;
+		gbcPersonBP.gridy = 1;
 		personBorderPanel.add(guestLabel, gbcPersonBP);
 
 		// Layout border panel
@@ -456,7 +460,7 @@ public class OverviewPanel extends JPanel {
 		makeReservationBtn.setForeground(Color.white);
 		makeReservationBtn
 				.setPreferredSize(new Dimension(FooterPanel.panelWidth / 6, (int) (FooterPanel.panelHeight * 0.6)));
-//		makeReservationBtn.setBorderPainted(true);
+		makeReservationBtn.setFocusable(false);
 		makeReservationBtn.setFont(Fonts.FONT18.get());
 		makeReservationBtn.addActionListener(e -> makeNewReservationClicked());
 		makeReservationBtn.setText("Make Reservation");
@@ -473,6 +477,18 @@ public class OverviewPanel extends JPanel {
 		startTimerForGettingReservationInfoFromDB();//
 
 	} // end of constructor
+	
+	private void durationChanged() {
+		try {
+			getLayoutsReservedTableInfoListByTime(calendar);
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		loadUpdatedReservedTableInfo();
+		setAvailabilityOfRestaurantLayout((Integer) personCB.getSelectedItem(), calendar,
+				(Integer) durationSpinner.getValue());
+	}
 
 	private void setSystemTimeLabel() {
 		if (getAutomaticTime() == false) {
@@ -542,6 +558,9 @@ public class OverviewPanel extends JPanel {
 	}
 
 	public void makeNewReservationClicked() {
+		if(selectedTables.size() != 0) {
+			selectedTables.clear();
+		}
 		for (LayoutMiniPanel miniPanel : currentLayoutPanel.getMiniPanelMap().values()) {
 			if (miniPanel.isSelected()) {
 				selectedTables.add((Table) miniPanel.getLayoutItem());
@@ -691,9 +710,9 @@ public class OverviewPanel extends JPanel {
 						reservedTableInfoMap.get(rl.getName()).addAll(reservationController
 								.getReservedTableInfo((int) rl.getId(), calendar, (int) durationSpinner.getValue()));
 					}
-				} catch (SQLException e) {
-					e.printStackTrace();
+				} catch (SQLException  | NullPointerException e) {
 				}
+		
 			}
 		});
 

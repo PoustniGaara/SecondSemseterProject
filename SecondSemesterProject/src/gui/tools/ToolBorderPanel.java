@@ -27,20 +27,20 @@ import javax.swing.JPanel;
 			setBackground(ProjectColors.BG.get());
 		}
 
-		@Override
-		protected void paintComponent(Graphics g) {
-			if(isPainted) {
-			super.paintComponent(g);
-//			Graphics2D g2 = (Graphics2D) g;
-			Double d1 = width * 0.99;
-			Double d2 = height * 0.02;
-			Double d3 = width * 0.99;
-			Double d4 = height * 0.98;
-			
-			g.drawLine( d1.intValue() ,d2.intValue(), d3.intValue(),d4.intValue());
-//			g.drawLine(x1, x2, x3, x4);
-			// painting code goes here.
-			}
-		}
+//		@Override
+//		protected void paintComponent(Graphics g) {
+//			if(isPainted) {
+//			super.paintComponent(g);
+////			Graphics2D g2 = (Graphics2D) g;
+//			Double d1 = width * 0.99;
+//			Double d2 = height * 0.02;
+//			Double d3 = width * 0.99;
+//			Double d4 = height * 0.98;
+//			
+//			g.drawLine( d1.intValue() ,d2.intValue(), d3.intValue(),d4.intValue());
+////			g.drawLine(x1, x2, x3, x4);
+//			// painting code goes here.
+//			}
+//		}
 		
 	}

@@ -111,7 +111,7 @@ public class LayoutMiniPanel extends JPanel implements MouseListener {
 	public boolean getTimeAvailability(Calendar calendar, int duration) {
 		boolean availability = true;
 		int potentionalStartTimeInMinutes = calendar.get(Calendar.HOUR_OF_DAY) * 60;
-		int potentionalStartPlusDurationTimeInMinutes = calendar.get(Calendar.HOUR_OF_DAY) * 60 + duration;
+		int potentionalStartPlusDurationTimeInMinutes = calendar.get(Calendar.HOUR_OF_DAY) * 60 + duration * 60;
 		if (layoutItem != null) {
 			for (ReservedTableInfo rti : reservedTableInfoList) {
 				int existingStartTimeInMinutes = rti.getCalendar().get(Calendar.HOUR_OF_DAY) * 60;
