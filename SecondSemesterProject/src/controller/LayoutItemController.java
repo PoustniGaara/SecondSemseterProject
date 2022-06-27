@@ -8,9 +8,10 @@ import model.LayoutItem;
 
 public class LayoutItemController {
 	
-	private final LayoutItemDAO layoutItemDAO = LayoutItemConcreteDAO.getInstance();
+	private LayoutItemDAO layoutItemDAO;
 	
 	public LayoutItemController(){
+		layoutItemDAO = LayoutItemConcreteDAO.getInstance();
 	}
 	
 	public LayoutItem read(String name) throws SQLException {

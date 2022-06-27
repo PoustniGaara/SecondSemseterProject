@@ -158,6 +158,7 @@ public class OverviewPanel extends JPanel {
 		calendarLabel.setVerticalAlignment(SwingConstants.CENTER);
 		calendarLabel.setHorizontalAlignment(SwingConstants.CENTER);
 		gbcCalendarBP.gridx = 1;
+		gbcCalendarBP.insets = new Insets(0, 5, 0, 10);
 		calendarBorderPanel.add(calendarLabel, gbcCalendarBP);
 
 		// Date picker

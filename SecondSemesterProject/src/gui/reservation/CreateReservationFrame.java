@@ -598,6 +598,7 @@ public class CreateReservationFrame extends JFrame {
 
 		JTextField nameField = new JTextField();
 		nameField.setFont(font);
+		nameField.setName("name");
 		nameField.setBorder(new CompoundBorder(new LineBorder(darkGray, 1), new EmptyBorder(0, 10, 0, 0)));
 		nameField.setBackground(Color.WHITE);
 		if (isCustomer) {
